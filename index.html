@@ -1,0 +1,1416 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Como evitar AI SLOP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wdth,wght@75..100,400..800&family=Red+Hat+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* Layout: laudo de avaliação heurística. A cor só existe para dizer a severidade (escala 0 a 4 de Nielsen).
+   Achados em ordem decrescente de gravidade; exemplos renderizados ao vivo, lado a lado. */
+:root {
+  --paper: #fbfbfa;
+  --ink: #141414;
+  --soft: #55554f;
+  --rule: #d9d9d3;
+  --sev0: #8a8a85;
+  --sev1: #e9c600;
+  --sev2: #e8890c;
+  --sev3: #d63a2a;
+  --sev4: #7d0b0b;
+  --sev1-ink: #141414;
+  --sev2-ink: #141414;
+  --on-sev: #ffffff;
+  --code-bg: #141414;
+  --code-ink: #ececE6;
+  --font: "Open Sans", "Segoe UI", system-ui, sans-serif;
+  --display: "Open Sans", "Segoe UI", system-ui, sans-serif;
+  --mono: "Red Hat Mono", ui-monospace, Menlo, monospace;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #121211; --ink: #ececE6; --soft: #a5a59d; --rule: #2e2e2b;
+    --sev3: #ef5a49; --sev4: #b32020; --code-bg: #0a0a0a; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #121211; --ink: #ececE6; --soft: #a5a59d; --rule: #2e2e2b;
+  --sev3: #ef5a49; --sev4: #b32020; --code-bg: #0a0a0a; color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+body { margin: 0; background: var(--paper); color: var(--ink); font-family: var(--font); font-size: 17px; line-height: 1.55; }
+.wrap { max-width: 1040px; margin: 0 auto; padding: 0 20px; }
+a { color: inherit; text-underline-offset: 3px; }
+:focus-visible { outline: 3px solid var(--ink); outline-offset: 3px; }
+p { margin: 0 0 12px; }
+code { font-family: var(--mono); font-size: .88em; background: color-mix(in srgb, var(--ink) 9%, transparent); padding: .1em .35em; border-radius: 3px; }
+
+/* Abertura */
+.open { display: grid; grid-template-columns: 1.25fr 1fr; gap: 24px 56px; align-items: end; padding: 64px 0 36px; }
+h1, .group-h h2, .nielsen h2, .f h3 { font-family: var(--display); }
+h1 { font-weight: 800; font-stretch: 75%; font-size: clamp(52px, 11vw, 124px); line-height: .88; letter-spacing: -0.01em; text-transform: uppercase; margin: 0; text-wrap: balance; }
+.group-h h2 { font-stretch: 75%; text-transform: uppercase; }
+.nielsen h2 { font-stretch: 75%; font-weight: 800; max-width: 22ch; }
+.thesis { font-size: 20px; line-height: 1.5; margin: 0; }
+.thesis p:last-child { margin-bottom: 0; }
+
+/* Escala de severidade */
+.scale { display: grid; grid-template-columns: repeat(5, 1fr); border: 1px solid var(--ink); margin: 0 0 8px; }
+.scale div { padding: 10px 12px; border-right: 1px solid var(--ink); font-size: 14px; line-height: 1.3; }
+.scale div:last-child { border-right: 0; }
+.scale b { display: block; font-family: var(--mono); font-size: 22px; font-weight: 500; }
+.s0 { background: var(--sev0); color: var(--on-sev); }
+.s1 { background: var(--sev1); color: var(--sev1-ink); }
+.s2 { background: var(--sev2); color: var(--sev2-ink); }
+.s3 { background: var(--sev3); color: var(--on-sev); }
+.s4 { background: var(--sev4); color: var(--on-sev); }
+.scale-note { font-size: 14px; color: var(--soft); margin: 0 0 8px; max-width: 70ch; }
+
+/* Grupos */
+.group { margin-top: 56px; }
+.group-h { display: flex; align-items: baseline; gap: 14px; border-top: 3px solid var(--ink); padding-top: 10px; margin-bottom: 4px; }
+.group-h .n { font-family: var(--mono); font-weight: 500; font-size: 15px; padding: 1px 9px; }
+.group-h h2 { font-size: 26px; line-height: 1.1; font-weight: 800; margin: 0; letter-spacing: -0.015em; }
+.group-h span.q { margin-left: auto; font-size: 14px; color: var(--soft); text-align: right; }
+
+.f { display: grid; grid-template-columns: 56px 1fr; gap: 0 20px; padding: 26px 0; border-bottom: 1px solid var(--rule); }
+.f:last-child { border-bottom: 0; }
+.badge { font-family: var(--mono); font-size: 13px; width: 40px; height: 40px; display: grid; place-items: center; }
+.f h3 { font-size: 21px; line-height: 1.2; font-weight: 700; margin: 6px 0 8px; text-wrap: balance; }
+.f .body { max-width: 68ch; }
+.f .fix { margin-top: 8px; }
+.f .fix b { font-weight: 700; }
+.f .body.wide { max-width: none; }
+.f > *, .spec > *, .how > *, .pane { min-width: 0; }
+.pane .stage { overflow-x: auto; }
+
+/* Exemplos */
+.spec { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 16px 0 6px; }
+.pane { background: #fff; color: #1b1b1b; border: 1px solid var(--rule); font-family: var(--font); font-size: 14px; line-height: 1.4; display: flex; flex-direction: column; }
+.pane .stage { padding: 16px; flex: 1; }
+.cap { margin-top: auto; font-family: var(--mono); font-size: 12px; padding: 6px 10px; border-top: 1px solid #d9d9d3; background: #f1f1ee; color: #333; }
+.cap.no::before { content: "SLOP  "; color: #b3261e; font-weight: 500; }
+.cap.ok::before { content: "REVISADO  "; color: #14663a; font-weight: 500; }
+
+/* h1 hero */
+.hero-bad { background: linear-gradient(135deg, #7c3aed, #2563eb); color: #fff; text-align: center; padding: 22px 14px; }
+.hero-bad h4 { font-size: 21px; margin: 0 0 6px; }
+.hero-bad p { margin: 0 0 12px; opacity: .9; font-size: 13px; }
+.hero-bad .pill { display: inline-block; background: rgba(255,255,255,.2); border: 1px solid rgba(255,255,255,.5); border-radius: 999px; padding: 6px 16px; font-weight: 600; backdrop-filter: blur(6px); }
+.hero-bad small { display: block; margin-top: 12px; font-size: 12px; opacity: .85; }
+.hero-ok h4 { font-size: 20px; margin: 0 0 6px; }
+.hero-ok p { margin: 0 0 12px; }
+.hero-ok .btn { display: inline-block; background: #141414; color: #fff; padding: 7px 14px; font-weight: 600; }
+.hero-ok small { display: block; margin-top: 10px; color: #55554f; font-size: 12px; }
+
+/* cards */
+.tri { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.tri div { border: 1px solid #e3e3df; border-radius: 12px; padding: 10px 8px; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,.06); }
+.tri i { display: block; width: 26px; height: 26px; border-radius: 50%; background: #ede9fe; margin: 0 auto 6px; }
+.tri b { display: block; font-size: 13px; }
+.tri span { font-size: 11px; color: #777; }
+table.mini { border-collapse: collapse; width: 100%; font-size: 13px; }
+table.mini th, table.mini td { text-align: left; padding: 6px 8px; border-bottom: 1px solid #e3e3df; }
+table.mini th { font-weight: 600; background: #f6f6f3; }
+
+/* emoji x icone */
+.ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.ul li { display: flex; gap: 8px; align-items: center; }
+.ul svg { width: 18px; height: 18px; flex: none; stroke: #141414; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+
+/* erro, form, delete, contraste */
+.err-bad { background: #fde8e8; color: #b3261e; padding: 10px 12px; border-radius: 6px; }
+.err-ok .field { border: 2px solid #b3261e; padding: 6px 8px; margin: 8px 0 6px; font-family: var(--mono); font-size: 13px; }
+.err-ok b { display: block; }
+.err-ok .why { color: #b3261e; font-size: 13px; }
+.fi { border: 1px solid #8a8a85; padding: 8px 10px; color: #8a8a85; margin-bottom: 8px; }
+.lbl { font-weight: 600; font-size: 13px; display: block; margin-bottom: 3px; }
+.fi.real { color: #141414; }
+.hint { font-size: 12px; color: #55554f; margin-top: -2px; }
+.row { display: flex; justify-content: space-between; align-items: center; border: 1px solid #e3e3df; padding: 8px 10px; }
+.row .del { background: #d93025; color: #fff; padding: 3px 10px; font-weight: 600; font-size: 13px; }
+.toast { margin-top: 10px; background: #141414; color: #fff; padding: 9px 12px; display: flex; justify-content: space-between; font-size: 13px; }
+.toast u { font-weight: 700; }
+.muted-note { margin-top: 10px; font-size: 12px; color: #777; }
+.c-bad { color: #aaaaaa; font-size: 12px; }
+.c-ok { color: #595959; font-size: 16px; }
+.ratio { display: inline-block; margin-top: 10px; font-family: var(--mono); font-size: 12px; padding: 2px 8px; border: 1px solid #b3261e; color: #b3261e; }
+.ratio.ok { border-color: #14663a; color: #14663a; }
+
+pre.snip { margin: 0; padding: 12px 14px; background: var(--code-bg); color: var(--code-ink); font-family: var(--mono); font-size: 12.5px; line-height: 1.55; overflow-x: auto; flex: 1; }
+
+.ctr-bad { text-align: center; padding: 34px 16px 40px; background: #f1f1ee; }
+.ctr-bad h4 { font-size: 20px; margin: 0 0 10px; line-height: 1.2; }
+.ctr-bad p { font-size: 13px; margin: 0 0 14px; color: #444; }
+.pill2 { display: inline-block; background: #141414; color: #fff; padding: 6px 16px; border-radius: 999px; font-size: 13px; font-weight: 600; }
+.ctr-ok { text-align: left; padding: 16px; max-width: 100%; }
+.ctr-ok h4 { font-size: 20px; margin: 0 0 6px; line-height: 1.2; }
+.ctr-ok p { font-size: 14px; margin: 0; }
+.fold { font-family: var(--mono); font-size: 11px; text-align: center; color: #b3261e; border-top: 2px dashed #b3261e; padding: 3px 0 0; background: #fff; }
+.below { padding: 10px 16px; font-size: 13px; color: #aaa; background: #fff; line-height: 1.7; }
+.below.ok { color: #1b1b1b; }
+.below.ok span { color: #55554f; }
+.navrow { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 16px; font-size: 13px; }
+.navrow .logo { font-weight: 800; border: 2px solid #141414; padding: 1px 8px; margin-right: 4px; }
+.navrow .i { font-weight: 600; padding: 4px 0; border-bottom: 2px solid transparent; }
+.navrow .i.on { border-color: #141414; }
+.crumbs { font-size: 12px; color: #55554f; margin: 10px 0 2px; }
+.ptitle { font-size: 17px; font-weight: 800; line-height: 1.25; }
+.wf { display: grid; gap: 4px; }
+.wf div { background: #ebebe7; border: 1px solid #cfcfc8; padding: 3px 8px; font-size: 11px; color: #444; }
+.wf div.hot { background: #dfe8ff; border-color: #8aa4e8; color: #1b1b1b; font-weight: 600; padding: 13px 8px; }
+.wf div.tall { padding: 14px 8px; }
+.outline { font-family: var(--mono); font-size: 12px; line-height: 1.75; }
+.outline div::before { content: attr(data-l); display: inline-block; width: 22px; color: #777; }
+.outline .x { color: #b3261e; font-weight: 500; }
+.chipwrap { display: flex; flex-wrap: wrap; gap: 5px; }
+.chipwrap span { border: 1px solid #cfcfc8; padding: 2px 8px; font-size: 12px; }
+.grp h5 { margin: 9px 0 4px; font: 500 11px var(--mono); text-transform: uppercase; letter-spacing: .05em; color: #55554f; }
+.grp h5:first-child { margin-top: 0; }
+.where { display: grid; gap: 5px; font-size: 13px; }
+.where div { display: flex; justify-content: space-between; gap: 10px; border: 1px solid #e3e3df; padding: 5px 8px; }
+.where i { font-style: normal; color: #777; }
+.where .x b { color: #b3261e; }
+.lnklist { display: grid; gap: 7px; font-size: 13px; }
+.lnklist div { border-bottom: 1px solid #ececE8; padding-bottom: 6px; }
+.lnklist b { display: block; }
+.lnk { color: #1a55c8; text-decoration: underline; }
+.sr { font-family: var(--mono); font-size: 11px; color: #b3261e; margin-top: 8px; }
+.tip { display: grid; grid-template-columns: auto 1fr; gap: 6px 16px; align-items: start; border: 2px solid var(--ink); padding: 14px 16px; margin: 22px 0 6px; }
+.tip .tag { font-family: var(--mono); font-size: 12px; font-weight: 500; background: var(--ink); color: var(--paper); padding: 2px 8px; letter-spacing: .06em; margin-top: 3px; }
+.tip p { margin: 0; }
+.tip a { font-weight: 700; }
+@media (max-width: 760px) { .tip { grid-template-columns: 1fr; } }
+.subh { font-family: var(--display); font-stretch: 75%; text-transform: uppercase; font-weight: 800; font-size: 24px; line-height: 1.1; border-top: 3px solid var(--ink); padding-top: 10px; margin: 56px 0 4px; letter-spacing: -0.005em; }
+.lines { display: grid; gap: 6px; font-size: 13px; }
+.lines div { border: 1px solid #e3e3df; padding: 6px 9px; }
+.lines div.x { border-color: #e7b9b5; background: #fdf3f2; }
+.lines p { margin: 0; font-size: 13px; line-height: 1.5; }
+.pane .flush { padding: 0; flex: 1; overflow: hidden; }
+.pane .flush svg { display: block; width: 100%; height: auto; }
+.img-note { font-size: 14px; color: var(--soft); margin: 14px 0 0; max-width: 70ch; }
+.group-h .n.ia { background: var(--ink); color: var(--paper); letter-spacing: .04em; }
+.states { display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0 0; padding: 0; list-style: none; }
+.states li { border: 1px solid var(--ink); padding: 2px 10px; font-family: var(--mono); font-size: 13px; }
+.states li.done { background: var(--ink); color: var(--paper); }
+
+/* NIELSEN.md */
+.nielsen { margin-top: 72px; border-top: 3px solid var(--ink); padding-top: 12px; }
+.nielsen h2 { font-size: clamp(28px, 4.5vw, 44px); font-weight: 800; line-height: 1.05; letter-spacing: -0.025em; margin: 0 0 14px; max-width: 18ch; text-wrap: balance; }
+.nielsen .lead { font-size: 19px; max-width: 62ch; }
+.codebox { background: var(--code-bg); color: var(--code-ink); margin: 22px 0; }
+.codebar { display: flex; justify-content: space-between; align-items: center; padding: 8px 14px; border-bottom: 1px solid #333; font-family: var(--mono); font-size: 13px; }
+.codebar button { font: 500 13px var(--mono); background: #ececE6; color: #141414; border: 0; padding: 5px 12px; cursor: pointer; }
+.codebar button:hover { background: #fff; }
+.codebar .actions { display: flex; gap: 8px; }
+button[hidden], .dl-row[hidden] { display: none; }
+.dl-row { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px; margin: 18px 0 0; padding: 14px 0; border-top: 1px solid var(--rule); }
+.dl-row span { font-size: 15px; color: var(--soft); }
+.dlbtn { font: 500 14px var(--mono); background: var(--ink); color: var(--paper); border: 2px solid var(--ink); padding: 8px 14px; cursor: pointer; }
+.dlbtn:hover { background: transparent; color: var(--ink); }
+.dlbtn[aria-busy="true"] { opacity: .6; cursor: progress; }
+.codebox pre { margin: 0; padding: 16px 18px; overflow-x: auto; font-family: var(--mono); font-size: 13.5px; line-height: 1.6; max-height: 460px; }
+.codebox pre.sm { max-height: none; }
+
+.how { display: grid; grid-template-columns: 1fr 1fr; gap: 20px 48px; margin-top: 36px; }
+.how h3 { font-size: 19px; margin: 0 0 6px; font-weight: 700; }
+.how p { margin: 0; color: var(--soft); }
+.how p b { color: var(--ink); font-weight: 700; }
+
+footer { padding: 56px 0 72px; color: var(--soft); font-size: 14px; max-width: 70ch; }
+
+@media (max-width: 760px) {
+  body { font-size: 16px; }
+  .open { grid-template-columns: 1fr; padding-top: 36px; }
+  .scale { grid-template-columns: 1fr; }
+  .scale div { border-right: 0; border-bottom: 1px solid var(--ink); display: flex; gap: 12px; align-items: baseline; }
+  .scale div:last-child { border-bottom: 0; }
+  .scale b { display: inline; }
+  .group-h { flex-wrap: wrap; }
+  .group-h span.q { margin-left: 0; text-align: left; width: 100%; }
+  .f { grid-template-columns: 1fr; gap: 6px; }
+  .spec, .how { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="open">
+  <h1>Como evitar AI SLOP</h1>
+  <div class="thesis">
+    <p>Nem todos os problemas de interface têm o mesmo impacto. Um gradiente inadequado é uma questão estética. A ausência de estados de erro, mecanismos de desfazer ou indicadores de foco por teclado compromete a usabilidade.</p>
+    <p>Esta página apresenta os principais problemas de interface, organizados por nível de severidade, com exemplos comparativos e recomendações de correção.</p>
+  </div>
+</header>
+
+<div class="scale" role="list" aria-label="Escala de severidade de Nielsen">
+  <div class="s0" role="listitem"><b>0</b>Não é problema</div>
+  <div class="s1" role="listitem"><b>1</b>Cosmético</div>
+  <div class="s2" role="listitem"><b>2</b>Pequeno</div>
+  <div class="s3" role="listitem"><b>3</b>Grave</div>
+  <div class="s4" role="listitem"><b>4</b>Catástrofe de usabilidade</div>
+</div>
+<p class="scale-note">Escala de severidade de Jakob Nielsen. A classificação de cada erro abaixo é julgamento meu para um produto comum. Reavalie para o seu.</p>
+<div class="dl-row" id="dl-row" hidden>
+  <span>Baixar para o repositório:</span>
+  <button type="button" class="dlbtn" data-dl="nielsen" data-name="NIELSEN.md">NIELSEN.md</button>
+  <button type="button" class="dlbtn" data-dl="antipadroes" data-name="ANTIPADROES.md">ANTIPADROES.md</button>
+  <button type="button" class="dlbtn" data-dl="portugues" data-name="PORTUGUES.md">PORTUGUES.md</button>
+</div>
+
+<main>
+
+<section class="group" aria-labelledby="g4">
+  <div class="group-h"><span class="n s4">4</span><h2 id="g4">Catástrofe</h2><span class="q">Impede o uso ou destrói trabalho</span></div>
+
+  <article class="f">
+    <div class="badge s4">4</div>
+    <div class="body wide">
+      <h3>Elemento clicável sem semântica</h3>
+      <p>A IA monta botões com <code>div</code> e <code>onclick</code>. Parece certo no mouse. No teclado, não recebe foco, e leitor de tela não anuncia nada. Quem não usa mouse fica sem a função.</p>
+      <p class="fix"><b>Evite:</b> exija <code>button</code> para ações e <code>a</code> para navegação, e teste a tela só com Tab e Enter antes de aceitar.</p>
+      <div class="spec" aria-hidden="true">
+        <div class="pane"><pre class="snip">&lt;div class="btn" onclick="salvar()"&gt;
+  Salvar
+&lt;/div&gt;</pre><div class="cap no">sem foco, sem papel</div></div>
+        <div class="pane"><pre class="snip">&lt;button type="button" class="btn"
+  onclick="salvar()"&gt;
+  Salvar
+&lt;/button&gt;</pre><div class="cap ok">foco e papel de graça</div></div>
+      </div>
+    </div>
+  </article>
+
+  <article class="f">
+    <div class="badge s4">4</div>
+    <div class="body wide">
+      <h3>Ação destrutiva sem desfazer</h3>
+      <p>Excluir remove o item na hora, sem confirmação e sem volta. A IA raramente desenha a saída porque o pedido dizia "botão de excluir", e só.</p>
+      <p class="fix"><b>Evite:</b> escreva a regra no contexto. Toda ação destrutiva pede confirmação ou oferece desfazer por alguns segundos.</p>
+      <div class="spec" aria-hidden="true">
+        <div class="pane"><div class="stage"><div class="row"><span>Consulta, 12/11 às 14h</span><span class="del">Excluir</span></div><p class="muted-note">Ao clicar, a linha some. Não há aviso.</p></div><div class="cap no">sem volta</div></div>
+        <div class="pane"><div class="stage"><div class="toast"><span>Consulta de 12/11 excluída.</span><u>Desfazer</u></div><p class="muted-note">O aviso fica visível por alguns segundos.</p></div><div class="cap ok">com volta</div></div>
+      </div>
+    </div>
+  </article>
+</section>
+
+<section class="group" aria-labelledby="g3">
+  <div class="group-h"><span class="n s3">3</span><h2 id="g3">Grave</h2><span class="q">Atrapalha a tarefa de muita gente</span></div>
+
+  <article class="f">
+    <div class="badge s3">3</div>
+    <div class="body wide">
+      <h3>Só o caminho feliz</h3>
+      <p>A tela existe cheia de dados, com a conexão rápida e o usuário sem erro. Quando a lista vem vazia, a rede cai ou o campo falha, não há nada desenhado.</p>
+      <p class="fix"><b>Evite:</b> peça todos os estados na mesma solicitação. É mais barato do que pedir depois do rascunho pronto.</p>
+      <ul class="states" aria-label="Estados obrigatórios">
+        <li class="done">padrão</li><li>vazio</li><li>carregando</li><li>erro</li><li>sucesso</li><li>desabilitado</li><li>foco</li>
+      </ul>
+    </div>
+  </article>
+
+  <article class="f">
+    <div class="badge s3">3</div>
+    <div class="body wide">
+      <h3>Mensagem de erro genérica</h3>
+      <p>"Algo deu errado." Quem lê não sabe o que aconteceu nem o que fazer.</p>
+      <p class="fix"><b>Evite:</b> exija três coisas na mensagem. O que houve, por quê, e o que fazer agora.</p>
+      <div class="spec" aria-hidden="true">
+        <div class="pane"><div class="stage"><div class="err-bad">Algo deu errado. Tente novamente.</div></div><div class="cap no">sem causa, sem caminho</div></div>
+        <div class="pane"><div class="stage err-ok"><b>Não salvamos o cadastro.</b><div class="field">CPF: 123.456.789-0</div><div class="why">O CPF tem 10 dígitos e precisa de 11. Confira o número e salve de novo.</div></div><div class="cap ok">causa e correção</div></div>
+      </div>
+    </div>
+  </article>
+
+  <article class="f">
+    <div class="badge s3">3</div>
+    <div class="body wide">
+      <h3>Formulário sem rótulo de verdade</h3>
+      <p>O placeholder faz o papel do label e some quando a pessoa começa a digitar. Quem volta ao campo depois de preencher esquece o que ele pedia.</p>
+      <p class="fix"><b>Evite:</b> label sempre visível, formato esperado escrito e validação junto ao campo.</p>
+      <div class="spec" aria-hidden="true">
+        <div class="pane"><div class="stage"><div class="fi">Nome completo</div><div class="fi">Data de nascimento</div></div><div class="cap no">o rótulo desaparece ao digitar</div></div>
+        <div class="pane"><div class="stage"><span class="lbl">Nome completo</span><div class="fi real">Marina Alves Duarte</div><div class="hint">Como está no documento</div><span class="lbl" style="margin-top:8px">Data de nascimento</span><div class="fi real">14/03/1991</div><div class="hint">Dia, mês e ano</div></div><div class="cap ok">rótulo e formato à vista</div></div>
+      </div>
+    </div>
+  </article>
+
+  <article class="f">
+    <div class="badge s3">3</div>
+    <div class="body wide">
+      <h3>Contraste fraco e texto miúdo</h3>
+      <p>Cinza claro sobre branco fica elegante na captura de tela e ilegível ao sol. O modelo escolhe pelo gosto, não por medida.</p>
+      <p class="fix"><b>Evite:</b> registre o mínimo no contexto, que é 4,5:1 para texto e corpo de 16 px. Meça com uma ferramenta.</p>
+      <div class="spec" aria-hidden="true">
+        <div class="pane"><div class="stage"><span class="c-bad">Atendimento de segunda a sexta, das 8h às 18h</span><br><span class="ratio">2,32:1</span></div><div class="cap no">#AAAAAA sobre branco, 12 px</div></div>
+        <div class="pane"><div class="stage"><span class="c-ok">Atendimento de segunda a sexta, das 8h às 18h</span><br><span class="ratio ok">7,00:1</span></div><div class="cap ok">#595959 sobre branco, 16 px</div></div>
+      </div>
+    </div>
+  </article>
+
+  <article class="f">
+    <div class="badge s3">3</div>
+    <div class="body">
+      <h3>Conteúdo inventado</h3>
+      <p>"Revolucione seu fluxo de trabalho." "Mais de 10 mil usuários." Depoimentos de gente que não existe. O texto de vitrine ocupa o lugar do que o produto realmente faz, e os números falsos podem ir ao ar sem que ninguém perceba.</p>
+      <p class="fix"><b>Evite:</b> entregue o conteúdo real e o vocabulário de quem usa. Proíba métrica sem fonte e marque todo exemplo como exemplo.</p>
+    </div>
+  </article>
+
+  <article class="f">
+    <div class="badge s3">3</div>
+    <div class="body">
+      <h3>Responsivo de fachada</h3>
+      <p>Funciona em 1440 px e quebra em 390 px. A tabela estoura a tela, o botão sai do quadro, o texto é cortado. O modelo não vê o resultado, então não percebe.</p>
+      <p class="fix"><b>Evite:</b> exija captura em duas larguras, 390 e 1280. Rolagem horizontal só dentro de tabelas e blocos de código.</p>
+    </div>
+  </article>
+</section>
+
+<section class="group" aria-labelledby="g2">
+  <div class="group-h"><span class="n s2">2</span><h2 id="g2">Pequeno</h2><span class="q">Incomoda e cansa, mas não trava</span></div>
+
+  <article class="f">
+    <div class="badge s2">2</div>
+    <div class="body wide">
+      <h3>O mesmo card para tudo</h3>
+      <p>Três caixas arredondadas com ícone, título e uma frase. Uma comparação vira a mesma caixa que uma lista e que um texto.</p>
+      <p class="fix"><b>Evite:</b> deixe o conteúdo decidir a forma. Tabela para comparar, lista para escanear, parágrafo para explicar.</p>
+      <div class="spec" aria-hidden="true">
+        <div class="pane"><div class="stage"><div class="tri"><div><i></i><b>Rápido</b><span>Ganhe tempo no dia a dia</span></div><div><i></i><b>Seguro</b><span>Seus dados protegidos</span></div><div><i></i><b>Escalável</b><span>Cresce com você</span></div></div></div><div class="cap no">três adjetivos em caixas</div></div>
+        <div class="pane"><div class="stage"><table class="mini"><tr><th>Plano</th><th>Consultas</th><th>Lembrete</th></tr><tr><td>Básico</td><td>50 por mês</td><td>Não</td></tr><tr><td>Clínica</td><td>500 por mês</td><td>WhatsApp</td></tr></table></div><div class="cap ok">uma tabela que compara</div></div>
+      </div>
+    </div>
+  </article>
+
+  <article class="f">
+    <div class="badge s2">2</div>
+    <div class="body">
+      <h3>Tipografia padrão e hierarquia plana</h3>
+      <p>Uma só fonte neutra em tudo, títulos e corpo com tamanhos parecidos, negrito para qualquer ênfase. A tela inteira tem o mesmo peso e o olho não sabe onde começar.</p>
+      <p class="fix"><b>Evite:</b> fixe o par de fontes e a escala em <code>DESIGN.md</code>. Exija um foco principal por tela, com pelo menos três níveis claros.</p>
+    </div>
+  </article>
+
+  <article class="f">
+    <div class="badge s2">2</div>
+    <div class="body wide">
+      <h3>Valores mágicos</h3>
+      <p>Um azul aqui, outro azulzinho ali. O modelo reescreve a cor a cada componente, e os pequenos desvios se acumulam até a interface parecer costurada.</p>
+      <p class="fix"><b>Evite:</b> todo valor visual sai de variável. Cor literal fora de <code>:root</code> vira defeito de revisão.</p>
+      <div class="spec" aria-hidden="true">
+        <div class="pane"><pre class="snip">.cta   { background: #3b82f6; }
+.link  { color: #3a80f4; }
+.badge { background: #3d84f7; }</pre><div class="cap no">três azuis quase iguais</div></div>
+        <div class="pane"><pre class="snip">:root  { --action: #2563eb; }
+.cta   { background: var(--action); }
+.link  { color: var(--action); }</pre><div class="cap ok">uma fonte da verdade</div></div>
+      </div>
+    </div>
+  </article>
+
+  <article class="f">
+    <div class="badge s2">2</div>
+    <div class="body">
+      <h3>Dashboard decorativo</h3>
+      <p>Seis tiles de número grande, um gráfico com dados aleatórios e cores categóricas sem significado. Parece análise, mas ninguém sabe de onde saiu cada valor.</p>
+      <p class="fix"><b>Evite:</b> resumo antes do detalhe, origem e data em cada número, e cor semântica reservada para estado (bom, atenção, crítico).</p>
+    </div>
+  </article>
+</section>
+
+<section class="group" aria-labelledby="g1">
+  <div class="group-h"><span class="n s1">1</span><h2 id="g1">Cosmético</h2><span class="q">É o que todo mundo nota primeiro</span></div>
+
+  <article class="f">
+    <div class="badge s1">1</div>
+    <div class="body wide">
+      <h3>Gradiente roxo e vidro fosco</h3>
+      <p>É o primeiro sinal de slop e o que menos prejudica quem usa. Mesmo assim vale cortar, porque entrega a falta de decisão logo no primeiro olhar.</p>
+      <p class="fix"><b>Evite:</b> defina de 4 a 6 tokens de cor em <code>DESIGN.md</code> e liste o gradiente padrão como proibido.</p>
+      <div class="spec" aria-hidden="true">
+        <div class="pane"><div class="hero-bad"><h4>Revolucione seu fluxo de trabalho</h4><p>A plataforma all-in-one que leva sua equipe ao próximo nível</p><span class="pill">Começar agora</span><small>+10 mil usuários satisfeitos</small></div><div class="cap no">roxo, vidro, promessa vaga</div></div>
+        <div class="pane"><div class="stage hero-ok"><h4>Agenda de consultas</h4><p>Confirme, remarque ou cancele sem ligar. Lembrete no WhatsApp 24 horas antes.</p><span class="btn">Marcar consulta</span><small>Atendimento de segunda a sexta, 8h às 18h</small></div><div class="cap ok">diz o que faz, para quem</div></div>
+      </div>
+    </div>
+  </article>
+
+  <article class="f">
+    <div class="badge s1">1</div>
+    <div class="body wide">
+      <h3>Emoji no lugar de ícone</h3>
+      <p>Foguete nos títulos, check verde nas listas, brilho em tudo que é "novo". O desenho muda de acordo com o sistema de quem abre a página.</p>
+      <p class="fix"><b>Evite:</b> fixe uma única biblioteca de ícones e proíba emoji em interface.</p>
+      <div class="spec" aria-hidden="true">
+        <div class="pane"><div class="stage"><ul class="ul"><li>🚀 Lembretes automáticos</li><li>✅ Confirmação em um toque</li><li>✨ Histórico do paciente</li></ul></div><div class="cap no">emoji como marcador</div></div>
+        <div class="pane"><div class="stage"><ul class="ul">
+          <li><svg viewBox="0 0 24 24"><path d="M12 7v5l3 2"/><circle cx="12" cy="12" r="9"/></svg>Lembretes automáticos</li>
+          <li><svg viewBox="0 0 24 24"><path d="M5 12l5 5 9-10"/></svg>Confirmação em um toque</li>
+          <li><svg viewBox="0 0 24 24"><path d="M6 3h9l4 4v14H6z"/><path d="M14 3v5h5"/></svg>Histórico do paciente</li></ul></div><div class="cap ok">um conjunto, um traço</div></div>
+      </div>
+    </div>
+  </article>
+
+  <article class="f">
+    <div class="badge s1">1</div>
+    <div class="body wide">
+      <h3>Tudo centralizado, abertura de tela cheia</h3>
+      <p>Parágrafos longos centralizados e um topo de 100vh que empurra o conteúdo real para fora do primeiro quadro. O texto centralizado cansa a leitura depois de duas linhas.</p>
+      <p class="fix"><b>Evite:</b> alinhamento à esquerda para ler, linha perto de 65 caracteres, topo do tamanho do conteúdo.</p>
+      <div class="spec" aria-hidden="true">
+        <div class="pane">
+          <div class="ctr-bad">
+            <h4>Bem-vindo à nova era da gestão de consultas</h4>
+            <p>Nossa plataforma foi pensada para simplificar a rotina da sua clínica, reduzindo faltas, organizando horários e conectando pacientes e profissionais em um só lugar, de forma simples, moderna e intuitiva para toda a equipe.</p>
+            <span class="pill2">Saiba mais</span>
+          </div>
+          <div class="fold">dobra da tela: o conteúdo real começa abaixo</div>
+          <div class="below">Horários disponíveis hoje<br>Tabela de preços<br>Como cancelar</div>
+          <div class="cap no">texto centralizado e abertura enorme</div>
+        </div>
+        <div class="pane">
+          <div class="ctr-ok">
+            <h4>Agenda de consultas</h4>
+            <p>Confirme, remarque ou cancele sem ligar. O lembrete chega por WhatsApp 24 horas antes e reduz as faltas.</p>
+          </div>
+          <div class="fold">dobra da tela</div>
+          <div class="below ok">
+            <b>Horários disponíveis hoje</b><br>
+            09h30 · 11h00 · 15h45<br>
+            <span>Tabela de preços · Como cancelar</span>
+          </div>
+          <div class="cap ok">à esquerda, e o conteúdo já aparece</div>
+        </div>
+      </div>
+    </div>
+  </article>
+</section>
+
+<section class="group" aria-labelledby="ginf">
+  <div class="group-h"><span class="n ia">INF</span><h2 id="ginf">Arquitetura da informação</h2><span class="q">A estrutura do template, não a do assunto</span></div>
+  <p class="img-note">Arquitetura da informação é como o conteúdo é organizado, nomeado e navegado. A IA monta telas bem acabadas com a estrutura de um template genérico, e a estrutura do assunto fica de fora. Para validar a sua, use card sorting e teste de árvore com pessoas reais. Os exemplos usam uma clínica fictícia.</p>
+
+  <article class="f">
+    <div class="badge s3">3</div>
+    <div class="body wide">
+      <h3>Rótulos de marketing na navegação</h3>
+      <p>A IA nomeia menus com palavras de vitrine: Soluções, Plataforma, Insights, Recursos. Quem chega não sabe o que há atrás de cada uma, e o que deveria ser caminho vira adivinhação.</p>
+      <p class="fix"><b>Evite:</b> nomeie cada item pela tarefa ou pelo conteúdo, com o vocabulário de quem usa. Pergunte de cada rótulo: o que encontro aqui?</p>
+      <div class="spec" aria-hidden="true">
+        <div class="pane"><div class="stage"><div class="navrow"><span class="logo">Clínica</span><span class="i">Soluções</span><span class="i">Plataforma</span><span class="i">Insights</span><span class="i">Recursos</span></div></div><div class="cap no">nomes de vitrine</div></div>
+        <div class="pane"><div class="stage"><div class="navrow"><span class="logo">Clínica</span><span class="i">Marcar consulta</span><span class="i">Minhas consultas</span><span class="i">Preços</span><span class="i">Ajuda</span></div></div><div class="cap ok">nomes de tarefa</div></div>
+      </div>
+    </div>
+  </article>
+
+  <article class="f">
+    <div class="badge s3">3</div>
+    <div class="body wide">
+      <h3>Ordem de template, não ordem da pergunta</h3>
+      <p>Hero, três recursos, depoimentos, logos, planos, perguntas, chamada final. A sequência serve a qualquer produto, então não serve a nenhum. Quem chega com uma pergunta atravessa o template inteiro para achar a resposta.</p>
+      <p class="fix"><b>Evite:</b> liste as três perguntas mais comuns de quem chega e ordene a página por elas. A resposta mais procurada vem primeiro.</p>
+      <div class="spec" aria-hidden="true">
+        <div class="pane"><div class="stage"><div class="wf"><div class="tall">Hero com slogan</div><div>Recursos (3 cards)</div><div>Depoimentos</div><div>Logos de clientes</div><div>Planos</div><div>Perguntas frequentes</div><div>Chamada final</div></div></div><div class="cap no">a resposta está no fim</div></div>
+        <div class="pane"><div class="stage"><div class="wf"><div class="hot">Horários disponíveis hoje</div><div>Como marcar e cancelar</div><div>Preços</div><div>Onde fica e como chegar</div><div>Contato</div></div></div><div class="cap ok">ordem pela pergunta de quem chega</div></div>
+      </div>
+    </div>
+  </article>
+
+  <article class="f">
+    <div class="badge s3">3</div>
+    <div class="body wide">
+      <h3>Sem orientação de localização</h3>
+      <p>Nada indica onde a pessoa está: menu sem item ativo, sem trilha de navegação, título genérico como "Detalhes". Em telas profundas, é fácil se perder.</p>
+      <p class="fix"><b>Evite:</b> marque o item ativo, use trilha de navegação a partir do terceiro nível e dê a cada página um título que diga o assunto.</p>
+      <div class="spec" aria-hidden="true">
+        <div class="pane"><div class="stage"><div class="navrow"><span class="i">Início</span><span class="i">Consultas</span><span class="i">Pacientes</span><span class="i">Ajuda</span></div><div class="ptitle" style="margin-top:22px">Detalhes</div></div><div class="cap no">onde estou?</div></div>
+        <div class="pane"><div class="stage"><div class="navrow"><span class="i">Início</span><span class="i on">Consultas</span><span class="i">Pacientes</span><span class="i">Ajuda</span></div><div class="crumbs">Consultas › 12 de novembro</div><div class="ptitle">Consulta de 12/11, às 14h</div></div><div class="cap ok">item ativo, trilha e título</div></div>
+      </div>
+    </div>
+  </article>
+
+  <article class="f">
+    <div class="badge s3">3</div>
+    <div class="body wide">
+      <h3>Títulos fora de hierarquia</h3>
+      <p>Dois h1, salto de h2 para h4, nível escolhido pelo tamanho visual e não pela estrutura. Leitores de tela e buscadores usam os títulos como índice, e o índice fica quebrado.</p>
+      <p class="fix"><b>Evite:</b> um h1 por página e níveis em sequência, sem pular. O tamanho se resolve em CSS, não trocando o nível do título.</p>
+      <div class="spec" aria-hidden="true">
+        <div class="pane"><div class="stage"><div class="outline"><div data-l="h1">Agenda de consultas</div><div data-l="h1" class="x">Bem-vindo (segundo h1)</div><div data-l="h3" class="x">Como funciona (pulou o h2)</div><div data-l="h2" style="padding-left:14px">Preços</div><div data-l="h4" class="x" style="padding-left:28px">Perguntas (pulou o h3)</div></div></div><div class="cap no">índice quebrado</div></div>
+        <div class="pane"><div class="stage"><div class="outline"><div data-l="h1">Agenda de consultas</div><div data-l="h2" style="padding-left:14px">Como funciona</div><div data-l="h2" style="padding-left:14px">Preços</div><div data-l="h3" style="padding-left:28px">Plano básico</div><div data-l="h3" style="padding-left:28px">Plano clínica</div><div data-l="h2" style="padding-left:14px">Perguntas frequentes</div></div></div><div class="cap ok">níveis em sequência</div></div>
+      </div>
+    </div>
+  </article>
+
+  <article class="f">
+    <div class="badge s2">2</div>
+    <div class="body wide">
+      <h3>Tudo no mesmo nível</h3>
+      <p>Doze itens de menu com o mesmo peso. Sem agrupamento, a pessoa lê a lista inteira para achar um item.</p>
+      <p class="fix"><b>Evite:</b> agrupe por tarefa, com rótulo de grupo, e leve o que raramente se usa para um nível abaixo.</p>
+      <div class="spec" aria-hidden="true">
+        <div class="pane"><div class="stage"><div class="chipwrap"><span>Início</span><span>Consultas</span><span>Pacientes</span><span>Agenda</span><span>Relatórios</span><span>Financeiro</span><span>Estoque</span><span>Mensagens</span><span>Equipe</span><span>Configurações</span><span>Ajuda</span><span>Perfil</span></div></div><div class="cap no">doze itens iguais</div></div>
+        <div class="pane"><div class="stage grp"><h5>Atendimento</h5><div class="chipwrap"><span>Agenda</span><span>Consultas</span><span>Pacientes</span></div><h5>Gestão</h5><div class="chipwrap"><span>Relatórios</span><span>Financeiro</span><span>Estoque</span></div><h5>Conta</h5><div class="chipwrap"><span>Equipe</span><span>Configurações</span><span>Ajuda</span></div></div><div class="cap ok">grupos com rótulo</div></div>
+      </div>
+    </div>
+  </article>
+
+  <article class="f">
+    <div class="badge s2">2</div>
+    <div class="body wide">
+      <h3>Mesma coisa, vários nomes</h3>
+      <p>O botão de cancelar aparece como Cancelar, Desmarcar e Remover agendamento em telas diferentes. A IA varia as palavras porque variar parece mais natural, mas para quem usa são três ações.</p>
+      <p class="fix"><b>Evite:</b> mantenha um glossário no contexto, com um nome por conceito, e proíba sinônimos na interface.</p>
+      <div class="spec" aria-hidden="true">
+        <div class="pane"><div class="stage"><div class="where"><div class="x"><i>Agenda</i><b>Cancelar</b></div><div class="x"><i>Detalhe da consulta</i><b>Desmarcar</b></div><div class="x"><i>Menu de ações</i><b>Remover agendamento</b></div></div></div><div class="cap no">três nomes, uma ação</div></div>
+        <div class="pane"><div class="stage"><div class="where"><div><i>Agenda</i><b>Cancelar consulta</b></div><div><i>Detalhe da consulta</i><b>Cancelar consulta</b></div><div><i>Menu de ações</i><b>Cancelar consulta</b></div></div></div><div class="cap ok">um nome em todo lugar</div></div>
+      </div>
+    </div>
+  </article>
+
+  <article class="f">
+    <div class="badge s2">2</div>
+    <div class="body wide">
+      <h3>Links que não dizem para onde levam</h3>
+      <p>Vários "Saiba mais" na mesma tela. Quem navega por leitor de tela ouve a lista de links como "Saiba mais, Saiba mais, Saiba mais". Quem lê com os olhos precisa subir até o título para entender o destino.</p>
+      <p class="fix"><b>Evite:</b> o texto do link diz o destino ou a ação e se entende fora de contexto.</p>
+      <div class="spec" aria-hidden="true">
+        <div class="pane"><div class="stage"><div class="lnklist"><div><b>Planos e valores</b><span class="lnk">Saiba mais</span></div><div><b>Cancelamento</b><span class="lnk">Saiba mais</span></div><div><b>Para clínicas</b><span class="lnk">Saiba mais</span></div></div></div><div class="cap no">três links idênticos</div></div>
+        <div class="pane"><div class="stage"><div class="lnklist"><div><b>Planos e valores</b><span class="lnk">Ver preços dos planos</span></div><div><b>Cancelamento</b><span class="lnk">Como cancelar uma consulta</span></div><div><b>Para clínicas</b><span class="lnk">Conhecer o plano para clínicas</span></div></div></div><div class="cap ok">o link diz o destino</div></div>
+      </div>
+    </div>
+  </article>
+
+  <article class="f">
+    <div class="badge s2">2</div>
+    <div class="body">
+      <h3>Campos na ordem do banco de dados</h3>
+      <p>Formulários gerados a partir de um esquema trazem os campos na ordem das colunas, não na ordem em que a pessoa pensa. Nome, e-mail, data de criação, plano, telefone, tudo em fila, às vezes com campos técnicos expostos.</p>
+      <p class="fix"><b>Evite:</b> agrupe os campos por assunto (seus dados, contato, plano), na ordem em que a pessoa responderia, e deixe os campos técnicos fora da tela.</p>
+    </div>
+  </article>
+</section>
+
+<section class="group" aria-labelledby="gpt">
+  <div class="group-h"><span class="n ia">PT</span><h2 id="gpt">Português gerado por IA</h2><span class="q">Erros pequenos que derrubam a confiança</span></div>
+  <p class="img-note">Texto de interface é o que a pessoa lê primeiro e o que o modelo menos revisa. Os padrões abaixo vêm da observação geral do que modelos costumam produzir, sem medição própria. Confira nas suas saídas. Os exemplos são para um produto em português do Brasil.</p>
+
+  <div class="map">
+    <table>
+      <thead><tr><th>Família</th><th>O que procurar</th><th>Como conferir</th></tr></thead>
+      <tbody>
+        <tr><td>Léxico</td><td>Palavras inventadas, falsos cognatos, termos de Portugal, pares trocados, pleonasmos</td><td>VOLP, dicionário e glossário do produto</td></tr>
+        <tr><td>Ortografia</td><td>Acentos, codificação, maiúsculas à moda inglesa</td><td>Leitura da tela e inspeção do arquivo</td></tr>
+        <tr><td>Pontuação</td><td>Vírgula entre sujeito e predicado, vírgula que muda o sentido, vírgula de série</td><td>Achar sujeito e verbo e ver se algo os separa</td></tr>
+        <tr><td>Concordância</td><td>Haver e fazer, "se" apassivador, "um dos que", crase, plural</td><td>Corretor gramatical e leitura do verbo contra o sujeito</td></tr>
+        <tr><td>Estilo</td><td>Tratamento, gênero, gerundismo, texto burocrático, clichês</td><td>Leitura em voz alta</td></tr>
+        <tr><td>Formatos</td><td>Moeda, data, hora, número</td><td>Funções de formatação do idioma</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="tip">
+    <span class="tag">DICA</span>
+    <p>Em dúvida sobre uma palavra, consulte o <a href="https://www.academia.org.br/nossa-lingua/busca-no-vocabulario">VOLP</a>, o Vocabulário Ortográfico da Língua Portuguesa, da Academia Brasileira de Letras. É simples e rápido: digite a palavra no campo de busca e veja se ela está registrada. Se não aparecer, desconfie e confirme em um dicionário antes de usar. O VOLP traz grafia e classe gramatical, não o significado.</p>
+  </div>
+
+  <article class="f">
+    <div class="badge s3">3</div>
+    <div class="body wide">
+      <h3>Acentos perdidos e codificação quebrada</h3>
+      <p>Textos de interface sem acento ("nao", "voce") ou salvos na codificação errada ("NÃ£o"). Aparece quando a string passa por um ambiente que só aceita ASCII ou quando o arquivo não está em UTF-8. O texto fica feio e, no segundo caso, ilegível.</p>
+      <p class="fix"><b>Evite:</b> exija arquivos em UTF-8 com o charset declarado e revise a acentuação das strings de interface antes de aceitar.</p>
+      <div class="spec" aria-hidden="true">
+        <div class="pane"><div class="stage"><div class="lines"><div class="x">Nao foi possivel salvar. Voce esta sem conexao.</div><div class="x">NÃ£o foi possÃ­vel salvar a consulta.</div></div></div><div class="cap no">sem acento e com codificação quebrada</div></div>
+        <div class="pane"><div class="stage"><div class="lines"><div>Não foi possível salvar. Você está sem conexão.</div><div>Não foi possível salvar a consulta.</div></div></div><div class="cap ok">UTF-8 e acentuação correta</div></div>
+      </div>
+    </div>
+  </article>
+
+  <article class="f">
+    <div class="badge s3">3</div>
+    <div class="body wide">
+      <h3>Palavras inventadas</h3>
+      <p>O modelo cria palavras que soam plausíveis juntando radicais e sufixos. "Emplacação" é um caso típico: parece o substantivo natural de "emplacar", mas o Priberam registra "emplacamento", e não encontrei "emplacação" entre as entradas. O mesmo vale para "atendimentar" e "otimizacional". Neologismo pode ser escolha de marca, mas nesse caso é decisão e não acidente.</p>
+      <p class="fix"><b>Evite:</b> peça só palavras dicionarizadas e uma lista das que o modelo tiver dúvida. Ao derivar substantivo de verbo, confira se ele existe. Consulte o VOLP, da Academia Brasileira de Letras, ou um dicionário como o Michaelis ou o Priberam.</p>
+      <div class="spec" aria-hidden="true">
+        <div class="pane"><div class="stage"><div class="lines"><div class="x"><b style="color:#b3261e">Emplacação</b> do veículo concluída.</div><div class="x"><b style="color:#b3261e">Atendimentar</b> seus pacientes ficou fácil.</div><div class="x">Uma experiência <b style="color:#b3261e">otimizacional</b> completa.</div></div></div><div class="cap no">palavras que não constam nos dicionários</div></div>
+        <div class="pane"><div class="stage"><div class="lines"><div>Emplacamento do veículo concluído.</div><div>Atender seus pacientes ficou fácil.</div><div>Uma experiência otimizada.</div></div></div><div class="cap ok">palavras registradas</div></div>
+      </div>
+    </div>
+  </article>
+
+  <article class="f">
+    <div class="badge s3">3</div>
+    <div class="body wide">
+      <h3>Formatos à moda americana</h3>
+      <p>Preço com vírgula nos milhares e ponto nos centavos, data com o mês na frente, horário com AM e PM. O modelo mistura convenções americanas em texto brasileiro, e o erro vai além do estético: o valor, o dia ou a hora podem ser lidos errado.</p>
+      <p class="fix"><b>Evite:</b> defina os formatos pt-BR no contexto (R$ 1.299,90; 25/11/2026; 14h30) e use as funções de formatação de data e moeda do idioma (por exemplo, Intl) em vez de montar o texto à mão.</p>
+      <div class="spec" aria-hidden="true">
+        <div class="pane"><div class="stage"><div class="lines"><div class="x">Plano clínica: R$ 1,299.90</div><div class="x">Consulta em 11/25/2026</div><div class="x">Horário: 2:30 PM</div></div></div><div class="cap no">convenção americana</div></div>
+        <div class="pane"><div class="stage"><div class="lines"><div>Plano clínica: R$ 1.299,90</div><div>Consulta em 25/11/2026</div><div>Horário: 14h30</div></div></div><div class="cap ok">formato brasileiro</div></div>
+      </div>
+    </div>
+  </article>
+
+  <article class="f">
+    <div class="badge s2">2</div>
+    <div class="body wide">
+      <h3>Vírgula entre sujeito e predicado</h3>
+      <p>"Nossa plataforma, permite marcar consultas." A vírgula única separa o que a sintaxe junta: sujeito e verbo, ou verbo e complemento. Uma intercalação leva duas vírgulas, uma de cada lado.</p>
+      <p class="fix"><b>Evite:</b> escreva a regra no contexto: sem vírgula única entre sujeito e verbo, nem entre verbo e complemento. Passe um corretor gramatical antes de publicar.</p>
+      <div class="spec" aria-hidden="true">
+        <div class="pane"><div class="stage"><div class="lines"><div class="x">Nossa plataforma de agendamento<b style="color:#b3261e">,</b> permite marcar consultas.</div><div class="x">Quem chega cedo<b style="color:#b3261e">,</b> ganha prioridade.</div><div class="x">Você precisa<b style="color:#b3261e">,</b> confirmar o e-mail.</div></div></div><div class="cap no">vírgula no lugar errado</div></div>
+        <div class="pane"><div class="stage"><div class="lines"><div>Nossa plataforma de agendamento permite marcar consultas.</div><div>Quem chega cedo ganha prioridade.</div><div>Você precisa confirmar o e-mail.</div></div></div><div class="cap ok">sem vírgula entre as partes</div></div>
+      </div>
+    </div>
+  </article>
+
+  <article class="f">
+    <div class="badge s2">2</div>
+    <div class="body wide">
+      <h3>Vírgula que muda o sentido</h3>
+      <p>A mesma frase muda de sentido com e sem vírgulas. "Os pacientes, que chegaram cedo, foram atendidos" diz que todos chegaram cedo. Sem as vírgulas, só foram atendidos os que chegaram cedo. O modelo escolhe uma das duas sem saber qual você quis dizer.</p>
+      <p class="fix"><b>Evite:</b> quando a frase tiver oração com "que", defina o sentido pretendido e use a vírgula que o confirma. A restritiva não leva vírgula, e a explicativa leva.</p>
+      <div class="spec" aria-hidden="true">
+        <div class="pane"><div class="stage"><div class="lines"><div>Os pacientes, que chegaram cedo, foram atendidos.</div><div style="color:#55554f;border-style:dashed">Sentido: todos chegaram cedo e todos foram atendidos.</div></div></div><div class="cap">com vírgulas: oração explicativa</div></div>
+        <div class="pane"><div class="stage"><div class="lines"><div>Os pacientes que chegaram cedo foram atendidos.</div><div style="color:#55554f;border-style:dashed">Sentido: só foram atendidos os que chegaram cedo.</div></div></div><div class="cap">sem vírgulas: oração restritiva</div></div>
+      </div>
+    </div>
+  </article>
+
+  <article class="f">
+    <div class="badge s2">2</div>
+    <div class="body wide">
+      <h3>Vírgula de série à moda inglesa</h3>
+      <p>O modelo põe vírgula antes do "e" que fecha a lista, como no inglês. Em português, a enumeração não leva vírgula antes do "e".</p>
+      <p class="fix"><b>Evite:</b> escreva a regra no contexto: sem vírgula antes do "e" que fecha uma enumeração.</p>
+      <div class="spec" aria-hidden="true">
+        <div class="pane"><div class="stage"><div class="lines"><div class="x">Marque consultas, exames<b style="color:#b3261e">,</b> e retornos.</div><div class="x">Aceitamos Pix, boleto<b style="color:#b3261e">,</b> e cartão.</div></div></div><div class="cap no">vírgula antes do "e"</div></div>
+        <div class="pane"><div class="stage"><div class="lines"><div>Marque consultas, exames e retornos.</div><div>Aceitamos Pix, boleto e cartão.</div></div></div><div class="cap ok">sem vírgula antes do "e"</div></div>
+      </div>
+    </div>
+  </article>
+
+  <article class="f">
+    <div class="badge s2">2</div>
+    <div class="body wide">
+      <h3>Crase, regência e concordância</h3>
+      <p>Erros que muita gente comete e que o modelo repete em escala: "à partir de", "haviam dez vagas", "fazem dois anos". Cada um é pequeno, e juntos tiram a credibilidade de um texto institucional.</p>
+      <p class="fix"><b>Evite:</b> registre as regras no contexto ("a partir de" não leva crase; haver e fazer no sentido de existir ou de tempo decorrido ficam no singular) e passe um corretor gramatical antes de publicar.</p>
+      <div class="spec" aria-hidden="true">
+        <div class="pane"><div class="stage"><div class="lines"><div class="x"><b style="color:#b3261e">À partir</b> de amanhã, o horário muda.</div><div class="x"><b style="color:#b3261e">Haviam</b> dez vagas livres.</div><div class="x"><b style="color:#b3261e">Fazem</b> dois anos que a clínica abriu.</div></div></div><div class="cap no">crase e concordância erradas</div></div>
+        <div class="pane"><div class="stage"><div class="lines"><div>A partir de amanhã, o horário muda.</div><div>Havia dez vagas livres.</div><div>Faz dois anos que a clínica abriu.</div></div></div><div class="cap ok">norma respeitada</div></div>
+      </div>
+    </div>
+  </article>
+
+  <article class="f">
+    <div class="badge s2">2</div>
+    <div class="body wide">
+      <h3>Concordância com "se" e com "um dos que"</h3>
+      <p>Com o "se" apassivador, o verbo concorda com o sujeito. O modelo costuma deixar no singular. O mesmo acontece depois de "um dos que".</p>
+      <p class="fix"><b>Evite:</b> registre as duas regras: com "se" apassivador, o verbo concorda com o sujeito; depois de "um dos que", o verbo vai para o plural na norma-padrão.</p>
+      <div class="spec" aria-hidden="true">
+        <div class="pane"><div class="stage"><div class="lines"><div class="x"><b style="color:#b3261e">Aceita-se</b> cartões de crédito.</div><div class="x">Esse é um dos erros que mais <b style="color:#b3261e">ocorre</b>.</div><div class="x"><b style="color:#b3261e">Vende-se</b> ingressos.</div></div></div><div class="cap no">verbo no singular</div></div>
+        <div class="pane"><div class="stage"><div class="lines"><div>Aceitam-se cartões de crédito.</div><div>Esse é um dos erros que mais ocorrem.</div><div>Vendem-se ingressos.</div></div></div><div class="cap ok">verbo concorda com o sujeito</div></div>
+      </div>
+    </div>
+  </article>
+
+  <article class="f">
+    <div class="badge s2">2</div>
+    <div class="body wide">
+      <h3>Pares que se confundem</h3>
+      <p>Por que e porque, onde e aonde, mal e mau, há e a. São pares que o modelo troca quando a frase é montada às pressas, principalmente em perguntas e mensagens curtas.</p>
+      <p class="fix"><b>Evite:</b> liste os pares no contexto (por que, porque, por quê, porquê; onde e aonde; mal e mau; há e a) e passe um corretor gramatical.</p>
+      <div class="spec" aria-hidden="true">
+        <div class="pane"><div class="stage"><div class="lines"><div class="x"><b style="color:#b3261e">Porque</b> o código não chegou?</div><div class="x"><b style="color:#b3261e">Aonde</b> fica a clínica?</div><div class="x">O formulário foi preenchido <b style="color:#b3261e">mau</b>.</div></div></div><div class="cap no">pares trocados</div></div>
+        <div class="pane"><div class="stage"><div class="lines"><div>Por que o código não chegou?</div><div>Onde fica a clínica?</div><div>O formulário foi preenchido mal.</div></div></div><div class="cap ok">cada palavra no seu lugar</div></div>
+      </div>
+    </div>
+  </article>
+
+  <article class="f">
+    <div class="badge s2">2</div>
+    <div class="body wide">
+      <h3>Maiúsculas à moda inglesa</h3>
+      <p>No inglês, títulos levam todas as palavras capitalizadas e dias e meses começam com maiúscula. Em português, a maiúscula fica para o início da frase e para os nomes próprios.</p>
+      <p class="fix"><b>Evite:</b> maiúscula só no início de frase e em nomes próprios. Dias da semana e meses em minúscula.</p>
+      <div class="spec" aria-hidden="true">
+        <div class="pane"><div class="stage"><div class="lines"><div class="x">Como Evitar Erros De Design</div><div class="x">Consulta na Segunda-feira, 25 de Novembro</div><div class="x">Meu Perfil e Minhas Consultas</div></div></div><div class="cap no">capitalização do inglês</div></div>
+        <div class="pane"><div class="stage"><div class="lines"><div>Como evitar erros de design</div><div>Consulta na segunda-feira, 25 de novembro</div><div>Meu perfil e minhas consultas</div></div></div><div class="cap ok">maiúscula só onde cabe</div></div>
+      </div>
+    </div>
+  </article>
+
+  <article class="f">
+    <div class="badge s2">2</div>
+    <div class="body wide">
+      <h3>Português de Portugal em produto brasileiro</h3>
+      <p>O modelo mistura as duas variantes: "utilizador", "ecrã", "guardar", "telemóvel", "estou a carregar". Cada palavra é correta em Portugal e soa estrangeira para quem usa o produto no Brasil.</p>
+      <p class="fix"><b>Evite:</b> declare pt-BR no contexto e mantenha um glossário (usuário, tela, salvar, celular). Gerúndio ("carregando") no lugar de "a carregar".</p>
+      <div class="spec" aria-hidden="true">
+        <div class="pane"><div class="stage"><div class="lines"><div class="x">Bem-vindo, utilizador</div><div class="x">Está a carregar o ecrã inicial…</div><div class="x">Guardar alterações no telemóvel</div></div></div><div class="cap no">variante misturada</div></div>
+        <div class="pane"><div class="stage"><div class="lines"><div>Bem-vindo, usuário</div><div>Carregando a tela inicial…</div><div>Salvar alterações no celular</div></div></div><div class="cap ok">pt-BR coerente</div></div>
+      </div>
+    </div>
+  </article>
+
+  <article class="f">
+    <div class="badge s2">2</div>
+    <div class="body wide">
+      <h3>Tradução literal e falsos cognatos</h3>
+      <p>O texto é escrito pensando em inglês e passado para o português. "Realizar" no sentido de perceber, "eventualmente" no sentido de por fim, "pretender" no sentido de fingir. O leitor entende outra coisa.</p>
+      <p class="fix"><b>Evite:</b> peça texto escrito em português, não traduzido. Revise os falsos cognatos mais comuns (realizar, eventualmente, pretender, atualmente) e use os nomes de botão da convenção do seu domínio.</p>
+      <div class="spec" aria-hidden="true">
+        <div class="pane"><div class="stage"><div class="lines"><div class="x">Você vai realizar que o prazo mudou.</div><div class="x">Eventualmente você receberá o código.</div><div class="x">Você pretende ser o responsável?</div></div></div><div class="cap no">calcos do inglês</div></div>
+        <div class="pane"><div class="stage"><div class="lines"><div>Você vai perceber que o prazo mudou.</div><div>Em instantes você receberá o código.</div><div>Você quer ser o responsável?</div></div></div><div class="cap ok">português de origem</div></div>
+      </div>
+    </div>
+  </article>
+
+  <article class="f">
+    <div class="badge s2">2</div>
+    <div class="body wide">
+      <h3>Plural montado por template</h3>
+      <p>O texto é escrito com o plural do exemplo e o código só troca o número. Sai "1 consultas" e "0 notificações novas", que soa mecânico.</p>
+      <p class="fix"><b>Evite:</b> use regras de plural (Intl.PluralRules ou uma biblioteca de i18n), teste com 0, 1 e 2 e escreva uma frase própria para o zero.</p>
+      <div class="spec" aria-hidden="true">
+        <div class="pane"><div class="stage"><div class="lines"><div class="x">Você tem 1 consultas agendadas.</div><div class="x">Você tem 0 notificações novas.</div></div></div><div class="cap no">plural fixo</div></div>
+        <div class="pane"><div class="stage"><div class="lines"><div>Você tem 1 consulta agendada.</div><div>Você não tem notificações novas.</div></div></div><div class="cap ok">plural e zero tratados</div></div>
+      </div>
+    </div>
+  </article>
+
+  <article class="f">
+    <div class="badge s2">2</div>
+    <div class="body wide">
+      <h3>Tratamento e verbos inconsistentes</h3>
+      <p>Na mesma tela, "você", "tu" e "o senhor". Nos botões, infinitivo ("Salvar") ao lado de imperativo ("Cancele"). Cada frase está certa, e o conjunto parece escrito por três pessoas.</p>
+      <p class="fix"><b>Evite:</b> defina o tratamento (você) e o modo do verbo nos botões em <code>DESIGN.md</code>. Escolha infinitivo ou imperativo e use o mesmo em todo o produto.</p>
+      <div class="spec" aria-hidden="true">
+        <div class="pane"><div class="stage"><div class="lines"><div class="x">Confirme seu e-mail.</div><div class="x">Teu pedido foi enviado.</div><div class="x">O senhor receberá o código.</div></div></div><div class="cap no">três tratamentos</div></div>
+        <div class="pane"><div class="stage"><div class="lines"><div>Confirme seu e-mail.</div><div>Seu pedido foi enviado.</div><div>Você receberá o código.</div></div></div><div class="cap ok">um tratamento</div></div>
+      </div>
+    </div>
+  </article>
+
+  <article class="f">
+    <div class="badge s2">2</div>
+    <div class="body wide">
+      <h3>Marca de gênero com parênteses</h3>
+      <p>Parênteses para marcar gênero viram ruído visual e podem ser lidos de forma estranha por leitores de tela. Há alternativas que dispensam a marca.</p>
+      <p class="fix"><b>Evite:</b> use fórmulas sem marca de gênero (Olá), o nome da pessoa ou um substantivo coletivo.</p>
+      <div class="spec" aria-hidden="true">
+        <div class="pane"><div class="stage"><div class="lines"><div class="x">Bem-vindo(a) de volta!</div><div class="x">Prezado(a) cliente,</div><div class="x">Todos(as) os(as) pacientes</div></div></div><div class="cap no">marca entre parênteses</div></div>
+        <div class="pane"><div class="stage"><div class="lines"><div>Olá de novo, Marina!</div><div>Olá, Marina.</div><div>Pacientes e acompanhantes</div></div></div><div class="cap ok">sem marca de gênero</div></div>
+      </div>
+    </div>
+  </article>
+
+  <article class="f">
+    <div class="badge s2">2</div>
+    <div class="body wide">
+      <h3>Gerundismo</h3>
+      <p>"Vou estar enviando", "vamos estar verificando". A construção alonga a frase e soa a atendimento de telemarketing.</p>
+      <p class="fix"><b>Evite:</b> use o verbo simples: "vou enviar", "vamos verificar".</p>
+      <div class="spec" aria-hidden="true">
+        <div class="pane"><div class="stage"><div class="lines"><div class="x">Vou estar enviando o código.</div><div class="x">Vamos estar verificando seu pedido.</div><div class="x">Você vai estar recebendo um e-mail.</div></div></div><div class="cap no">estar + gerúndio</div></div>
+        <div class="pane"><div class="stage"><div class="lines"><div>Vou enviar o código.</div><div>Vamos verificar seu pedido.</div><div>Você vai receber um e-mail.</div></div></div><div class="cap ok">verbo simples</div></div>
+      </div>
+    </div>
+  </article>
+
+  <article class="f">
+    <div class="badge s2">2</div>
+    <div class="body wide">
+      <h3>Texto burocrático</h3>
+      <p>Voz passiva e nominalização em excesso: o verbo vira substantivo, e quem age some da frase. A tela fica com tom de ofício.</p>
+      <p class="fix"><b>Evite:</b> prefira voz ativa e verbos. O botão diz o que fazer, e a mensagem diz quem fez o quê.</p>
+      <div class="spec" aria-hidden="true">
+        <div class="pane"><div class="stage"><div class="lines"><div class="x">A confirmação do agendamento deve ser realizada pelo usuário.</div><div class="x">Foi efetuado o cancelamento da sua consulta.</div><div class="x">É necessária a realização do cadastro.</div></div></div><div class="cap no">passiva e nominalização</div></div>
+        <div class="pane"><div class="stage"><div class="lines"><div>Confirme seu agendamento.</div><div>Cancelamos sua consulta.</div><div>Cadastre-se para continuar.</div></div></div><div class="cap ok">voz ativa</div></div>
+      </div>
+    </div>
+  </article>
+
+  <article class="f">
+    <div class="badge s2">2</div>
+    <div class="body wide">
+      <h3>Clichês de texto gerado</h3>
+      <p>"No cenário atual", "é importante ressaltar", "revolucione", "mergulhe", "desbloqueie o potencial", travessão em toda frase. É o jeito mais rápido de o leitor perceber que ninguém escreveu o texto.</p>
+      <p class="fix"><b>Evite:</b> liste os clichês como proibidos no contexto, peça frases curtas com sujeito e verbo, conteúdo concreto do produto e leitura em voz alta antes de publicar.</p>
+      <div class="spec" aria-hidden="true">
+        <div class="pane"><div class="stage"><div class="lines"><p class="x" style="padding:8px 9px;border:1px solid #e7b9b5;background:#fdf3f2">No cenário atual, é importante ressaltar que nossa plataforma revoluciona a forma como você gerencia consultas — de maneira simples, rápida e eficiente.</p></div></div><div class="cap no">frase que não diz nada</div></div>
+        <div class="pane"><div class="stage"><div class="lines"><p style="padding:8px 9px;border:1px solid #e3e3df">Marque, remarque e cancele consultas sem ligar para a clínica.</p></div></div><div class="cap ok">diz o que o produto faz</div></div>
+      </div>
+    </div>
+  </article>
+
+  <article class="f">
+    <div class="badge s1">1</div>
+    <div class="body wide">
+      <h3>Pleonasmos</h3>
+      <p>Palavras que repetem o que a anterior já disse: "há dois anos atrás", "subir para cima", "elo de ligação". São pequenos, e mostram um texto que ninguém releu.</p>
+      <p class="fix"><b>Evite:</b> peça texto enxuto e revise as palavras que repetem a ideia da vizinha.</p>
+      <div class="spec" aria-hidden="true">
+        <div class="pane"><div class="stage"><div class="lines"><div class="x">Há dois anos <b style="color:#b3261e">atrás</b> a clínica abriu.</div><div class="x">Clique para <b style="color:#b3261e">subir para cima</b>.</div><div class="x">O <b style="color:#b3261e">elo de ligação</b> entre as telas.</div></div></div><div class="cap no">ideia repetida</div></div>
+        <div class="pane"><div class="stage"><div class="lines"><div>Há dois anos a clínica abriu.</div><div>Clique para subir.</div><div>O elo entre as telas.</div></div></div><div class="cap ok">sem repetição</div></div>
+      </div>
+    </div>
+  </article>
+
+  <h3 class="subh">Como revisar texto gerado em quatro leituras</h3>
+  <p class="img-note">Cada leitura tem um foco, porque ninguém consegue procurar vírgula, palavra inventada e formato de data ao mesmo tempo. Faça na ordem.</p>
+  <div class="how">
+    <div><h3>Leitura 1: sentido, em voz alta</h3><p>Leia em voz alta e pergunte se a frase diz o que o produto faz. Onde você tomou fôlego sem querer, falta ou sobra uma vírgula. Onde você tropeçou, a frase está comprida demais.</p></div>
+    <div><h3>Leitura 2: palavras</h3><p>Marque cada palavra em que você hesitou e confira no <a href="https://www.academia.org.br/nossa-lingua/busca-no-vocabulario">VOLP</a> ou em um dicionário. É assim que se pegam as palavras inventadas, como "emplacação".</p></div>
+    <div><h3>Leitura 3: sintaxe</h3><p>Nas frases longas, ache o sujeito e o verbo. Veja se nada os separa e se concordam. Confira haver, fazer, o "se" apassivador e o "um dos que".</p></div>
+    <div><h3>Leitura 4: formato e consistência</h3><p>Confira moeda, data, hora, tratamento, verbo dos botões, maiúsculas e acentos contra o glossário e o <code>PORTUGUES.md</code>.</p></div>
+    <div><h3>Corretor automático</h3><p>Um corretor gramatical, como o LanguageTool, que tem pt-BR, pega parte dos erros e deixa passar outros. Trate como uma quinta leitura, e não como aprovação.</p></div>
+    <div><h3>Quando chamar um revisor humano</h3><p>Texto para o público externo, material institucional, jurídico ou de marca, e a cada nova versão do glossário. Quem gerou o texto tende a aprovar o que gerou, então a segunda passada vale mais com outra pessoa ou em outra conversa.</p></div>
+  </div>
+</section>
+
+<section class="group" aria-labelledby="gimg">
+  <div class="group-h"><span class="n ia">IA</span><h2 id="gimg">Cuidado com imagem gerada com IA</h2><span class="q">Falhas que só aparecem no zoom</span></div>
+  <p class="img-note">Imagem gerada passa rápido pelo olho. O problema aparece quando alguém dá zoom, lê a placa ou conta os dedos. As ilustrações desta seção foram feitas em código para mostrar cada padrão. Não são imagens reais geradas por IA.</p>
+
+  <article class="f">
+    <div class="badge s3">3</div>
+    <div class="body wide">
+      <h3>Texto dentro da imagem</h3>
+      <p>Geradores erram letras, inventam palavras e repetem sílabas. Numa placa, num rótulo ou num cartaz, o resultado parece texto de longe e vira ruído de perto.</p>
+      <p class="fix"><b>Evite:</b> nunca gere texto dentro da imagem. Gere a cena limpa e escreva o texto depois, em HTML ou na ferramenta de design.</p>
+      <div class="spec" aria-hidden="true">
+        <div class="pane"><div class="flush"><svg viewBox="0 0 320 200"><rect width="320" height="200" fill="#2b2118"/><rect x="36" y="36" width="248" height="128" rx="6" fill="#e9dcc3" stroke="#8c6d46" stroke-width="3"/><text x="160" y="92" text-anchor="middle" font-family="Georgia, serif" font-weight="700" font-size="21" fill="#3a2a1a" letter-spacing="0.5">CAFFÉE ÁRTESZNAIL</text><text x="160" y="126" text-anchor="middle" font-family="Georgia, serif" font-size="15" fill="#3a2a1a" transform="rotate(1.5 160 126)">ABEIRTO DSE 7H À 188H</text><text x="160" y="150" text-anchor="middle" font-family="Georgia, serif" font-size="10" fill="#6a5238">ORTEISAAN LNE · ESSPRESO</text></svg></div><div class="cap no">letras trocadas e palavras inventadas</div></div>
+        <div class="pane"><div class="flush"><svg viewBox="0 0 320 200"><rect width="320" height="200" fill="#2b2118"/><rect x="36" y="36" width="248" height="128" rx="6" fill="#e9dcc3" stroke="#8c6d46" stroke-width="3"/><text x="160" y="92" text-anchor="middle" font-family="Georgia, serif" font-weight="700" font-size="25" fill="#3a2a1a" letter-spacing="1">CAFÉ ARTESANAL</text><text x="160" y="126" text-anchor="middle" font-family="Georgia, serif" font-size="15" fill="#3a2a1a">Aberto das 7h às 18h</text></svg></div><div class="cap ok">texto aplicado depois, legível</div></div>
+      </div>
+    </div>
+  </article>
+
+  <article class="f">
+    <div class="badge s3">3</div>
+    <div class="body wide">
+      <h3>Anatomia e objetos impossíveis</h3>
+      <p>Mãos com dedos a mais, talheres fundidos, relógios sem sentido, dentes demais. Cada detalhe parece plausível sozinho, e o conjunto não fecha.</p>
+      <p class="fix"><b>Evite:</b> dê zoom de 200% em mãos, olhos, dentes e objetos antes de aceitar. Se a pessoa ou o produto importam, use foto real.</p>
+      <div class="spec" aria-hidden="true">
+        <div class="pane"><div class="flush"><svg viewBox="0 0 320 200"><rect width="320" height="200" fill="#f3efe8"/><g fill="#e8b99a" stroke="#b98563" stroke-width="2"><rect x="110" y="104" width="104" height="78" rx="28"/><rect x="111" y="46" width="14" height="66" rx="7"/><rect x="128" y="34" width="14" height="78" rx="7"/><rect x="145" y="28" width="14" height="84" rx="7"/><rect x="162" y="32" width="14" height="80" rx="7"/><rect x="179" y="42" width="14" height="70" rx="7"/><rect x="196" y="58" width="14" height="56" rx="7"/><rect x="82" y="118" width="40" height="15" rx="7.5" transform="rotate(-38 118 130)"/></g></svg></div><div class="cap no">cinco dedos mais o polegar</div></div>
+        <div class="pane"><div class="flush"><svg viewBox="0 0 320 200"><rect width="320" height="200" fill="#f3efe8"/><g fill="#e8b99a" stroke="#b98563" stroke-width="2"><rect x="110" y="104" width="104" height="78" rx="28"/><rect x="115" y="42" width="16" height="72" rx="8"/><rect x="136" y="30" width="16" height="84" rx="8"/><rect x="157" y="34" width="16" height="80" rx="8"/><rect x="178" y="48" width="16" height="66" rx="8"/><rect x="84" y="116" width="42" height="16" rx="8" transform="rotate(-38 120 130)"/></g></svg></div><div class="cap ok">quatro dedos mais o polegar</div></div>
+      </div>
+    </div>
+  </article>
+
+  <article class="f">
+    <div class="badge s3">3</div>
+    <div class="body">
+      <h3>Imagem que promete o que o produto não é</h3>
+      <p>Foto de equipe que não existe, produto com acabamento que ninguém fabrica, lugar que não é aquele endereço. A pessoa decide pela imagem e recebe outra coisa.</p>
+      <p class="fix"><b>Evite:</b> use foto real para produto, equipe e lugar. Reserve a imagem gerada para ambientação e rotule quando a origem importar. Confira também os termos de uso da ferramenta antes de publicar.</p>
+    </div>
+  </article>
+
+  <article class="f">
+    <div class="badge s2">2</div>
+    <div class="body wide">
+      <h3>Detalhe demais, sem hierarquia</h3>
+      <p>Tudo nítido, tudo texturizado, tudo brilhando. O olho não sabe onde pousar, e o assunto da imagem se perde no fundo.</p>
+      <p class="fix"><b>Evite:</b> peça um assunto único, fundo calmo e espaço vazio ao redor. Um foco por imagem, como em qualquer tela.</p>
+      <div class="spec" aria-hidden="true">
+        <div class="pane"><div class="flush"><svg viewBox="0 0 320 200" id="busy"><rect width="320" height="200" fill="#1d2a3a"/><g id="busy-shapes"></g><rect x="125" y="72" width="70" height="56" rx="8" fill="#2c3e57" stroke="#7f95b3" stroke-width="2"/><text x="160" y="105" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#c7d3e3">produto</text></svg></div><div class="cap no">onde está o produto?</div></div>
+        <div class="pane"><div class="flush"><svg viewBox="0 0 320 200"><rect width="320" height="200" fill="#eceae5"/><ellipse cx="160" cy="150" rx="64" ry="9" fill="#cfcbc3"/><rect x="118" y="64" width="84" height="76" rx="10" fill="#2c3e57"/><text x="160" y="108" text-anchor="middle" font-family="sans-serif" font-size="13" fill="#e7edf5">produto</text></svg></div><div class="cap ok">um assunto, fundo calmo</div></div>
+      </div>
+    </div>
+  </article>
+
+  <article class="f">
+    <div class="badge s2">2</div>
+    <div class="body">
+      <h3>Imagens que não combinam entre si</h3>
+      <p>O personagem muda de rosto de uma tela para outra, a luz vem de lados diferentes, o estilo passa de foto a ilustração. Cada imagem sozinha funciona, e o conjunto parece de sites diferentes.</p>
+      <p class="fix"><b>Evite:</b> registre em <code>DESIGN.md</code> o estilo de imagem: paleta, direção da luz, proporção e uma imagem de referência. Reutilize a mesma referência a cada geração.</p>
+    </div>
+  </article>
+
+  <article class="f">
+    <div class="badge s1">1</div>
+    <div class="body wide">
+      <h3>Excesso de dourado, brilho e partículas</h3>
+      <p>Luz dourada em tudo, bokeh, faíscas e um brilho saindo do objeto. É a marca mais reconhecível do estilo, e o que mais denuncia imagem gerada sem direção.</p>
+      <p class="fix"><b>Evite:</b> descreva a luz de verdade (janela lateral, luz do dia, fundo neutro) e proíba "glow", faíscas e partículas no pedido.</p>
+      <div class="spec" aria-hidden="true">
+        <div class="pane"><div class="flush"><svg viewBox="0 0 320 200"><defs><radialGradient id="gb" cx="50%" cy="42%" r="70%"><stop offset="0" stop-color="#fff2b0"/><stop offset=".28" stop-color="#f5b82e"/><stop offset=".65" stop-color="#8f4d08"/><stop offset="1" stop-color="#180d04"/></radialGradient><filter id="bl"><feGaussianBlur stdDeviation="5"/></filter><filter id="gl" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><rect width="320" height="200" fill="url(#gb)"/><g filter="url(#bl)" fill="#ffe27a" opacity=".75"><circle cx="40" cy="40" r="16"/><circle cx="278" cy="34" r="12"/><circle cx="70" cy="150" r="18"/><circle cx="262" cy="158" r="15"/><circle cx="150" cy="22" r="9"/><circle cx="300" cy="100" r="10"/><circle cx="18" cy="98" r="9"/></g><g fill="#fff6c8"><path transform="translate(60 80)" d="M0-9L2-2 9 0 2 2 0 9-2 2-9 0-2-2z"/><path transform="translate(246 70) scale(.8)" d="M0-9L2-2 9 0 2 2 0 9-2 2-9 0-2-2z"/><path transform="translate(210 28) scale(.6)" d="M0-9L2-2 9 0 2 2 0 9-2 2-9 0-2-2z"/><path transform="translate(104 168) scale(.7)" d="M0-9L2-2 9 0 2 2 0 9-2 2-9 0-2-2z"/><path transform="translate(280 140)" d="M0-9L2-2 9 0 2 2 0 9-2 2-9 0-2-2z"/></g><g filter="url(#gl)"><ellipse cx="160" cy="170" rx="70" ry="10" fill="#ffd45a" opacity=".8"/><path d="M110 92H210V126Q210 166 160 166Q110 166 110 126Z" fill="#ffd45a" stroke="#fff3b0" stroke-width="3"/><path d="M210 102Q246 102 240 130Q234 152 205 148" fill="none" stroke="#ffe58a" stroke-width="8" stroke-linecap="round"/><path d="M140 80Q130 60 142 44M162 80Q152 58 166 40M184 80Q174 62 186 46" fill="none" stroke="#fff6c8" stroke-width="4" stroke-linecap="round"/></g></svg></div><div class="cap no">dourado, bokeh, faíscas, brilho</div></div>
+        <div class="pane"><div class="flush"><svg viewBox="0 0 320 200"><rect width="320" height="200" fill="#ece6dd"/><ellipse cx="160" cy="172" rx="74" ry="9" fill="#cdc5b8"/><ellipse cx="160" cy="168" rx="62" ry="7" fill="#f7f4ee" stroke="#d3cbbe"/><path d="M110 92H210V126Q210 164 160 164Q110 164 110 126Z" fill="#fbfaf7" stroke="#cfc8bc" stroke-width="2"/><ellipse cx="160" cy="92" rx="50" ry="8" fill="#4a2f1d"/><path d="M210 104Q242 104 238 128Q233 148 206 146" fill="none" stroke="#cfc8bc" stroke-width="7" stroke-linecap="round"/></svg></div><div class="cap ok">luz suave, fundo neutro, nada brilhando</div></div>
+      </div>
+    </div>
+  </article>
+</section>
+
+</main>
+
+<section class="nielsen" aria-labelledby="nielsen-h">
+  <h2 id="nielsen-h">NIELSEN.md na raiz do projeto</h2>
+  <p class="lead">Repare que as heurísticas 1, 3, 5 e 9 de Nielsen (estado do sistema, controle do usuário, prevenção e recuperação de erros) cobrem quase tudo que está nos níveis 3 e 4 acima. É a parte invisível, e é a que a IA esquece. Escrever essas perguntas num arquivo dá ao modelo um critério para gerar e um roteiro para se auditar.</p>
+
+  <div class="codebox">
+    <div class="codebar"><span>NIELSEN.md</span><span class="actions"><button type="button" data-copy="nielsen">Copiar</button><button type="button" data-dl="nielsen" data-name="NIELSEN.md" hidden>Baixar .md</button></span></div>
+<pre id="nielsen-src"># Heurísticas de Nielsen: regras para o agente
+
+Use este arquivo ao criar ou revisar qualquer interface.
+Antes de entregar, responda cada pergunta e corrija o que falhar.
+
+## 1. Visibilidade do estado do sistema
+- Todo carregamento, envio e conclusão tem feedback visível.
+- A tela mostra onde o usuário está (item ativo, passo X de Y).
+- Pergunta: o usuário sabe o que está acontecendo agora?
+
+## 2. Correspondência com o mundo real
+- Use o vocabulário do domínio e do usuário, nunca o da equipe.
+- Pergunta: algum rótulo exigiria explicação para quem usa?
+
+## 3. Controle e liberdade do usuário
+- Toda ação tem saída: cancelar, voltar ou desfazer.
+- Pergunta: dá para se arrepender sem perder trabalho?
+
+## 4. Consistência e padrões
+- Mesma ação, mesmo nome, mesmo lugar, mesmo visual.
+- Cores, espaços e raios vêm de tokens (DESIGN.md).
+- Pergunta: existe valor visual escrito direto no componente?
+
+## 5. Prevenção de erros
+- Confirmação ou desfazer em ação destrutiva.
+- Valide junto ao campo e limite entradas impossíveis.
+- Pergunta: o que o usuário pode errar aqui e como o impedimos?
+
+## 6. Reconhecimento em vez de memorização
+- Opções e contexto visíveis. Label sempre visível, nunca só placeholder.
+- Pergunta: o usuário precisa lembrar algo da tela anterior?
+
+## 7. Flexibilidade e eficiência
+- Atalhos, busca e valores padrão sensatos para quem repete a tarefa.
+- Pergunta: quantos cliques tem a tarefa mais frequente?
+
+## 8. Estética e design minimalista
+- Cada elemento ajuda a tarefa. Sem decoração que compita com o conteúdo.
+- Um foco principal por tela.
+- Pergunta: o que posso remover sem perder função?
+
+## 9. Ajudar a reconhecer, diagnosticar e corrigir erros
+- A mensagem diz o que aconteceu, por quê e o que fazer.
+- Sem códigos crus nem "algo deu errado".
+- Pergunta: quem lê sabe como resolver?
+
+## 10. Ajuda e documentação
+- Dica no ponto de uso, curta e específica.
+- Pergunta: a primeira vez de um usuário novo funciona sem manual?
+
+## Estados obrigatórios por componente
+padrão, vazio, carregando, erro, sucesso, desabilitado, foco.
+
+## Proibido
+- Gradiente roxo para azul e efeito de vidro por padrão.
+- Emoji como ícone ou marcador.
+- Texto de exemplo, métricas inventadas, depoimentos fictícios.
+- Elemento clicável que não seja button ou a.
+- Cor literal fora de :root.
+- Imagem gerada com brilho dourado, partículas ou texto embutido.
+- Foto gerada de pessoas, equipe ou produto real.
+
+## Ao terminar
+Liste as heurísticas que a tela viola, com o trecho afetado e a correção.</pre>
+  </div>
+
+  <p class="lead">O segundo arquivo reúne os 48 erros desta página em formato curto, sem exemplos de código ruim, para o modelo ter regras e nada para imitar.</p>
+  <div class="codebox">
+    <div class="codebar"><span>ANTIPADROES.md</span><span class="actions"><button type="button" data-copy="antipadroes">Copiar</button><button type="button" data-dl="antipadroes" data-name="ANTIPADROES.md" hidden>Baixar .md</button></span></div>
+<pre id="antipadroes-src"># Antipadrões de interface gerada por IA
+
+Regras para o agente. Cada item tem a severidade (escala de Nielsen, de 0 a 4, julgamento para um produto comum), o sinal que indica o problema e a regra de correção.
+Ao terminar uma tela ou uma imagem, percorra a lista, corrija o que se aplicar e relate o que foi corrigido.
+
+## Severidade 4: catástrofe
+
+### 1. Elemento clicável sem semântica
+- Sinal: ação feita com elemento que não é button nem a, sem foco por teclado.
+- Regra: use button para ações e a para navegação. Garanta foco visível e operação só com Tab e Enter.
+
+### 2. Ação destrutiva sem desfazer
+- Sinal: excluir ou sobrescrever remove na hora, sem confirmação.
+- Regra: toda ação destrutiva pede confirmação ou oferece desfazer por alguns segundos.
+
+## Severidade 3: grave
+
+### 3. Só o caminho feliz
+- Sinal: a tela só existe com dados carregados e sem falhas.
+- Regra: entregue os estados padrão, vazio, carregando, erro, sucesso, desabilitado e foco em todo componente.
+
+### 4. Mensagem de erro genérica
+- Sinal: texto como "algo deu errado", sem causa e sem caminho de correção.
+- Regra: a mensagem diz o que aconteceu, por quê e o que fazer agora, na linguagem de quem usa.
+
+### 5. Formulário sem rótulo de verdade
+- Sinal: o placeholder faz o papel do label, a validação só ocorre ao enviar.
+- Regra: label sempre visível, formato esperado escrito, validação junto ao campo.
+
+### 6. Contraste fraco e texto miúdo
+- Sinal: cinza claro sobre fundo claro, corpo de texto abaixo de 16 px.
+- Regra: contraste mínimo de 4,5:1 para texto e corpo de 16 px ou mais. Meça com ferramenta, não a olho.
+
+### 7. Conteúdo inventado
+- Sinal: slogans genéricos, métricas sem fonte, depoimentos de pessoas que não existem.
+- Regra: use o conteúdo e o vocabulário reais do produto. Nenhuma métrica sem fonte. Marque todo exemplo como exemplo.
+
+### 8. Responsivo de fachada
+- Sinal: a tela funciona em largura de desktop e quebra em celular.
+- Regra: verifique em 390 px e 1280 px com captura de tela. Rolagem horizontal só dentro de tabelas e blocos de código.
+
+### 9. Texto dentro de imagem gerada
+- Sinal: placa, rótulo ou cartaz com letras trocadas ou palavras inventadas.
+- Regra: nunca gere texto dentro da imagem. Gere a cena limpa e aplique o texto depois, em HTML ou na ferramenta de design.
+
+### 10. Anatomia e objetos impossíveis
+- Sinal: mãos com dedos a mais, talheres fundidos, relógios e dentes sem sentido.
+- Regra: confira com zoom de 200% mãos, olhos, dentes e objetos antes de aceitar. Quando a pessoa ou o produto importam, use foto real.
+
+### 11. Imagem que promete o que o produto não é
+- Sinal: equipe, produto ou lugar que não existem como mostrados.
+- Regra: use foto real para produto, equipe e lugar. Reserve a imagem gerada para ambientação e rotule quando a origem importar. Confira os termos de uso da ferramenta antes de publicar.
+
+## Severidade 2: pequeno
+
+### 12. O mesmo card para tudo
+- Sinal: grade de caixas iguais com ícone, título e uma frase para qualquer tipo de conteúdo.
+- Regra: o conteúdo decide a forma. Tabela para comparar, lista para escanear, parágrafo para explicar. Um papel por card.
+
+### 13. Tipografia padrão e hierarquia plana
+- Sinal: uma só fonte neutra em tudo, tamanhos próximos entre título e corpo.
+- Regra: use o par de fontes e a escala definidos em DESIGN.md. Mantenha um foco principal por tela, com pelo menos três níveis claros.
+
+### 14. Valores mágicos
+- Sinal: cores quase iguais, espaçamentos e raios diferentes a cada componente.
+- Regra: todo valor visual vem de variável definida em um único lugar. Cor, fonte ou espaço escritos direto no componente são defeito.
+
+### 15. Dashboard decorativo
+- Sinal: tiles de número grande sem origem, gráficos com dados aleatórios, cores sem significado.
+- Regra: resumo antes do detalhe. Cada número mostra origem e data. Cor semântica serve só para estado (bom, atenção, crítico).
+
+### 16. Detalhe demais em imagem
+- Sinal: tudo nítido e texturizado, sem ponto de foco.
+- Regra: peça assunto único, fundo calmo e espaço vazio ao redor. Um foco por imagem.
+
+### 17. Imagens que não combinam entre si
+- Sinal: o rosto, a luz ou o estilo mudam de uma imagem para outra.
+- Regra: defina em DESIGN.md o estilo de imagem (paleta, direção da luz, proporção) e reutilize uma imagem de referência a cada geração.
+
+## Severidade 1: cosmético
+
+### 18. Gradiente roxo e vidro fosco por padrão
+- Sinal: gradiente de roxo para azul, desfoque e brilho sem relação com a marca.
+- Regra: use só as cores de DESIGN.md. Sem gradiente decorativo nem efeito de vidro por padrão.
+
+### 19. Emoji no lugar de ícone
+- Sinal: emoji como ícone ou marcador de lista.
+- Regra: use uma única biblioteca de ícones. Sem emoji em interface.
+
+### 20. Tudo centralizado, abertura de tela cheia
+- Sinal: parágrafos longos centralizados, topo com altura de tela que empurra o conteúdo para baixo.
+- Regra: alinhe à esquerda para leitura, com linha perto de 65 caracteres. O topo tem o tamanho do conteúdo, e o conteúdo útil aparece na primeira tela.
+
+### 21. Excesso de dourado, brilho e partículas em imagem
+- Sinal: luz dourada em tudo, desfoque decorativo, faíscas e brilho saindo dos objetos.
+- Regra: descreva a luz de verdade (janela lateral, luz do dia, fundo neutro) e proíba brilho, faíscas e partículas no pedido.
+
+## Arquitetura da informação
+
+### 22. Rótulos de marketing na navegação (severidade 3)
+- Sinal: itens de menu como Soluções, Plataforma, Insights e Recursos, que não dizem o que há atrás.
+- Regra: nomeie cada item pela tarefa ou pelo conteúdo, com o vocabulário de quem usa. Pergunte de cada rótulo: o que encontro aqui?
+
+### 23. Ordem de template em vez de ordem da pergunta (severidade 3)
+- Sinal: página que segue hero, recursos, depoimentos, logos, planos, perguntas e chamada final em qualquer produto.
+- Regra: liste as três perguntas mais comuns de quem chega e ordene a página por elas. A resposta mais procurada vem primeiro.
+
+### 24. Sem orientação de localização (severidade 3)
+- Sinal: menu sem item ativo, sem trilha de navegação, títulos genéricos como "Detalhes".
+- Regra: marque o item ativo, use trilha de navegação a partir do terceiro nível e dê a cada página um título que diga o assunto.
+
+### 25. Títulos fora de hierarquia (severidade 3)
+- Sinal: mais de um h1, saltos de nível, nível escolhido pelo tamanho visual.
+- Regra: um h1 por página e níveis em sequência, sem pular. O tamanho se resolve em CSS.
+
+### 26. Tudo no mesmo nível (severidade 2)
+- Sinal: dez ou mais itens de navegação com o mesmo peso.
+- Regra: agrupe por tarefa, com rótulo de grupo, e leve o que raramente se usa para um nível abaixo.
+
+### 27. Mesma coisa, vários nomes (severidade 2)
+- Sinal: a mesma ação ou o mesmo conceito com nomes diferentes em telas diferentes.
+- Regra: use um glossário, com um nome por conceito, e proíba sinônimos na interface.
+
+### 28. Links que não dizem para onde levam (severidade 2)
+- Sinal: vários links como "Saiba mais", "Clique aqui" ou "Ver mais" na mesma tela.
+- Regra: o texto do link diz o destino ou a ação e se entende fora de contexto.
+
+### 29. Campos na ordem do banco de dados (severidade 2)
+- Sinal: formulário com campos na ordem das colunas da tabela, com campos técnicos expostos.
+- Regra: agrupe por assunto, na ordem em que a pessoa responderia, e deixe campos técnicos fora da tela.
+
+## Português
+
+### 30. Acentos perdidos e codificação quebrada (severidade 3)
+- Sinal: textos de interface sem acento ("nao", "voce") ou com caracteres trocados ("NÃ£o").
+- Regra: arquivos em UTF-8 com o charset declarado. Revise a acentuação de todas as strings de interface antes de entregar.
+
+### 31. Palavras inventadas (severidade 3)
+- Sinal: palavras que soam plausíveis e não estão nos dicionários, como "emplacação" (o substantivo registrado é "emplacamento"), "atendimentar" e "otimizacional". Substantivos derivados por analogia com outro verbo são o caso mais comum.
+- Regra: use só palavras dicionarizadas. Liste as palavras em que tiver dúvida e confira no VOLP ou em um dicionário. Neologismo só como decisão explícita de marca.
+
+### 32. Formatos à moda americana (severidade 3)
+- Sinal: "R$ 1,299.90", data com o mês na frente ("11/25/2026"), hora com AM e PM.
+- Regra: use R$ 1.299,90, 25/11/2026 e 14h30. Formate datas e valores com as funções do idioma (por exemplo, Intl), sem montar o texto à mão.
+
+### 33. Vírgula entre sujeito e predicado (severidade 2)
+- Sinal: vírgula única entre sujeito e verbo ("Nossa plataforma, permite...") ou entre verbo e complemento ("Você precisa, confirmar...").
+- Regra: sem vírgula única entre sujeito e verbo, nem entre verbo e complemento. Intercalação leva duas vírgulas. Passe um corretor gramatical antes de entregar.
+
+### 34. Vírgula que muda o sentido (severidade 2)
+- Sinal: oração com "que" com ou sem vírgulas sem que o sentido tenha sido escolhido.
+- Regra: oração adjetiva restritiva não leva vírgula e a explicativa leva. Use a que o sentido pedir e, se não souber qual é, pergunte.
+
+### 35. Vírgula de série à moda inglesa (severidade 2)
+- Sinal: vírgula antes do "e" que fecha uma enumeração ("consultas, exames, e retornos").
+- Regra: sem vírgula antes do "e" que fecha uma enumeração.
+
+### 36. Crase, regência e concordância (severidade 2)
+- Sinal: "à partir de", "haviam dez vagas", "fazem dois anos".
+- Regra: "a partir de" não leva crase. Haver e fazer no sentido de existir ou de tempo decorrido ficam no singular. Passe um corretor gramatical antes de entregar.
+
+### 37. Concordância com "se" e com "um dos que" (severidade 2)
+- Sinal: "Aceita-se cartões", "um dos erros que mais ocorre".
+- Regra: com o "se" apassivador, o verbo concorda com o sujeito ("Aceitam-se cartões"). Depois de "um dos que", o verbo vai para o plural na norma-padrão.
+
+### 38. Pares que se confundem (severidade 2)
+- Sinal: "Porque o código não chegou?", "Aonde fica a clínica?", "preenchido mau".
+- Regra: por que, porque, por quê e porquê; onde e aonde; mal e mau; há e a. Confira cada ocorrência contra o contexto.
+
+### 39. Maiúsculas à moda inglesa (severidade 2)
+- Sinal: títulos com todas as palavras capitalizadas, dias da semana e meses em maiúscula.
+- Regra: maiúscula só no início de frase e em nomes próprios. Dias da semana e meses em minúscula.
+
+### 40. Português de Portugal em produto brasileiro (severidade 2)
+- Sinal: termos como utilizador, ecrã, guardar, telemóvel e a construção "estar a" + infinitivo.
+- Regra: use pt-BR e o glossário do produto (usuário, tela, salvar, celular). Use gerúndio, como em "carregando".
+
+### 41. Tradução literal e falsos cognatos (severidade 2)
+- Sinal: "realizar" no sentido de perceber, "eventualmente" no sentido de por fim, "pretender" no sentido de fingir.
+- Regra: escreva em português, sem traduzir do inglês. Revise falsos cognatos e use os nomes de botão da convenção do domínio.
+
+### 42. Plural montado por template (severidade 2)
+- Sinal: frases como "1 consultas" ou "0 notificações novas".
+- Regra: use regras de plural (Intl.PluralRules ou biblioteca de i18n), teste com 0, 1 e 2 e escreva uma frase própria para o zero.
+
+### 43. Tratamento e verbos inconsistentes (severidade 2)
+- Sinal: "você", "tu" e "o senhor" na mesma tela, ou infinitivo e imperativo misturados nos botões.
+- Regra: um tratamento (você) e um modo verbal para botões, definidos em DESIGN.md e usados em todo o produto.
+
+### 44. Marca de gênero com parênteses (severidade 2)
+- Sinal: "Bem-vindo(a)", "Prezado(a) cliente", "todos(as)".
+- Regra: use fórmulas sem marca de gênero (Olá), o nome da pessoa ou um substantivo coletivo.
+
+### 45. Gerundismo (severidade 2)
+- Sinal: "vou estar enviando", "vamos estar verificando".
+- Regra: use o verbo simples: "vou enviar", "vamos verificar".
+
+### 46. Texto burocrático (severidade 2)
+- Sinal: voz passiva e nominalização em excesso: "A realização da confirmação deve ser efetuada pelo usuário".
+- Regra: prefira voz ativa e verbos. Escreva "Confirme seu agendamento".
+
+### 47. Clichês de texto gerado (severidade 2)
+- Sinal: "no cenário atual", "é importante ressaltar", "revolucione", "mergulhe", "desbloqueie o potencial", travessão em excesso.
+- Regra: não use essas expressões. Escreva frases curtas, com sujeito e verbo, sobre o que o produto faz de fato.
+
+### 48. Pleonasmos (severidade 1)
+- Sinal: "há dois anos atrás", "subir para cima", "elo de ligação".
+- Regra: escreva sem repetir o que a palavra anterior já diz.
+
+## Ao terminar
+Liste cada item acima que a tela ou a imagem viola, com o trecho afetado e a correção aplicada.</pre>
+  </div>
+
+  <p class="lead">O terceiro arquivo trata só de português. Fica na raiz, ao lado dos outros, e entra no <code>CLAUDE.md</code> pela mesma importação.</p>
+  <div class="codebox">
+    <div class="codebar"><span>PORTUGUES.md</span><span class="actions"><button type="button" data-copy="portugues">Copiar</button><button type="button" data-dl="portugues" data-name="PORTUGUES.md" hidden>Baixar .md</button></span></div>
+<pre id="portugues-src"># Português do Brasil: regras para o agente
+
+Use este arquivo ao escrever qualquer texto em português: interface, e-mail, documentação, mensagens de erro.
+Escreva em português do Brasil. Ao terminar, aplique o checklist da última seção e corrija antes de entregar.
+
+## Princípios
+- Escreva em português, sem traduzir do inglês. Frases curtas, com sujeito e verbo.
+- Use só palavras dicionarizadas. Se tiver dúvida sobre uma palavra, não a use e liste a dúvida ao final, para uma pessoa conferir no VOLP (academia.org.br/nossa-lingua/busca-no-vocabulario).
+- Não invente termo, sigla ou nome de funcionalidade que não tenha sido dado.
+- Cuidado com substantivos derivados por analogia. De "emplacar", o substantivo registrado é "emplacamento", e não "emplacação". Ao derivar um substantivo de um verbo, confira se ele existe.
+- Quando nenhuma regra abaixo resolver o caso, escolha a construção mais simples que esteja correta e sinalize a dúvida.
+
+## Variante e tratamento
+- Use pt-BR: usuário, tela, salvar, celular, arquivo. Não use termos de Portugal, como utilizador, ecrã, guardar e telemóvel, nem a construção "estar a" + infinitivo.
+- Trate o leitor por "você" e "seu" em todo o texto. Não misture com "tu", "teu" nem "o senhor".
+- Nos botões, use um só modo verbal em todo o produto. O padrão é o infinitivo: Salvar, Cancelar, Enviar.
+- Sem marca de gênero entre parênteses ou com barra. Use fórmulas neutras (Olá), o nome da pessoa ou um substantivo coletivo.
+
+## Ortografia e codificação
+- Todos os arquivos em UTF-8, com o charset declarado. Acentue todas as palavras, inclusive nas strings de código.
+- Siga o Acordo Ortográfico em vigor.
+- Maiúscula só no início de frase e em nomes próprios. Título não capitaliza cada palavra. Dias da semana e meses ficam em minúscula.
+
+## Pontuação
+- Sem vírgula única entre sujeito e verbo, nem entre verbo e complemento.
+- Intercalações (aposto, vocativo, oração explicativa) ficam entre duas vírgulas.
+- Oração adjetiva restritiva não leva vírgula: "Os pacientes que chegaram cedo foram atendidos". A explicativa leva: "Os pacientes, que chegaram cedo, foram atendidos". Use a que o sentido pedir.
+- Sem vírgula antes do "e" que fecha uma enumeração: "consultas, exames e retornos".
+- Oração subordinada ou adjunto adverbial longo antes da principal pede vírgula: "Quando o código chegar, digite-o aqui."
+- Use travessão com parcimônia. Prefira vírgula, ponto ou parênteses.
+
+## Concordância, regência e crase
+- Haver no sentido de existir e fazer indicando tempo decorrido ficam no singular: "Havia dez vagas", "Faz dois anos".
+- Com o "se" apassivador, o verbo concorda com o sujeito: "Aceitam-se cartões", "Alugam-se salas".
+- Depois de "um dos que", use o verbo no plural, como pede a norma-padrão: "um dos erros que mais ocorrem".
+- "A partir de" não leva crase. Use crase só quando houver a preposição "a" e o artigo "a" juntos.
+- Pares que se confundem:
+  - por que (pergunta), porque (explicação), por quê (fim de frase), porquê (substantivo);
+  - onde (lugar em que se está), aonde (lugar para onde se vai);
+  - mal (oposto de bem), mau (oposto de bom);
+  - há (tempo decorrido), a (tempo futuro ou distância).
+- Plural: use a regra de plural da biblioteca de i18n. Escreva uma frase própria para o zero: "Você não tem notificações".
+
+## Estilo
+- Não use "estar" + gerúndio para o futuro ("vou estar enviando"). Use o verbo simples: "vou enviar".
+- Prefira voz ativa e verbos a nominalizações: "Confirme o agendamento", e não "A realização da confirmação deve ser efetuada".
+- Sem pleonasmo: "há dois anos", e não "há dois anos atrás".
+- Não use clichês: "no cenário atual", "é importante ressaltar", "vale destacar", "revolucione", "mergulhe", "desbloqueie o potencial".
+- Conectivos como "além disso" e "portanto" só quando ligarem ideias de fato, no máximo um por parágrafo.
+
+## Formatos
+- Moeda: R$ 1.299,90 (ponto nos milhares, vírgula nos centavos).
+- Data: 25/11/2026, com dia, mês e ano. Por extenso: 25 de novembro de 2026.
+- Hora: 14h30, no relógio de 24 horas.
+- Número: vírgula decimal (3,5) e ponto nos milhares (12.000).
+- Use as funções de formatação do idioma (por exemplo, Intl) em vez de montar datas e valores à mão.
+
+## Checklist ao terminar
+1. Todas as palavras existem no dicionário? As dúvidas foram listadas para conferência no VOLP?
+2. Alguma vírgula separa sujeito de verbo ou verbo de complemento?
+3. Os verbos concordam com os sujeitos (haver, fazer, "se" apassivador, "um dos que")?
+4. Acentos, crase e maiúsculas conferidos? Arquivos em UTF-8?
+5. Valores, datas e horas estão no formato brasileiro?
+6. Há um só tratamento (você) e um só modo verbal nos botões?
+7. Há clichê, gerundismo, pleonasmo ou frase burocrática?
+8. Lida em voz alta, alguma frase exige fôlego extra?
+
+Ao final, liste qualquer dúvida de norma que você não resolveu.</pre>
+  </div>
+
+  <div class="how">
+    <div>
+      <h3>Como o agente lê o arquivo</h3>
+      <p>Na raiz, o arquivo só ajuda se a ferramenta o carregar. No Claude Code, o carregado automaticamente é o <code>CLAUDE.md</code>, e ele importa outros arquivos com <code>@caminho</code>. Em outras ferramentas, o equivalente costuma ser <code>AGENTS.md</code> ou um arquivo de regras próprio. Confirme na documentação da sua.</p>
+    </div>
+    <div class="codebox" style="margin:0">
+      <div class="codebar"><span>CLAUDE.md</span><button type="button" data-copy="claude">Copiar</button></div>
+<pre class="sm" id="claude-src">## Design
+Antes de criar ou alterar qualquer interface,
+leia @NIELSEN.md e @DESIGN.md.
+Ao terminar, audite a tela contra as 10 heurísticas
+e liste as violações.
+Não use cor, fonte ou espaçamento fora de DESIGN.md.
+Antes de entregar, revise contra @ANTIPADROES.md.
+
+## Texto
+Ao escrever qualquer texto em português,
+siga @PORTUGUES.md.</pre>
+    </div>
+    <div>
+      <h3>Arquivos que acompanham</h3>
+      <p><code>DESIGN.md</code> guarda os tokens: paleta, fontes, escala, espaçamento, raio e biblioteca de ícones. Uma pasta <code>referencias/</code> com três ou quatro telas de que você gosta dá ao modelo algo concreto para imitar no lugar da média da internet.</p>
+    </div>
+    <div>
+      <h3>O arquivo sozinho não basta</h3>
+      <p><b>Hipótese minha:</b> contexto escrito reduz o slop, mas o modelo ainda pode ignorar regras. Por isso, depois de gerar, abra uma conversa nova, entregue o código com o <code>NIELSEN.md</code> e peça só a lista de violações. Quem gerou tende a aprovar o que gerou. Depois confira a tela em 390 e 1280 px, só com o teclado.</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  As dez heurísticas e a escala de severidade são de Jakob Nielsen, com Rolf Molich nas heurísticas, publicadas pelo Nielsen Norman Group. O texto do arquivo acima é paráfrase para uso em projeto. Razões de contraste calculadas pela fórmula da WCAG 2.2.
+</footer>
+</div>
+
+<script>
+(function () {
+  // Ruído visual do exemplo "detalhe demais": formas determinísticas, todas igualmente nítidas.
+  var g = document.getElementById('busy-shapes');
+  if (g) {
+    var seed = 7, cols = ['#e0556b', '#f2b632', '#4fc3cc', '#8b6fe0', '#6fd18b', '#f28b4f', '#ffffff'];
+    var rnd = function () { seed = (seed * 9301 + 49297) % 233280; return seed / 233280; };
+    var ns = 'http://www.w3.org/2000/svg', out = '';
+    for (var i = 0; i < 90; i++) {
+      var x = rnd() * 320, y = rnd() * 200, s = 4 + rnd() * 14, c = cols[Math.floor(rnd() * cols.length)];
+      var k = Math.floor(rnd() * 3);
+      if (k === 0) out += '<circle cx="' + x.toFixed(1) + '" cy="' + y.toFixed(1) + '" r="' + (s / 2).toFixed(1) + '" fill="' + c + '" stroke="#fff" stroke-width="1" fill-opacity=".85"/>';
+      else if (k === 1) out += '<rect x="' + x.toFixed(1) + '" y="' + y.toFixed(1) + '" width="' + s.toFixed(1) + '" height="' + s.toFixed(1) + '" fill="' + c + '" stroke="#fff" stroke-width="1" fill-opacity=".85" transform="rotate(' + Math.floor(rnd() * 90) + ' ' + x.toFixed(1) + ' ' + y.toFixed(1) + ')"/>';
+      else out += '<path d="M' + x.toFixed(1) + ' ' + y.toFixed(1) + 'l' + s.toFixed(1) + ' 0l-' + (s / 2).toFixed(1) + ' -' + s.toFixed(1) + 'z" fill="' + c + '" stroke="#fff" stroke-width="1" fill-opacity=".85"/>';
+    }
+    g.innerHTML = out;
+  }
+  // Download dos arquivos .md. O botão só aparece se a plataforma liberar a capacidade.
+  if (window.claude && window.claude.use) {
+    window.claude.use('downloads').then(function (dl) {
+      if (!dl) return;
+      var row = document.getElementById('dl-row');
+      if (row) row.hidden = false;
+      document.querySelectorAll('[data-dl]').forEach(function (btn) {
+        btn.hidden = false;
+        btn.addEventListener('click', function () {
+          var src = document.getElementById(btn.getAttribute('data-dl') + '-src');
+          var label = btn.textContent;
+          btn.setAttribute('aria-busy', 'true');
+          dl.save({ filename: btn.getAttribute('data-name'), data: src.textContent }).then(function () {
+            btn.textContent = 'Salvo';
+          }, function (err) {
+            if (!err || err.code !== 'declined') btn.textContent = 'Não foi possível baixar';
+          }).then(function () {
+            btn.removeAttribute('aria-busy');
+            setTimeout(function () { btn.textContent = label; }, 1800);
+          });
+        });
+      });
+    }, function () {});
+  }
+
+  document.querySelectorAll('[data-copy]').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var src = document.getElementById(btn.getAttribute('data-copy') + '-src');
+      var done = function () {
+        var old = btn.textContent; btn.textContent = 'Copiado';
+        setTimeout(function () { btn.textContent = old; }, 1600);
+      };
+      var fallback = function () {
+        var r = document.createRange(); r.selectNodeContents(src);
+        var s = window.getSelection(); s.removeAllRanges(); s.addRange(r);
+      };
+      try { navigator.clipboard.writeText(src.textContent).then(done, fallback); }
+      catch (e) { fallback(); }
+    });
+  });
+})();
+</script>
+</body>
+</html>
