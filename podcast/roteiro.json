@@ -1,0 +1,1205 @@
+{
+ "hash": "97e9d9da",
+ "linhas": [
+  {
+   "id": 0,
+   "type": "section",
+   "voice": "B",
+   "text": "Você está ouvindo: Como evitar AI slop. Um guia sobre os erros de design que a inteligência artificial mais comete, organizados por gravidade, com o que fazer para evitar cada um."
+  },
+  {
+   "id": 1,
+   "type": "item",
+   "voice": "A",
+   "text": "Nem todos os problemas de interface têm o mesmo impacto. Um gradiente inadequado é uma questão estética. A ausência de estados de erro, mecanismos de desfazer ou indicadores de foco por teclado compromete a usabilidade."
+  },
+  {
+   "id": 2,
+   "type": "item",
+   "voice": "A",
+   "text": "Esta página apresenta os principais problemas de interface, organizados por nível de severidade, com exemplos comparativos e recomendações de correção."
+  },
+  {
+   "id": 3,
+   "type": "item",
+   "voice": "A",
+   "text": "Nível 0, Não é problema. Sem impacto real no uso."
+  },
+  {
+   "id": 4,
+   "type": "item",
+   "voice": "A",
+   "text": "Nível 1, Cosmético. Apenas visual. Não afeta a tarefa."
+  },
+  {
+   "id": 5,
+   "type": "item",
+   "voice": "A",
+   "text": "Nível 2, Pequeno. Atrapalha um pouco, mas tem contorno."
+  },
+  {
+   "id": 6,
+   "type": "item",
+   "voice": "A",
+   "text": "Nível 3, Grave. Prejudica a tarefa e gera fricção."
+  },
+  {
+   "id": 7,
+   "type": "item",
+   "voice": "A",
+   "text": "Nível 4, Catastrófico. Compromete a usabilidade e pode impedir o uso."
+  },
+  {
+   "id": 8,
+   "type": "section",
+   "voice": "B",
+   "text": "Seção. Gravidade 4. Catástrofe. Impede o uso ou destrói trabalho."
+  },
+  {
+   "id": 9,
+   "type": "item",
+   "voice": "A",
+   "text": "Gravidade 4. Elemento clicável sem semântica"
+  },
+  {
+   "id": 10,
+   "type": "item",
+   "voice": "A",
+   "text": "A IA monta botões com div e onclick. Parece certo no mouse. No teclado, não recebe foco, e leitor de tela não anuncia nada. Quem não usa mouse fica sem a função."
+  },
+  {
+   "id": 11,
+   "type": "item",
+   "voice": "B",
+   "text": "Evite: exija button para ações e a para navegação, e teste a tela só com Tab e Enter antes de aceitar."
+  },
+  {
+   "id": 12,
+   "type": "item",
+   "voice": "A",
+   "text": "Gravidade 4. Ação destrutiva sem desfazer"
+  },
+  {
+   "id": 13,
+   "type": "item",
+   "voice": "A",
+   "text": "Excluir remove o item na hora, sem confirmação e sem volta. A IA raramente desenha a saída porque o pedido dizia \"botão de excluir\", e só."
+  },
+  {
+   "id": 14,
+   "type": "item",
+   "voice": "B",
+   "text": "Evite: escreva a regra no contexto. Toda ação destrutiva pede confirmação ou oferece desfazer por alguns segundos."
+  },
+  {
+   "id": 15,
+   "type": "section",
+   "voice": "B",
+   "text": "Seção. Gravidade 3. Grave. Atrapalha a tarefa de muita gente."
+  },
+  {
+   "id": 16,
+   "type": "item",
+   "voice": "A",
+   "text": "Gravidade 3. Só o caminho feliz"
+  },
+  {
+   "id": 17,
+   "type": "item",
+   "voice": "A",
+   "text": "A tela existe cheia de dados, com a conexão rápida e o usuário sem erro. Quando a lista vem vazia, a rede cai ou o campo falha, não há nada desenhado."
+  },
+  {
+   "id": 18,
+   "type": "item",
+   "voice": "B",
+   "text": "Evite: peça todos os estados na mesma solicitação. É mais barato do que pedir depois do rascunho pronto."
+  },
+  {
+   "id": 19,
+   "type": "item",
+   "voice": "A",
+   "text": "Gravidade 3. Mensagem de erro genérica"
+  },
+  {
+   "id": 20,
+   "type": "item",
+   "voice": "A",
+   "text": "\"Algo deu errado.\" Quem lê não sabe o que aconteceu nem o que fazer."
+  },
+  {
+   "id": 21,
+   "type": "item",
+   "voice": "B",
+   "text": "Evite: exija três coisas na mensagem. O que houve, por quê, e o que fazer agora."
+  },
+  {
+   "id": 22,
+   "type": "item",
+   "voice": "A",
+   "text": "Gravidade 3. Formulário sem rótulo de verdade"
+  },
+  {
+   "id": 23,
+   "type": "item",
+   "voice": "A",
+   "text": "O placeholder faz o papel do label e some quando a pessoa começa a digitar. Quem volta ao campo depois de preencher esquece o que ele pedia."
+  },
+  {
+   "id": 24,
+   "type": "item",
+   "voice": "B",
+   "text": "Evite: label sempre visível, formato esperado escrito e validação junto ao campo."
+  },
+  {
+   "id": 25,
+   "type": "item",
+   "voice": "A",
+   "text": "Gravidade 3. Contraste fraco e texto miúdo"
+  },
+  {
+   "id": 26,
+   "type": "item",
+   "voice": "A",
+   "text": "Cinza claro sobre branco fica elegante na captura de tela e ilegível ao sol. O modelo escolhe pelo gosto, não por medida."
+  },
+  {
+   "id": 27,
+   "type": "item",
+   "voice": "B",
+   "text": "Evite: registre o mínimo no contexto, que é 4,5:1 para texto e corpo de 16 px. Meça com uma ferramenta."
+  },
+  {
+   "id": 28,
+   "type": "item",
+   "voice": "A",
+   "text": "Gravidade 3. Conteúdo inventado"
+  },
+  {
+   "id": 29,
+   "type": "item",
+   "voice": "A",
+   "text": "\"Revolucione seu fluxo de trabalho.\" \"Mais de 10 mil usuários.\" Depoimentos de gente que não existe. O texto de vitrine ocupa o lugar do que o produto realmente faz, e os números falsos podem ir ao ar sem que ninguém perceba."
+  },
+  {
+   "id": 30,
+   "type": "item",
+   "voice": "B",
+   "text": "Evite: entregue o conteúdo real e o vocabulário de quem usa. Proíba métrica sem fonte e marque todo exemplo como exemplo."
+  },
+  {
+   "id": 31,
+   "type": "item",
+   "voice": "A",
+   "text": "Gravidade 3. Responsivo de fachada"
+  },
+  {
+   "id": 32,
+   "type": "item",
+   "voice": "A",
+   "text": "Funciona em 1440 px e quebra em 390 px. A tabela estoura a tela, o botão sai do quadro, o texto é cortado. O modelo não vê o resultado, então não percebe."
+  },
+  {
+   "id": 33,
+   "type": "item",
+   "voice": "B",
+   "text": "Evite: exija captura em duas larguras, 390 e 1280. Rolagem horizontal só dentro de tabelas e blocos de código."
+  },
+  {
+   "id": 34,
+   "type": "section",
+   "voice": "B",
+   "text": "Seção. Gravidade 2. Pequeno. Incomoda e cansa, mas não trava."
+  },
+  {
+   "id": 35,
+   "type": "item",
+   "voice": "A",
+   "text": "Gravidade 2. O mesmo card para tudo"
+  },
+  {
+   "id": 36,
+   "type": "item",
+   "voice": "A",
+   "text": "Três caixas arredondadas com ícone, título e uma frase. Uma comparação vira a mesma caixa que uma lista e que um texto."
+  },
+  {
+   "id": 37,
+   "type": "item",
+   "voice": "B",
+   "text": "Evite: deixe o conteúdo decidir a forma. Tabela para comparar, lista para escanear, parágrafo para explicar."
+  },
+  {
+   "id": 38,
+   "type": "item",
+   "voice": "A",
+   "text": "Gravidade 2. Tipografia padrão e hierarquia plana"
+  },
+  {
+   "id": 39,
+   "type": "item",
+   "voice": "A",
+   "text": "Uma só fonte neutra em tudo, títulos e corpo com tamanhos parecidos, negrito para qualquer ênfase. A tela inteira tem o mesmo peso e o olho não sabe onde começar."
+  },
+  {
+   "id": 40,
+   "type": "item",
+   "voice": "B",
+   "text": "Evite: fixe o par de fontes e a escala em DESIGN.md. Exija um foco principal por tela, com pelo menos três níveis claros."
+  },
+  {
+   "id": 41,
+   "type": "item",
+   "voice": "A",
+   "text": "Gravidade 2. Valores mágicos"
+  },
+  {
+   "id": 42,
+   "type": "item",
+   "voice": "A",
+   "text": "Um azul aqui, outro azulzinho ali. O modelo reescreve a cor a cada componente, e os pequenos desvios se acumulam até a interface parecer costurada."
+  },
+  {
+   "id": 43,
+   "type": "item",
+   "voice": "B",
+   "text": "Evite: todo valor visual sai de variável. Cor literal fora de :root vira defeito de revisão."
+  },
+  {
+   "id": 44,
+   "type": "item",
+   "voice": "A",
+   "text": "Gravidade 2. Dashboard decorativo"
+  },
+  {
+   "id": 45,
+   "type": "item",
+   "voice": "A",
+   "text": "Seis tiles de número grande, um gráfico com dados aleatórios e cores categóricas sem significado. Parece análise, mas ninguém sabe de onde saiu cada valor."
+  },
+  {
+   "id": 46,
+   "type": "item",
+   "voice": "B",
+   "text": "Evite: resumo antes do detalhe, origem e data em cada número, e cor semântica reservada para estado (bom, atenção, crítico)."
+  },
+  {
+   "id": 47,
+   "type": "section",
+   "voice": "B",
+   "text": "Seção. Gravidade 1. Cosmético. É o que todo mundo nota primeiro."
+  },
+  {
+   "id": 48,
+   "type": "item",
+   "voice": "A",
+   "text": "Gravidade 1. Gradiente roxo e vidro fosco"
+  },
+  {
+   "id": 49,
+   "type": "item",
+   "voice": "A",
+   "text": "É o primeiro sinal de slop e o que menos prejudica quem usa. Mesmo assim vale cortar, porque entrega a falta de decisão logo no primeiro olhar."
+  },
+  {
+   "id": 50,
+   "type": "item",
+   "voice": "B",
+   "text": "Evite: defina de 4 a 6 tokens de cor em DESIGN.md e liste o gradiente padrão como proibido."
+  },
+  {
+   "id": 51,
+   "type": "item",
+   "voice": "A",
+   "text": "Gravidade 1. Emoji no lugar de ícone"
+  },
+  {
+   "id": 52,
+   "type": "item",
+   "voice": "A",
+   "text": "Foguete nos títulos, check verde nas listas, brilho em tudo que é \"novo\". O desenho muda de acordo com o sistema de quem abre a página."
+  },
+  {
+   "id": 53,
+   "type": "item",
+   "voice": "B",
+   "text": "Evite: fixe uma única biblioteca de ícones e proíba emoji em interface."
+  },
+  {
+   "id": 54,
+   "type": "item",
+   "voice": "A",
+   "text": "Gravidade 1. Tudo centralizado, abertura de tela cheia"
+  },
+  {
+   "id": 55,
+   "type": "item",
+   "voice": "A",
+   "text": "Parágrafos longos centralizados e um topo de 100vh que empurra o conteúdo real para fora do primeiro quadro. O texto centralizado cansa a leitura depois de duas linhas."
+  },
+  {
+   "id": 56,
+   "type": "item",
+   "voice": "B",
+   "text": "Evite: alinhamento à esquerda para ler, linha perto de 65 caracteres, topo do tamanho do conteúdo."
+  },
+  {
+   "id": 57,
+   "type": "section",
+   "voice": "B",
+   "text": "Seção. Arquitetura da informação. A estrutura do template, não a do assunto."
+  },
+  {
+   "id": 58,
+   "type": "item",
+   "voice": "A",
+   "text": "Arquitetura da informação é como o conteúdo é organizado, nomeado e navegado. A IA monta telas bem acabadas com a estrutura de um template genérico, e a estrutura do assunto fica de fora. Para validar a sua, use card sorting e teste de árvore com pessoas reais. Os exemplos usam uma clínica fictícia."
+  },
+  {
+   "id": 59,
+   "type": "item",
+   "voice": "A",
+   "text": "Gravidade 3. Rótulos de marketing na navegação"
+  },
+  {
+   "id": 60,
+   "type": "item",
+   "voice": "A",
+   "text": "A IA nomeia menus com palavras de vitrine: Soluções, Plataforma, Insights, Recursos. Quem chega não sabe o que há atrás de cada uma, e o que deveria ser caminho vira adivinhação."
+  },
+  {
+   "id": 61,
+   "type": "item",
+   "voice": "B",
+   "text": "Evite: nomeie cada item pela tarefa ou pelo conteúdo, com o vocabulário de quem usa. Pergunte de cada rótulo: o que encontro aqui?"
+  },
+  {
+   "id": 62,
+   "type": "item",
+   "voice": "A",
+   "text": "Gravidade 3. Ordem de template, não ordem da pergunta"
+  },
+  {
+   "id": 63,
+   "type": "item",
+   "voice": "A",
+   "text": "Hero, três recursos, depoimentos, logos, planos, perguntas, chamada final. A sequência serve a qualquer produto, então não serve a nenhum. Quem chega com uma pergunta atravessa o template inteiro para achar a resposta."
+  },
+  {
+   "id": 64,
+   "type": "item",
+   "voice": "B",
+   "text": "Evite: liste as três perguntas mais comuns de quem chega e ordene a página por elas. A resposta mais procurada vem primeiro."
+  },
+  {
+   "id": 65,
+   "type": "item",
+   "voice": "A",
+   "text": "Gravidade 3. Sem orientação de localização"
+  },
+  {
+   "id": 66,
+   "type": "item",
+   "voice": "A",
+   "text": "Nada indica onde a pessoa está: menu sem item ativo, sem trilha de navegação, título genérico como \"Detalhes\". Em telas profundas, é fácil se perder."
+  },
+  {
+   "id": 67,
+   "type": "item",
+   "voice": "B",
+   "text": "Evite: marque o item ativo, use trilha de navegação a partir do terceiro nível e dê a cada página um título que diga o assunto."
+  },
+  {
+   "id": 68,
+   "type": "item",
+   "voice": "A",
+   "text": "Gravidade 3. Títulos fora de hierarquia"
+  },
+  {
+   "id": 69,
+   "type": "item",
+   "voice": "A",
+   "text": "Dois h1, salto de h2 para h4, nível escolhido pelo tamanho visual e não pela estrutura. Leitores de tela e buscadores usam os títulos como índice, e o índice fica quebrado."
+  },
+  {
+   "id": 70,
+   "type": "item",
+   "voice": "B",
+   "text": "Evite: um h1 por página e níveis em sequência, sem pular. O tamanho se resolve em CSS, não trocando o nível do título."
+  },
+  {
+   "id": 71,
+   "type": "item",
+   "voice": "A",
+   "text": "Gravidade 2. Tudo no mesmo nível"
+  },
+  {
+   "id": 72,
+   "type": "item",
+   "voice": "A",
+   "text": "Doze itens de menu com o mesmo peso. Sem agrupamento, a pessoa lê a lista inteira para achar um item."
+  },
+  {
+   "id": 73,
+   "type": "item",
+   "voice": "B",
+   "text": "Evite: agrupe por tarefa, com rótulo de grupo, e leve o que raramente se usa para um nível abaixo."
+  },
+  {
+   "id": 74,
+   "type": "item",
+   "voice": "A",
+   "text": "Gravidade 2. Mesma coisa, vários nomes"
+  },
+  {
+   "id": 75,
+   "type": "item",
+   "voice": "A",
+   "text": "O botão de cancelar aparece como Cancelar, Desmarcar e Remover agendamento em telas diferentes. A IA varia as palavras porque variar parece mais natural, mas para quem usa são três ações."
+  },
+  {
+   "id": 76,
+   "type": "item",
+   "voice": "B",
+   "text": "Evite: mantenha um glossário no contexto, com um nome por conceito, e proíba sinônimos na interface."
+  },
+  {
+   "id": 77,
+   "type": "item",
+   "voice": "A",
+   "text": "Gravidade 2. Links que não dizem para onde levam"
+  },
+  {
+   "id": 78,
+   "type": "item",
+   "voice": "A",
+   "text": "Vários \"Saiba mais\" na mesma tela. Quem navega por leitor de tela ouve a lista de links como \"Saiba mais, Saiba mais, Saiba mais\". Quem lê com os olhos precisa subir até o título para entender o destino."
+  },
+  {
+   "id": 79,
+   "type": "item",
+   "voice": "B",
+   "text": "Evite: o texto do link diz o destino ou a ação e se entende fora de contexto."
+  },
+  {
+   "id": 80,
+   "type": "item",
+   "voice": "A",
+   "text": "Gravidade 2. Campos na ordem do banco de dados"
+  },
+  {
+   "id": 81,
+   "type": "item",
+   "voice": "A",
+   "text": "Formulários gerados a partir de um esquema trazem os campos na ordem das colunas, não na ordem em que a pessoa pensa. Nome, e-mail, data de criação, plano, telefone, tudo em fila, às vezes com campos técnicos expostos."
+  },
+  {
+   "id": 82,
+   "type": "item",
+   "voice": "B",
+   "text": "Evite: agrupe os campos por assunto (seus dados, contato, plano), na ordem em que a pessoa responderia, e deixe os campos técnicos fora da tela."
+  },
+  {
+   "id": 83,
+   "type": "section",
+   "voice": "B",
+   "text": "Seção. Português gerado por IA. Erros pequenos que derrubam a confiança."
+  },
+  {
+   "id": 84,
+   "type": "item",
+   "voice": "A",
+   "text": "Texto de interface é o que a pessoa lê primeiro e o que o modelo menos revisa. Os padrões abaixo vêm da observação geral do que modelos costumam produzir, sem medição própria. Confira nas suas saídas. Os exemplos são para um produto em português do Brasil."
+  },
+  {
+   "id": 85,
+   "type": "item",
+   "voice": "A",
+   "text": "Em dúvida sobre uma palavra, consulte o VOLP, o Vocabulário Ortográfico da Língua Portuguesa, da Academia Brasileira de Letras. É simples e rápido: digite a palavra no campo de busca e veja se ela está registrada. Se não aparecer, desconfie e confirme em um dicionário antes de usar. O VOLP traz grafia e classe gramatical, não o significado."
+  },
+  {
+   "id": 86,
+   "type": "item",
+   "voice": "A",
+   "text": "Gravidade 3. Acentos perdidos e codificação quebrada"
+  },
+  {
+   "id": 87,
+   "type": "item",
+   "voice": "A",
+   "text": "Textos de interface sem acento (\"nao\", \"voce\") ou salvos na codificação errada (\"NÃ£o\"). Aparece quando a string passa por um ambiente que só aceita ASCII ou quando o arquivo não está em UTF-8. O texto fica feio e, no segundo caso, ilegível."
+  },
+  {
+   "id": 88,
+   "type": "item",
+   "voice": "B",
+   "text": "Evite: exija arquivos em UTF-8 com o charset declarado e revise a acentuação das strings de interface antes de aceitar."
+  },
+  {
+   "id": 89,
+   "type": "item",
+   "voice": "A",
+   "text": "Gravidade 3. Palavras inventadas"
+  },
+  {
+   "id": 90,
+   "type": "item",
+   "voice": "A",
+   "text": "O modelo cria palavras que soam plausíveis juntando radicais e sufixos. \"Emplacação\" é um caso típico: parece o substantivo natural de \"emplacar\", mas o Priberam registra \"emplacamento\", e não encontrei \"emplacação\" entre as entradas. O mesmo vale para \"atendimentar\" e \"otimizacional\". Neologismo pode ser escolha de marca, mas nesse caso é decisão e não acidente."
+  },
+  {
+   "id": 91,
+   "type": "item",
+   "voice": "B",
+   "text": "Evite: peça só palavras dicionarizadas e uma lista das que o modelo tiver dúvida. Ao derivar substantivo de verbo, confira se ele existe. Consulte o VOLP, da Academia Brasileira de Letras, ou um dicionário como o Michaelis ou o Priberam."
+  },
+  {
+   "id": 92,
+   "type": "item",
+   "voice": "A",
+   "text": "Gravidade 3. Formatos à moda americana"
+  },
+  {
+   "id": 93,
+   "type": "item",
+   "voice": "A",
+   "text": "Preço com vírgula nos milhares e ponto nos centavos, data com o mês na frente, horário com AM e PM. O modelo mistura convenções americanas em texto brasileiro, e o erro vai além do estético: o valor, o dia ou a hora podem ser lidos errado."
+  },
+  {
+   "id": 94,
+   "type": "item",
+   "voice": "B",
+   "text": "Evite: defina os formatos pt-BR no contexto (R$ 1.299,90; 25 11 2026; 14h30) e use as funções de formatação de data e moeda do idioma (por exemplo, Intl) em vez de montar o texto à mão."
+  },
+  {
+   "id": 95,
+   "type": "item",
+   "voice": "A",
+   "text": "Gravidade 2. Vírgula entre sujeito e predicado"
+  },
+  {
+   "id": 96,
+   "type": "item",
+   "voice": "A",
+   "text": "\"Nossa plataforma, permite marcar consultas.\" A vírgula única separa o que a sintaxe junta: sujeito e verbo, ou verbo e complemento. Uma intercalação leva duas vírgulas, uma de cada lado."
+  },
+  {
+   "id": 97,
+   "type": "item",
+   "voice": "B",
+   "text": "Evite: escreva a regra no contexto: sem vírgula única entre sujeito e verbo, nem entre verbo e complemento. Passe um corretor gramatical antes de publicar."
+  },
+  {
+   "id": 98,
+   "type": "item",
+   "voice": "A",
+   "text": "Gravidade 2. Vírgula que muda o sentido"
+  },
+  {
+   "id": 99,
+   "type": "item",
+   "voice": "A",
+   "text": "A mesma frase muda de sentido com e sem vírgulas. \"Os pacientes, que chegaram cedo, foram atendidos\" diz que todos chegaram cedo. Sem as vírgulas, só foram atendidos os que chegaram cedo. O modelo escolhe uma das duas sem saber qual você quis dizer."
+  },
+  {
+   "id": 100,
+   "type": "item",
+   "voice": "B",
+   "text": "Evite: quando a frase tiver oração com \"que\", defina o sentido pretendido e use a vírgula que o confirma. A restritiva não leva vírgula, e a explicativa leva."
+  },
+  {
+   "id": 101,
+   "type": "item",
+   "voice": "A",
+   "text": "Gravidade 2. Vírgula de série à moda inglesa"
+  },
+  {
+   "id": 102,
+   "type": "item",
+   "voice": "A",
+   "text": "O modelo põe vírgula antes do \"e\" que fecha a lista, como no inglês. Em português, a enumeração não leva vírgula antes do \"e\"."
+  },
+  {
+   "id": 103,
+   "type": "item",
+   "voice": "B",
+   "text": "Evite: escreva a regra no contexto: sem vírgula antes do \"e\" que fecha uma enumeração."
+  },
+  {
+   "id": 104,
+   "type": "item",
+   "voice": "A",
+   "text": "Gravidade 2. Crase, regência e concordância"
+  },
+  {
+   "id": 105,
+   "type": "item",
+   "voice": "A",
+   "text": "Erros que muita gente comete e que o modelo repete em escala: \"à partir de\", \"haviam dez vagas\", \"fazem dois anos\". Cada um é pequeno, e juntos tiram a credibilidade de um texto institucional."
+  },
+  {
+   "id": 106,
+   "type": "item",
+   "voice": "B",
+   "text": "Evite: registre as regras no contexto (\"a partir de\" não leva crase; haver e fazer no sentido de existir ou de tempo decorrido ficam no singular) e passe um corretor gramatical antes de publicar."
+  },
+  {
+   "id": 107,
+   "type": "item",
+   "voice": "A",
+   "text": "Gravidade 2. Concordância com \"se\" e com \"um dos que\""
+  },
+  {
+   "id": 108,
+   "type": "item",
+   "voice": "A",
+   "text": "Com o \"se\" apassivador, o verbo concorda com o sujeito. O modelo costuma deixar no singular. O mesmo acontece depois de \"um dos que\"."
+  },
+  {
+   "id": 109,
+   "type": "item",
+   "voice": "B",
+   "text": "Evite: registre as duas regras: com \"se\" apassivador, o verbo concorda com o sujeito; depois de \"um dos que\", o verbo vai para o plural na norma-padrão."
+  },
+  {
+   "id": 110,
+   "type": "item",
+   "voice": "A",
+   "text": "Gravidade 2. Pares que se confundem"
+  },
+  {
+   "id": 111,
+   "type": "item",
+   "voice": "A",
+   "text": "Por que e porque, onde e aonde, mal e mau, há e a. São pares que o modelo troca quando a frase é montada às pressas, principalmente em perguntas e mensagens curtas."
+  },
+  {
+   "id": 112,
+   "type": "item",
+   "voice": "B",
+   "text": "Evite: liste os pares no contexto (por que, porque, por quê, porquê; onde e aonde; mal e mau; há e a) e passe um corretor gramatical."
+  },
+  {
+   "id": 113,
+   "type": "item",
+   "voice": "A",
+   "text": "Gravidade 2. Maiúsculas à moda inglesa"
+  },
+  {
+   "id": 114,
+   "type": "item",
+   "voice": "A",
+   "text": "No inglês, títulos levam todas as palavras capitalizadas e dias e meses começam com maiúscula. Em português, a maiúscula fica para o início da frase e para os nomes próprios."
+  },
+  {
+   "id": 115,
+   "type": "item",
+   "voice": "B",
+   "text": "Evite: maiúscula só no início de frase e em nomes próprios. Dias da semana e meses em minúscula."
+  },
+  {
+   "id": 116,
+   "type": "item",
+   "voice": "A",
+   "text": "Gravidade 2. Português de Portugal em produto brasileiro"
+  },
+  {
+   "id": 117,
+   "type": "item",
+   "voice": "A",
+   "text": "O modelo mistura as duas variantes: \"utilizador\", \"ecrã\", \"guardar\", \"telemóvel\", \"estou a carregar\". Cada palavra é correta em Portugal e soa estrangeira para quem usa o produto no Brasil."
+  },
+  {
+   "id": 118,
+   "type": "item",
+   "voice": "B",
+   "text": "Evite: declare pt-BR no contexto e mantenha um glossário (usuário, tela, salvar, celular). Gerúndio (\"carregando\") no lugar de \"a carregar\"."
+  },
+  {
+   "id": 119,
+   "type": "item",
+   "voice": "A",
+   "text": "Gravidade 2. Tradução literal e falsos cognatos"
+  },
+  {
+   "id": 120,
+   "type": "item",
+   "voice": "A",
+   "text": "O texto é escrito pensando em inglês e passado para o português. \"Realizar\" no sentido de perceber, \"eventualmente\" no sentido de por fim, \"pretender\" no sentido de fingir. O leitor entende outra coisa."
+  },
+  {
+   "id": 121,
+   "type": "item",
+   "voice": "B",
+   "text": "Evite: peça texto escrito em português, não traduzido. Revise os falsos cognatos mais comuns (realizar, eventualmente, pretender, atualmente) e use os nomes de botão da convenção do seu domínio."
+  },
+  {
+   "id": 122,
+   "type": "item",
+   "voice": "A",
+   "text": "Gravidade 2. Plural montado por template"
+  },
+  {
+   "id": 123,
+   "type": "item",
+   "voice": "A",
+   "text": "O texto é escrito com o plural do exemplo e o código só troca o número. Sai \"1 consultas\" e \"0 notificações novas\", que soa mecânico."
+  },
+  {
+   "id": 124,
+   "type": "item",
+   "voice": "B",
+   "text": "Evite: use regras de plural (Intl.PluralRules ou uma biblioteca de i18n), teste com 0, 1 e 2 e escreva uma frase própria para o zero."
+  },
+  {
+   "id": 125,
+   "type": "item",
+   "voice": "A",
+   "text": "Gravidade 2. Tratamento e verbos inconsistentes"
+  },
+  {
+   "id": 126,
+   "type": "item",
+   "voice": "A",
+   "text": "Na mesma tela, \"você\", \"tu\" e \"o senhor\". Nos botões, infinitivo (\"Salvar\") ao lado de imperativo (\"Cancele\"). Cada frase está certa, e o conjunto parece escrito por três pessoas."
+  },
+  {
+   "id": 127,
+   "type": "item",
+   "voice": "B",
+   "text": "Evite: defina o tratamento (você) e o modo do verbo nos botões em DESIGN.md. Escolha infinitivo ou imperativo e use o mesmo em todo o produto."
+  },
+  {
+   "id": 128,
+   "type": "item",
+   "voice": "A",
+   "text": "Gravidade 2. Marca de gênero com parênteses"
+  },
+  {
+   "id": 129,
+   "type": "item",
+   "voice": "A",
+   "text": "Parênteses para marcar gênero viram ruído visual e podem ser lidos de forma estranha por leitores de tela. Há alternativas que dispensam a marca."
+  },
+  {
+   "id": 130,
+   "type": "item",
+   "voice": "B",
+   "text": "Evite: use fórmulas sem marca de gênero (Olá), o nome da pessoa ou um substantivo coletivo."
+  },
+  {
+   "id": 131,
+   "type": "item",
+   "voice": "A",
+   "text": "Gravidade 2. Ponto no lugar da vírgula"
+  },
+  {
+   "id": 132,
+   "type": "item",
+   "voice": "A",
+   "text": "A IA corta a frase em pedaços, cada um com seu ponto final, e usa o ponto para listar itens que pedem vírgula. O efeito é de slogan repetido. As ideias perdem os conectivos que as ligam (porque, mas, então), e o leitor precisa montar sozinho a relação entre elas."
+  },
+  {
+   "id": 133,
+   "type": "item",
+   "voice": "B",
+   "text": "Evite: una orações curtas e relacionadas com vírgula, \"e\" ou conectivo, e separe os itens de uma enumeração com vírgula, com \"e\" antes do último. O fragmento isolado funciona como destaque quando é raro. Em série, vira tique. Para listar de verdade, use lista com marcadores."
+  },
+  {
+   "id": 134,
+   "type": "item",
+   "voice": "A",
+   "text": "Gravidade 2. Gerundismo"
+  },
+  {
+   "id": 135,
+   "type": "item",
+   "voice": "A",
+   "text": "\"Vou estar enviando\", \"vamos estar verificando\". A construção alonga a frase e soa a atendimento de telemarketing."
+  },
+  {
+   "id": 136,
+   "type": "item",
+   "voice": "B",
+   "text": "Evite: use o verbo simples: \"vou enviar\", \"vamos verificar\"."
+  },
+  {
+   "id": 137,
+   "type": "item",
+   "voice": "A",
+   "text": "Gravidade 2. Texto burocrático"
+  },
+  {
+   "id": 138,
+   "type": "item",
+   "voice": "A",
+   "text": "Voz passiva e nominalização em excesso: o verbo vira substantivo, e quem age some da frase. A tela fica com tom de ofício."
+  },
+  {
+   "id": 139,
+   "type": "item",
+   "voice": "B",
+   "text": "Evite: prefira voz ativa e verbos. O botão diz o que fazer, e a mensagem diz quem fez o quê."
+  },
+  {
+   "id": 140,
+   "type": "item",
+   "voice": "A",
+   "text": "Gravidade 2. Clichês de texto gerado"
+  },
+  {
+   "id": 141,
+   "type": "item",
+   "voice": "A",
+   "text": "\"No cenário atual\", \"é importante ressaltar\", \"revolucione\", \"mergulhe\", \"desbloqueie o potencial\", travessão em toda frase. É o jeito mais rápido de o leitor perceber que ninguém escreveu o texto."
+  },
+  {
+   "id": 142,
+   "type": "item",
+   "voice": "B",
+   "text": "Evite: liste os clichês como proibidos no contexto, peça frases curtas com sujeito e verbo, conteúdo concreto do produto e leitura em voz alta antes de publicar."
+  },
+  {
+   "id": 143,
+   "type": "item",
+   "voice": "A",
+   "text": "Gravidade 1. Pleonasmos"
+  },
+  {
+   "id": 144,
+   "type": "item",
+   "voice": "A",
+   "text": "Palavras que repetem o que a anterior já disse: \"há dois anos atrás\", \"subir para cima\", \"elo de ligação\". São pequenos, e mostram um texto que ninguém releu."
+  },
+  {
+   "id": 145,
+   "type": "item",
+   "voice": "B",
+   "text": "Evite: peça texto enxuto e revise as palavras que repetem a ideia da vizinha."
+  },
+  {
+   "id": 146,
+   "type": "item",
+   "voice": "A",
+   "text": "Como revisar texto gerado em quatro leituras"
+  },
+  {
+   "id": 147,
+   "type": "item",
+   "voice": "A",
+   "text": "Cada leitura tem um foco, porque ninguém consegue procurar vírgula, palavra inventada e formato de data ao mesmo tempo. Faça na ordem."
+  },
+  {
+   "id": 148,
+   "type": "item",
+   "voice": "A",
+   "text": "Leitura 1: sentido, em voz altaLeia em voz alta e pergunte se a frase diz o que o produto faz. Onde você tomou fôlego sem querer, falta ou sobra uma vírgula. Onde você tropeçou, a frase está comprida demais."
+  },
+  {
+   "id": 149,
+   "type": "item",
+   "voice": "A",
+   "text": "Leitura 2: palavrasMarque cada palavra em que você hesitou e confira no VOLP ou em um dicionário. É assim que se pegam as palavras inventadas, como \"emplacação\"."
+  },
+  {
+   "id": 150,
+   "type": "item",
+   "voice": "A",
+   "text": "Leitura 3: sintaxeNas frases longas, ache o sujeito e o verbo. Veja se nada os separa e se concordam. Confira haver, fazer, o \"se\" apassivador e o \"um dos que\"."
+  },
+  {
+   "id": 151,
+   "type": "item",
+   "voice": "A",
+   "text": "Leitura 4: formato e consistênciaConfira moeda, data, hora, tratamento, verbo dos botões, maiúsculas e acentos contra o glossário e o PORTUGUES.md."
+  },
+  {
+   "id": 152,
+   "type": "item",
+   "voice": "A",
+   "text": "Corretor automáticoUm corretor gramatical, como o LanguageTool, que tem pt-BR, pega parte dos erros e deixa passar outros. Trate como uma quinta leitura, e não como aprovação."
+  },
+  {
+   "id": 153,
+   "type": "item",
+   "voice": "A",
+   "text": "Quando chamar um revisor humanoTexto para o público externo, material institucional, jurídico ou de marca, e a cada nova versão do glossário. Quem gerou o texto tende a aprovar o que gerou, então a segunda passada vale mais com outra pessoa ou em outra conversa."
+  },
+  {
+   "id": 154,
+   "type": "section",
+   "voice": "B",
+   "text": "Seção. Cuidado com imagem gerada com IA. Falhas que só aparecem no zoom."
+  },
+  {
+   "id": 155,
+   "type": "item",
+   "voice": "A",
+   "text": "Imagem gerada passa rápido pelo olho. O problema aparece quando alguém dá zoom, lê a placa ou conta os dedos. As ilustrações desta seção foram feitas em código para mostrar cada padrão. Não são imagens reais geradas por IA."
+  },
+  {
+   "id": 156,
+   "type": "item",
+   "voice": "A",
+   "text": "Gravidade 3. Texto dentro da imagem"
+  },
+  {
+   "id": 157,
+   "type": "item",
+   "voice": "A",
+   "text": "Geradores erram letras, inventam palavras e repetem sílabas. Numa placa, num rótulo ou num cartaz, o resultado parece texto de longe e vira ruído de perto."
+  },
+  {
+   "id": 158,
+   "type": "item",
+   "voice": "B",
+   "text": "Evite: nunca gere texto dentro da imagem. Gere a cena limpa e escreva o texto depois, em HTML ou na ferramenta de design."
+  },
+  {
+   "id": 159,
+   "type": "item",
+   "voice": "A",
+   "text": "Gravidade 3. Anatomia e objetos impossíveis"
+  },
+  {
+   "id": 160,
+   "type": "item",
+   "voice": "A",
+   "text": "Mãos com dedos a mais, talheres fundidos, relógios sem sentido, dentes demais. Cada detalhe parece plausível sozinho, e o conjunto não fecha."
+  },
+  {
+   "id": 161,
+   "type": "item",
+   "voice": "B",
+   "text": "Evite: dê zoom de 200% em mãos, olhos, dentes e objetos antes de aceitar. Se a pessoa ou o produto importam, use foto real."
+  },
+  {
+   "id": 162,
+   "type": "item",
+   "voice": "A",
+   "text": "Gravidade 3. Imagem que promete o que o produto não é"
+  },
+  {
+   "id": 163,
+   "type": "item",
+   "voice": "A",
+   "text": "Foto de equipe que não existe, produto com acabamento que ninguém fabrica, lugar que não é aquele endereço. A pessoa decide pela imagem e recebe outra coisa."
+  },
+  {
+   "id": 164,
+   "type": "item",
+   "voice": "B",
+   "text": "Evite: use foto real para produto, equipe e lugar. Reserve a imagem gerada para ambientação e rotule quando a origem importar. Confira também os termos de uso da ferramenta antes de publicar."
+  },
+  {
+   "id": 165,
+   "type": "item",
+   "voice": "A",
+   "text": "Gravidade 2. Detalhe demais, sem hierarquia"
+  },
+  {
+   "id": 166,
+   "type": "item",
+   "voice": "A",
+   "text": "Tudo nítido, tudo texturizado, tudo brilhando. O olho não sabe onde pousar, e o assunto da imagem se perde no fundo."
+  },
+  {
+   "id": 167,
+   "type": "item",
+   "voice": "B",
+   "text": "Evite: peça um assunto único, fundo calmo e espaço vazio ao redor. Um foco por imagem, como em qualquer tela."
+  },
+  {
+   "id": 168,
+   "type": "item",
+   "voice": "A",
+   "text": "Gravidade 2. Imagens que não combinam entre si"
+  },
+  {
+   "id": 169,
+   "type": "item",
+   "voice": "A",
+   "text": "O personagem muda de rosto de uma tela para outra, a luz vem de lados diferentes, o estilo passa de foto a ilustração. Cada imagem sozinha funciona, e o conjunto parece de sites diferentes."
+  },
+  {
+   "id": 170,
+   "type": "item",
+   "voice": "B",
+   "text": "Evite: registre em DESIGN.md o estilo de imagem: paleta, direção da luz, proporção e uma imagem de referência. Reutilize a mesma referência a cada geração."
+  },
+  {
+   "id": 171,
+   "type": "item",
+   "voice": "A",
+   "text": "Gravidade 1. Excesso de dourado, brilho e partículas"
+  },
+  {
+   "id": 172,
+   "type": "item",
+   "voice": "A",
+   "text": "Luz dourada em tudo, bokeh, faíscas e um brilho saindo do objeto. É a marca mais reconhecível do estilo, e o que mais denuncia imagem gerada sem direção."
+  },
+  {
+   "id": 173,
+   "type": "item",
+   "voice": "B",
+   "text": "Evite: descreva a luz de verdade (janela lateral, luz do dia, fundo neutro) e proíba \"glow\", faíscas e partículas no pedido."
+  },
+  {
+   "id": 174,
+   "type": "section",
+   "voice": "B",
+   "text": "Seção. Design é humano: como treinar o seu olhar. A IA executa. Quem julga é você."
+  },
+  {
+   "id": 175,
+   "type": "item",
+   "voice": "A",
+   "text": "A IA gera a média do que já viu. Olho de designer é o que enxerga o que ficou de fora da média, e isso se treina com volume, com atenção e com a pergunta certa. Esta seção mapeia onde olhar: prêmios, galerias, telas de produto, design systems abertos, tipografia, princípios e CSS para estudar. Os links foram levantados por busca, sem abrir um a um. Confira antes de depender de algum."
+  },
+  {
+   "id": 176,
+   "type": "item",
+   "voice": "A",
+   "text": "Premiado não é o mesmo que usável. Os prêmios avaliam criatividade e execução, e muitos sites vencedores dependem de animação pesada, cursor customizado e rolagem sequestrada. Use essas fontes para ampliar o teto do que você acha possível. Para decidir o que fazer no seu produto, volte à escala de severidade lá no topo."
+  },
+  {
+   "id": 177,
+   "type": "item",
+   "voice": "A",
+   "text": "Seis exercícios para treinar o olhar"
+  },
+  {
+   "id": 178,
+   "type": "item",
+   "voice": "A",
+   "text": "Escreva antes de ler. Abra um site que você admira e anote três coisas que ele faz bem e uma que você faria diferente, antes de ler qualquer análise. Opinião formada sozinho é a que fica."
+  },
+  {
+   "id": 179,
+   "type": "item",
+   "voice": "A",
+   "text": "Recrie à mão. Reproduza uma seção, sem IA, olhando só para o resultado. Depois sobreponha ao original. O espaçamento, o tamanho da fonte e a entrelinha que você errou são o treino."
+  },
+  {
+   "id": 180,
+   "type": "item",
+   "voice": "A",
+   "text": "A prova do cinza e do desfoque. Tire um print, passe para escala de cinza e desfoque. Se a hierarquia sumiu, o design dependia de cor e detalhe, e não de estrutura."
+  },
+  {
+   "id": 181,
+   "type": "item",
+   "voice": "A",
+   "text": "Use o que foi premiado. Navegue um site premiado só com o teclado, com zoom de 200% e no celular. Prêmio mede criatividade e execução. Usabilidade você confere sozinho."
+  },
+  {
+   "id": 182,
+   "type": "item",
+   "voice": "A",
+   "text": "Mantenha um caderno de referências. Uma pasta com prints e uma frase por print: o que me chamou atenção e por quê. Daqui a seis meses, é o seu material de pesquisa, e serve de insumo para a IA."
+  },
+  {
+   "id": 183,
+   "type": "item",
+   "voice": "A",
+   "text": "Só depois, peça à IA. Entregue o seu repertório e a sua rubrica ao modelo, e deixe que ele execute. Quem julga continua sendo você, porque o olhar é a parte que a IA não treina por você."
+  },
+  {
+   "id": 184,
+   "type": "item",
+   "voice": "A",
+   "text": "O mapa de referências"
+  },
+  {
+   "id": 185,
+   "type": "item",
+   "voice": "A",
+   "text": "Prêmios: o que a indústria aplaude. Bom para ver o teto da execução. Premiado por criatividade não quer dizer fácil de usar: abra o site com o teclado e no celular antes de copiar qualquer coisa. Alguns exemplos: Awwwards, CSS Design Awards, The FWA, Webby Awards, Red Dot: Communication Design."
+  },
+  {
+   "id": 186,
+   "type": "item",
+   "voice": "A",
+   "text": "Galerias: ver muito, rápido. Treino de olhar é volume com atenção. Abra uma galeria, escolha três sites e diga em voz alta por que cada um funciona. Alguns exemplos: Siteinspire, Httpster, Land-book, Lapa Ninja, Godly (agora Recent)."
+  },
+  {
+   "id": 187,
+   "type": "item",
+   "voice": "A",
+   "text": "Telas de produto e fluxos. Landing page é vitrine. Quem treina o olhar para produto precisa ver tela de app, formulário, erro, vazio e carregamento. Alguns exemplos: Mobbin, Refero, Page Flows, Collect UI, Component Gallery."
+  },
+  {
+   "id": 188,
+   "type": "item",
+   "voice": "A",
+   "text": "Design systems abertos: o padrão de quem pesquisa a sério. Aqui o design já passou por teste, acessibilidade e documentação. Leia as regras, não só o visual. Alguns exemplos: Padrão Digital de Governo (gov.br ds), GOV.UK Design System, U.S. Web Design System (USWDS), Material Design 3, Carbon (IBM)."
+  },
+  {
+   "id": 189,
+   "type": "item",
+   "voice": "A",
+   "text": "Tipografia e cor: onde o olho mais evolui. Hierarquia, entrelinha e contraste explicam mais do que qualquer efeito. Treine aqui primeiro. Alguns exemplos: Typewolf, Fonts In Use, Fontshare, Practical Typography, Realtime Colors."
+  },
+  {
+   "id": 190,
+   "type": "item",
+   "voice": "A",
+   "text": "Princípios e crítica: o porquê por trás do bonito. Galeria mostra o resultado. Estas fontes explicam o motivo, e é o motivo que se transfere para o próximo projeto. Alguns exemplos: Laws of UX, Nielsen Norman Group, Deceptive Design, Refactoring UI."
+  },
+  {
+   "id": 191,
+   "type": "item",
+   "voice": "A",
+   "text": "CSS bom para baixar, estudar e adaptar. Copiar código não é copiar identidade. Leia a licença, troque os tokens pelos seus e entenda cada propriedade antes de colar. Alguns exemplos: Open Props, Pico CSS, Every Layout, Utopia, Modern CSS Solutions."
+  },
+  {
+   "id": 192,
+   "type": "item",
+   "voice": "A",
+   "text": "NIELSEN.md na raiz do projeto"
+  },
+  {
+   "id": 193,
+   "type": "item",
+   "voice": "A",
+   "text": "Repare que as heurísticas 1, 3, 5 e 9 de Nielsen (estado do sistema, controle do usuário, prevenção e recuperação de erros) cobrem quase tudo que está nos níveis 3 e 4 acima. É a parte invisível, e é a que a IA esquece. Escrever essas perguntas num arquivo dá ao modelo um critério para gerar e um roteiro para se auditar."
+  },
+  {
+   "id": 194,
+   "type": "item",
+   "voice": "A",
+   "text": "O segundo arquivo reúne os 49 erros desta página em formato curto, sem exemplos de código ruim, para o modelo ter regras e nada para imitar."
+  },
+  {
+   "id": 195,
+   "type": "item",
+   "voice": "A",
+   "text": "O terceiro arquivo trata só de português. Fica na raiz, ao lado dos outros, e entra no CLAUDE.md pela mesma importação."
+  },
+  {
+   "id": 196,
+   "type": "item",
+   "voice": "A",
+   "text": "Como o agente lê o arquivo Na raiz, o arquivo só ajuda se a ferramenta o carregar. No Claude Code, o carregado automaticamente é o CLAUDE.md, e ele importa outros arquivos com @caminho. Em outras ferramentas, o equivalente costuma ser AGENTS.md ou um arquivo de regras próprio. Confirme na documentação da sua."
+  },
+  {
+   "id": 197,
+   "type": "item",
+   "voice": "A",
+   "text": "Arquivos que acompanham DESIGN.md guarda os tokens: paleta, fontes, escala, espaçamento, raio e biblioteca de ícones. Uma pasta referencias/ com três ou quatro telas de que você gosta dá ao modelo algo concreto para imitar no lugar da média da internet."
+  },
+  {
+   "id": 198,
+   "type": "item",
+   "voice": "A",
+   "text": "O arquivo sozinho não basta Hipótese minha: contexto escrito reduz o slop, mas o modelo ainda pode ignorar regras. Por isso, depois de gerar, abra uma conversa nova, entregue o código com o NIELSEN.md e peça só a lista de violações. Quem gerou tende a aprovar o que gerou. Depois confira a tela em 390 e 1280 px, só com o teclado."
+  },
+  {
+   "id": 199,
+   "type": "section",
+   "voice": "B",
+   "text": "Esse foi o guia. Os arquivos Nielsen, Antipadrões, Português e Repertório estão logo abaixo, prontos para baixar e colocar na raiz do seu projeto. Obrigado por ouvir."
+  }
+ ]
+}
