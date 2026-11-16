@@ -276,6 +276,15 @@ body.playing { padding-bottom: 84px; }
 }
 @media (prefers-reduced-motion: reduce) { #side { transition: none; } }
 
+/* Quem escreveu */
+.author { margin-top: 72px; border-top: 3px solid var(--ink); padding-top: 12px; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); gap: 16px 48px; }
+.author h2 { font-family: var(--display); font-stretch: 75%; text-transform: uppercase; font-weight: 800; font-size: clamp(28px, 4.5vw, 44px); line-height: 1.05; letter-spacing: -0.02em; margin: 0; }
+.author-body { max-width: 62ch; }
+.author-body p { margin: 0 0 14px; }
+.author-body .who { font-size: 20px; line-height: 1.4; }
+.author-body .who b { display: block; font-size: 24px; font-weight: 800; }
+@container (max-width: 760px) { .author { grid-template-columns: 1fr; } }
+
 @media (max-width: 760px) { .tip { grid-template-columns: 1fr; } }
 .subh { font-family: var(--display); font-stretch: 75%; text-transform: uppercase; font-weight: 800; font-size: 24px; line-height: 1.1; border-top: 3px solid var(--ink); padding-top: 10px; margin: 56px 0 4px; letter-spacing: -0.005em; }
 .lines { display: grid; gap: 6px; font-size: 13px; }
@@ -1595,6 +1604,18 @@ siga @PORTUGUES.md.</pre>
   </div>
 </section>
 
+<section class="author" aria-labelledby="autor">
+  <h2 id="autor">Quem escreveu</h2>
+  <div class="author-body">
+    <p class="who"><b>Patrick Cavalcante</b>Designer de produtos digitais, curioso profissional e sobrevivente da internet desde quando tudo era mato.</p>
+    <p>Minha história com o design começou em 2005, ainda na época em que o Photoshop era instalado por CD e publicar um site exigia uma dose considerável de coragem.</p>
+    <p>Sou técnico em Computação Gráfica pela FAETEC, bacharel em Letras e especialista em Literatura Brasileira pela UERJ, além de especialista em UX/UI pela PUC.</p>
+    <p>Hoje, trabalho como Designer de Produtos Digitais no SERPRO, unindo design, tecnologia, pesquisa e experiência do usuário na construção de produtos digitais.</p>
+    <p>Minha trajetória passa pela comunicação visual, pela literatura e pelo design de interfaces. Talvez por isso eu acredite tanto que uma boa interface precisa de duas coisas: funcionar bem e fazer sentido para quem usa.</p>
+    <p>Este projeto nasce desse encontro entre experiência prática, olhar crítico e uma certa impaciência com interfaces bonitas que não funcionam.</p>
+  </div>
+</section>
+
 <footer>
   As dez heurísticas e a escala de severidade são de Jakob Nielsen, com Rolf Molich nas heurísticas, publicadas pelo Nielsen Norman Group. O texto do arquivo acima é paráfrase para uso em projeto. Razões de contraste calculadas pela fórmula da WCAG 2.2.
 </footer>
@@ -1708,6 +1729,7 @@ siga @PORTUGUES.md.</pre>
   side.appendChild(mk('div', 'side-sep'));
   var ol2 = mk('ol'); side.appendChild(ol2);
   var nh = $('#nielsen-h'); if (nh) { var l = mk('li'); var a = anchor('nielsen-h', 'Arquivos .md para o projeto'); l.appendChild(a); ol2.appendChild(l); targets.push({ el: nh, a: a, grp: null }); }
+  var au = $('#autor'); if (au) { var l3 = mk('li'); var a3 = anchor('autor', 'Quem escreveu'); l3.appendChild(a3); ol2.appendChild(l3); targets.push({ el: au, a: a3, grp: null }); }
   // ordem do documento
   targets.sort(function (x, y) { return (x.el.compareDocumentPosition(y.el) & 4) ? -1 : 1; });
 
@@ -1716,6 +1738,7 @@ siga @PORTUGUES.md.</pre>
     ticking = false;
     var cur = targets[0];
     for (var i = 0; i < targets.length; i++) { if (targets[i].el.getBoundingClientRect().top <= 140) cur = targets[i]; else break; }
+    if (innerHeight + scrollY >= document.documentElement.scrollHeight - 4) cur = targets[targets.length - 1];
     if (cur === curT) return; curT = cur;
     $$('#side a.cur').forEach(function (e) { e.classList.remove('cur'); });
     $$('#side .grp.open').forEach(function (e) { if (e !== cur.grp && !(cur.a.parentNode === e)) e.classList.remove('open'); });
@@ -1740,7 +1763,7 @@ siga @PORTUGUES.md.</pre>
   // ---------- Roteiro de leitura (fonte única do áudio ao vivo e do mp3) ----------
   var SEL = ['.thesis p:not([data-skip-read])', '.scale .sc', 'section.group .group-h', 'section.group > .img-note', 'section.group .tip p',
     'section.group .f .body > h3', 'section.group .f .body > p', 'section.group .subh', 'section.group .how > div', '.train li', '.rcat',
-    '.nielsen > h2', '.nielsen > .lead', '.nielsen .how > div:not(.codebox)'].join(',');
+    '.nielsen > h2', '.nielsen > .lead', '.author > h2', '.author-body p', '.nielsen .how > div:not(.codebox)'].join(',');
   function norm(t) { return clean(t).replace(/→/g, ' para ').replace(/(\S)\/(\S)/g, '$1 $2').replace(/\bAI SLOP\b/g, 'AI slop'); }
   function buildLines() {
     var L = [], sec = -1, sections = [];
@@ -1765,11 +1788,13 @@ siga @PORTUGUES.md.</pre>
         add('item', clean($('h3', el).textContent) + '. ' + clean($('.rnote', el).textContent) + (names ? ' Alguns exemplos: ' + names + '.' : ''), 'A', el); return;
       }
       if (el.matches('.train li')) { add('item', $('b', el).textContent + '. ' + $('p', el).textContent, 'A', el); return; }
+      if (el.matches('.author-body .who')) { var nm = $('b', el); add('item', nm.textContent + '. ' + el.textContent.slice(nm.textContent.length), 'A', el); return; }
+      if (el.matches('.author > h2')) { sec++; add('section', 'Quem escreveu.', 'B', el, 'Quem escreveu'); return; }
       if (el.matches('.how > div')) { add('item', el.textContent, 'A', el); return; }
       add('item', el.textContent, 'A', el);
     });
     sec = sections.length;
-    add('section', 'Esse foi o guia. Os arquivos Nielsen, Antipadrões, Português e Repertório estão logo abaixo, prontos para baixar e colocar na raiz do seu projeto. Obrigado por ouvir.', 'B', $('#nielsen-h'), 'Encerramento');
+    add('section', 'Esse foi o guia. Os arquivos Nielsen, Antipadrões, Português e Repertório estão na página, prontos para baixar e colocar na raiz do seu projeto. Obrigado por ouvir.', 'B', $('#nielsen-h'), 'Encerramento');
     // quebra linhas acima de 1800 caracteres
     var out = [];
     L.forEach(function (l) {
