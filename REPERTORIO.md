@@ -75,7 +75,14 @@ Galeria mostra o resultado. Estas fontes explicam o motivo, e é o motivo que se
 - [Laws of UX](https://lawsofux.com) (grátis): Coletânea de leis e princípios de psicologia aplicados a interface, como a Lei de Hick e a de proximidade, com exemplos.
 - [Nielsen Norman Group](https://www.nngroup.com/articles/) (grátis, com extras pagos): Pesquisa e artigos de usabilidade da fonte das heurísticas usadas nesta página.
 - [Deceptive Design](https://www.deceptive.design) (grátis): Catálogo de padrões enganosos (dark patterns). Treina o olhar a reconhecer o que não imitar.
-- [Refactoring UI](https://www.refactoringui.com) (pago): Livro de Adam Wathan e Steve Schoger com táticas visuais para quem desenvolve e não é designer.
+
+## Em português: cursos e trilhas
+
+Para quem prefere estudar na própria língua e no próprio bolso. Os links foram levantados por busca. Confira preço, conteúdo e política de acesso antes de pagar ou se inscrever.
+
+- [Origamid](https://www.origamid.com) (pago): Cursos brasileiros de web design, UI/UX e front-end. Serve a quem quer desenhar e já codar o que desenhou. Confira valores e catálogo no site.
+- [UX / UI: Fundamentos para o design de interface](https://www.coursera.org/learn/ux-ui-design-de-interface) (confirmar acesso gratuito): Curso da USP no Coursera, em português, com nota 4,5 em cerca de 790 avaliações. Costuma ter modo ouvinte gratuito, mas confirme na página.
+- [Introdução a UX/UI Design, da Menina de UX](https://meninadeux.gumroad.com/l/introducao-uxui-design) (grátis, pague o quanto quiser): Curso introdutório em português. Dá para baixar por R$0 e contribuir se quiser.
 
 ## CSS bom para baixar, estudar e adaptar
 

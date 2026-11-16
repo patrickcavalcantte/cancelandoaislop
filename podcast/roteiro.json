@@ -1,5 +1,5 @@
 {
- "hash": "7f25da67",
+ "hash": "20bedfe7",
  "linhas": [
   {
    "id": 0,
@@ -1223,58 +1223,64 @@
    "id": 203,
    "type": "item",
    "voice": "A",
-   "text": "Princípios e crítica: o porquê por trás do bonito. Galeria mostra o resultado. Estas fontes explicam o motivo, e é o motivo que se transfere para o próximo projeto. Alguns exemplos: Laws of UX, Nielsen Norman Group, Deceptive Design, Refactoring UI."
+   "text": "Princípios e crítica: o porquê por trás do bonito. Galeria mostra o resultado. Estas fontes explicam o motivo, e é o motivo que se transfere para o próximo projeto. Alguns exemplos: Laws of UX, Nielsen Norman Group, Deceptive Design."
   },
   {
    "id": 204,
    "type": "item",
    "voice": "A",
-   "text": "CSS bom para baixar, estudar e adaptar. Copiar código não é copiar identidade. Leia a licença, troque os tokens pelos seus e entenda cada propriedade antes de colar. Alguns exemplos: Open Props, Pico CSS, Every Layout, Utopia, Modern CSS Solutions."
+   "text": "Em português: cursos e trilhas. Para quem prefere estudar na própria língua e no próprio bolso. Os links foram levantados por busca. Confira preço, conteúdo e política de acesso antes de pagar ou se inscrever. Alguns exemplos: Origamid, UX / UI: Fundamentos para o design de interface, Introdução a UX UI Design, da Menina de UX."
   },
   {
    "id": 205,
    "type": "item",
    "voice": "A",
-   "text": "NIELSEN.md na raiz do projeto"
+   "text": "CSS bom para baixar, estudar e adaptar. Copiar código não é copiar identidade. Leia a licença, troque os tokens pelos seus e entenda cada propriedade antes de colar. Alguns exemplos: Open Props, Pico CSS, Every Layout, Utopia, Modern CSS Solutions."
   },
   {
    "id": 206,
    "type": "item",
    "voice": "A",
-   "text": "Repare que as heurísticas 1, 3, 5 e 9 de Nielsen (estado do sistema, controle do usuário, prevenção e recuperação de erros) cobrem quase tudo que está nos níveis 3 e 4 acima. É a parte invisível, e é a que a IA esquece. Escrever essas perguntas num arquivo dá ao modelo um critério para gerar e um roteiro para se auditar."
+   "text": "NIELSEN.md na raiz do projeto"
   },
   {
    "id": 207,
    "type": "item",
    "voice": "A",
-   "text": "O segundo arquivo reúne os 49 erros desta página em formato curto, sem exemplos de código ruim, para o modelo ter regras e nada para imitar."
+   "text": "Repare que as heurísticas 1, 3, 5 e 9 de Nielsen (estado do sistema, controle do usuário, prevenção e recuperação de erros) cobrem quase tudo que está nos níveis 3 e 4 acima. É a parte invisível, e é a que a IA esquece. Escrever essas perguntas num arquivo dá ao modelo um critério para gerar e um roteiro para se auditar."
   },
   {
    "id": 208,
    "type": "item",
    "voice": "A",
-   "text": "O terceiro arquivo trata só de português. Fica na raiz, ao lado dos outros, e entra no CLAUDE.md pela mesma importação."
+   "text": "O segundo arquivo reúne os 49 erros desta página em formato curto, sem exemplos de código ruim, para o modelo ter regras e nada para imitar."
   },
   {
    "id": 209,
    "type": "item",
    "voice": "A",
-   "text": "Como o agente lê o arquivo Na raiz, o arquivo só ajuda se a ferramenta o carregar. No Claude Code, o carregado automaticamente é o CLAUDE.md, e ele importa outros arquivos com @caminho. Em outras ferramentas, o equivalente costuma ser AGENTS.md ou um arquivo de regras próprio. Confirme na documentação da sua."
+   "text": "O terceiro arquivo trata só de português. Fica na raiz, ao lado dos outros, e entra no CLAUDE.md pela mesma importação."
   },
   {
    "id": 210,
    "type": "item",
    "voice": "A",
-   "text": "Arquivos que acompanham DESIGN.md guarda os tokens: paleta, fontes, escala, espaçamento, raio e biblioteca de ícones. Uma pasta referencias/ com três ou quatro telas de que você gosta dá ao modelo algo concreto para imitar no lugar da média da internet."
+   "text": "Como o agente lê o arquivo Na raiz, o arquivo só ajuda se a ferramenta o carregar. No Claude Code, o carregado automaticamente é o CLAUDE.md, e ele importa outros arquivos com @caminho. Em outras ferramentas, o equivalente costuma ser AGENTS.md ou um arquivo de regras próprio. Confirme na documentação da sua."
   },
   {
    "id": 211,
    "type": "item",
    "voice": "A",
-   "text": "O arquivo sozinho não basta Hipótese minha: contexto escrito reduz o slop, mas o modelo ainda pode ignorar regras. Por isso, depois de gerar, abra uma conversa nova, entregue o código com o NIELSEN.md e peça só a lista de violações. Quem gerou tende a aprovar o que gerou. Depois confira a tela em 390 e 1280 px, só com o teclado."
+   "text": "Arquivos que acompanham DESIGN.md guarda os tokens: paleta, fontes, escala, espaçamento, raio e biblioteca de ícones. Uma pasta referencias/ com três ou quatro telas de que você gosta dá ao modelo algo concreto para imitar no lugar da média da internet."
   },
   {
    "id": 212,
+   "type": "item",
+   "voice": "A",
+   "text": "O arquivo sozinho não basta Hipótese minha: contexto escrito reduz o slop, mas o modelo ainda pode ignorar regras. Por isso, depois de gerar, abra uma conversa nova, entregue o código com o NIELSEN.md e peça só a lista de violações. Quem gerou tende a aprovar o que gerou. Depois confira a tela em 390 e 1280 px, só com o teclado."
+  },
+  {
+   "id": 213,
    "type": "section",
    "voice": "B",
    "text": "Esse foi o guia. Os arquivos Nielsen, Antipadrões, Português e Repertório estão na página, prontos para baixar e colocar na raiz do seu projeto. Obrigado por ouvir."
