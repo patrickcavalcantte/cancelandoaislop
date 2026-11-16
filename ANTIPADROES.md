@@ -66,8 +66,8 @@ Ao terminar uma tela ou uma imagem, percorra a lista, corrija o que se aplicar e
 - Regra: todo valor visual vem de variável definida em um único lugar. Cor, fonte ou espaço escritos direto no componente são defeito.
 
 ### 15. Dashboard decorativo
-- Sinal: tiles de número grande sem origem, gráficos com dados aleatórios, cores sem significado.
-- Regra: resumo antes do detalhe. Cada número mostra origem e data. Cor semântica serve só para estado (bom, atenção, crítico).
+- Sinal: tiles de número grande, gráficos e cores chamativas, mas sem origem, período, referência de comparação, critério de contagem ou acesso ao detalhe. Parece profissional numa apresentação e não ajuda ninguém a decidir.
+- Regra: resumo antes do detalhe. Cada número responde a cinco perguntas: de onde veio (origem), quando foi coletado (período), se é bom ou ruim (contexto, com meta ou período anterior), o que exatamente conta (critério) e onde está o detalhe que o explica (rastreabilidade). Cor semântica serve só para estado (bom, atenção, crítico).
 
 ### 16. Detalhe demais em imagem
 - Sinal: tudo nítido e texturizado, sem ponto de foco.
