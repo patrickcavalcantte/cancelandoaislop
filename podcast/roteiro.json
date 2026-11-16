@@ -1,5 +1,5 @@
 {
- "hash": "4890b236",
+ "hash": "51333b6f",
  "linhas": [
   {
    "id": 0,
@@ -11,7 +11,7 @@
    "id": 1,
    "type": "item",
    "voice": "A",
-   "text": "Nem todos os problemas de interface têm o mesmo impacto. Falhas estéticas incomodam; erros de usabilidade comprometem a experiência; e erros graves de português (como palavras inventadas pelo LLM) abalam a credibilidade do produto."
+   "text": "Nem todos os problemas de interface têm o mesmo impacto: falhas estéticas incomodam; erros de usabilidade comprometem a experiência e erros graves de português (como palavras inventadas pelo LLM) abalam a credibilidade do produto."
   },
   {
    "id": 2,
