@@ -5,6 +5,7 @@ Guia para evitar AI slop em interfaces, imagens e textos em português gerados p
 ## Arquivos
 
 - `index.html`: a página "Como evitar AI SLOP", com os erros organizados por severidade e exemplos lado a lado.
+- `og.png`: imagem de pré-visualização (1200x630) que aparece quando o link é compartilhado no Engage, LinkedIn, WhatsApp e afins.
 - `NIELSEN.md`: as 10 heurísticas de Nielsen como regras para o agente. Vai na raiz do projeto.
 - `ANTIPADROES.md`: 49 antipadrões, cada um com sinal e regra de correção.
 - `PORTUGUES.md`: regras de português do Brasil e checklist de revisão.
