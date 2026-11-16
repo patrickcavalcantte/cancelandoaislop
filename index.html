@@ -274,6 +274,34 @@ body.playing { padding-bottom: 84px; }
   #player { left: 0; }
   .hero { padding-top: 64px; }
 }
+/* ===== Busca ===== */
+.sbox { margin: 0 0 14px; position: relative; }
+.sbox input { width: 100%; font: 400 14px var(--body, inherit); color: var(--ink); background: #fff; border: 2px solid var(--ink); padding: 9px 34px 9px 10px; border-radius: 0; box-sizing: border-box; }
+.sbox input::placeholder { color: var(--soft); }
+.sbox input:focus-visible { outline: 3px solid #ffcb05; outline-offset: 0; }
+.sbox input::-webkit-search-cancel-button { display: none; }
+.sbox kbd { position: absolute; right: 8px; top: 50%; transform: translateY(-50%); font: 500 12px var(--mono); color: var(--soft); border: 1px solid var(--rule); padding: 0 6px; pointer-events: none; }
+.sbox.has kbd { display: none; }
+.sclear { position: absolute; right: 2px; top: 2px; bottom: 2px; width: 34px; border: 0; background: transparent; font-size: 20px; cursor: pointer; color: var(--ink); display: none; }
+.sbox.has .sclear { display: block; }
+.sclear:focus-visible { outline: 3px solid #ffcb05; }
+.sres { list-style: none; margin: 0; padding: 0; }
+.sres[hidden] { display: none; }
+.sres .scount { font: 500 12px var(--mono); color: var(--soft); padding: 2px 8px 8px; }
+.sres a { display: block; text-decoration: none; color: var(--ink); padding: 8px 8px 9px; border-left: 3px solid transparent; border-top: 1px solid var(--rule); }
+.sres a:hover, .sres a:focus-visible { background: color-mix(in srgb, var(--ink) 6%, transparent); border-left-color: var(--ink); outline: none; }
+.sres .stit { display: flex; gap: 8px; align-items: baseline; font-weight: 700; font-size: 14px; line-height: 1.3; }
+.sres .sgrp { font: 500 11px var(--mono); color: var(--soft); text-transform: uppercase; letter-spacing: .02em; margin-top: 2px; }
+.sres .ssn { display: block; font-size: 13px; line-height: 1.4; color: var(--soft); margin-top: 3px; }
+.sres mark { background: #ffcb05; color: #0b0b0b; padding: 0 1px; }
+.sempty { padding: 6px 8px; color: var(--soft); font-size: 14px; }
+body.searching #side > ol { display: none; }
+body.searching #side > .side-sep { display: none; }
+.f, .rcat, .train li { scroll-margin-top: 80px; }
+.found { animation: foundflash 2.4s ease-out 1; }
+@keyframes foundflash { 0%, 55% { box-shadow: 0 0 0 6px #ffcb05; background-color: color-mix(in srgb, #ffcb05 28%, transparent); } 100% { box-shadow: 0 0 0 6px transparent; background-color: transparent; } }
+@media (prefers-reduced-motion: reduce) { .found { animation: none; outline: 4px solid #ffcb05; outline-offset: 4px; } }
+
 @media (prefers-reduced-motion: reduce) { #side { transition: none; } }
 
 .byline { margin: 18px 0 0 !important; font-size: 15px; line-height: 1.45; color: #cfcfc8; }
@@ -1923,6 +1951,131 @@ siga @PORTUGUES.md.</pre>
     });
   }
   boot();
+})();
+
+// ===== Busca =====
+(function () {
+  var side = document.getElementById('side'); if (!side) return;
+  var $$ = function (q, r) { return Array.prototype.slice.call((r || document).querySelectorAll(q)); };
+  var clean = function (t) { return (t || '').replace(/\s+/g, ' ').trim(); };
+  var norm = function (t) { return clean(t).normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase(); };
+
+  // índice: cada achado, categoria do repertório e passo do treino do olhar
+  var index = [];
+  $$('section.group').forEach(function (sec) {
+    var h2 = sec.querySelector('.group-h h2'), n = sec.querySelector('.group-h .n');
+    var gname = h2 ? clean(h2.textContent) : '', gchip = n ? clean(n.textContent) : '';
+    $$('.f', sec).forEach(function (f) {
+      var h = f.querySelector('.body > h3'); if (!h) return;
+      var ps = $$('.body > p', f).map(function (p) { return clean(p.textContent); }).join(' ');
+      index.push({ el: f, title: clean(h.textContent), text: ps, group: gname, chip: gchip });
+    });
+    $$('.rcat', sec).forEach(function (r) {
+      var h = r.querySelector('h3'); if (!h) return;
+      var note = r.querySelector('.rnote');
+      var links = $$('.rlist a', r).map(function (a) { return clean(a.textContent); }).join(' ');
+      index.push({ el: r, title: clean(h.textContent), text: clean(note ? note.textContent : '') + ' ' + links, group: gname, chip: gchip });
+    });
+    $$('.train li', sec).forEach(function (li) {
+      var b = li.querySelector('b'), p = li.querySelector('p'); if (!b) return;
+      index.push({ el: li, title: clean(b.textContent), text: clean(p ? p.textContent : ''), group: gname, chip: gchip });
+    });
+  });
+  index.forEach(function (it) { it.nt = norm(it.title); it.nx = norm(it.text); });
+
+  // interface
+  var box = document.createElement('div'); box.className = 'sbox'; box.setAttribute('role', 'search');
+  var input = document.createElement('input'); input.type = 'search'; input.id = 'q'; input.autocomplete = 'off'; input.spellcheck = false;
+  input.placeholder = 'Buscar na página'; input.setAttribute('aria-label', 'Buscar na página'); input.setAttribute('aria-controls', 'sres');
+  var kbd = document.createElement('kbd'); kbd.textContent = '/'; kbd.setAttribute('aria-hidden', 'true');
+  var clear = document.createElement('button'); clear.type = 'button'; clear.className = 'sclear'; clear.textContent = '×'; clear.setAttribute('aria-label', 'Limpar busca');
+  box.appendChild(input); box.appendChild(kbd); box.appendChild(clear);
+  var res = document.createElement('ul'); res.className = 'sres'; res.id = 'sres'; res.hidden = true; res.setAttribute('aria-live', 'polite');
+  var firstOl = side.querySelector('ol');
+  side.insertBefore(box, firstOl); side.insertBefore(res, firstOl);
+
+  function snippet(it, terms) {
+    var src = it.text || it.title, ns = norm(src), pos = -1;
+    for (var i = 0; i < terms.length; i++) { var k = ns.indexOf(terms[i]); if (k >= 0 && (pos < 0 || k < pos)) pos = k; }
+    if (pos < 0) pos = 0;
+    var a = Math.max(0, pos - 40), b = Math.min(src.length, a + 120);
+    if (a > 0) { var sp = src.indexOf(' ', a); if (sp > 0 && sp < pos) a = sp + 1; }
+    return { text: (a > 0 ? '… ' : '') + src.slice(a, b) + (b < src.length ? ' …' : ''), offset: a };
+  }
+  // marca os termos preservando acentos (a normalização mantém o comprimento nesse alfabeto)
+  function markInto(node, txt, terms) {
+    var n = norm(txt), spans = [];
+    if (n.length !== txt.length) { node.appendChild(document.createTextNode(txt)); return; }
+    terms.forEach(function (t) { var k = 0; while ((k = n.indexOf(t, k)) >= 0) { spans.push([k, k + t.length]); k += t.length; } });
+    spans.sort(function (x, y) { return x[0] - y[0]; });
+    var merged = []; spans.forEach(function (s) { var l = merged[merged.length - 1]; if (l && s[0] <= l[1]) l[1] = Math.max(l[1], s[1]); else merged.push(s.slice()); });
+    var cur = 0;
+    merged.forEach(function (s) {
+      if (s[0] > cur) node.appendChild(document.createTextNode(txt.slice(cur, s[0])));
+      var m = document.createElement('mark'); m.textContent = txt.slice(s[0], s[1]); node.appendChild(m); cur = s[1];
+    });
+    if (cur < txt.length) node.appendChild(document.createTextNode(txt.slice(cur)));
+  }
+
+  function search(q) {
+    var terms = norm(q).split(' ').filter(Boolean);
+    res.textContent = '';
+    box.classList.toggle('has', !!q);
+    if (!terms.length) { res.hidden = true; document.body.classList.remove('searching'); return; }
+    document.body.classList.add('searching'); res.hidden = false;
+    var hits = [];
+    index.forEach(function (it) {
+      var score = 0, all = true;
+      terms.forEach(function (t) {
+        var inT = it.nt.indexOf(t) >= 0, inX = it.nx.indexOf(t) >= 0;
+        if (!inT && !inX) all = false; else score += (inT ? 10 : 0) + (inX ? 2 : 0) + (it.nt.indexOf(t) === 0 ? 3 : 0);
+      });
+      if (all) hits.push({ it: it, score: score });
+    });
+    hits.sort(function (a, b) { return b.score - a.score; });
+    var c = document.createElement('li'); c.className = 'scount';
+    c.textContent = hits.length ? hits.length + (hits.length === 1 ? ' resultado' : ' resultados') : '';
+    if (!hits.length) { c.className = 'sempty'; c.textContent = 'Nada encontrado para "' + q.trim() + '". Tente outra palavra, por exemplo "foco", "gerúndio" ou "contraste".'; res.appendChild(c); return; }
+    res.appendChild(c);
+    hits.slice(0, 20).forEach(function (h) {
+      var li = document.createElement('li'), a = document.createElement('a');
+      a.href = '#'; a.setAttribute('data-i', index.indexOf(h.it));
+      var t = document.createElement('span'); t.className = 'stit'; markInto(t, h.it.title, terms);
+      var g = document.createElement('span'); g.className = 'sgrp'; g.textContent = h.it.group;
+      var sn = snippet(h.it, terms), s = document.createElement('span'); s.className = 'ssn'; markInto(s, sn.text, terms);
+      a.appendChild(t); a.appendChild(g); a.appendChild(s); li.appendChild(a); res.appendChild(li);
+    });
+    if (hits.length > 20) { var m = document.createElement('li'); m.className = 'sempty'; m.textContent = 'Mostrando 20 de ' + hits.length + '. Refine a busca para ver o resto.'; res.appendChild(m); }
+  }
+
+  function go(a) {
+    var it = index[+a.getAttribute('data-i')]; if (!it) return;
+    document.body.classList.remove('navopen');
+    it.el.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
+    it.el.classList.remove('found'); void it.el.offsetWidth; it.el.classList.add('found');
+    setTimeout(function () { it.el.classList.remove('found'); }, 2600);
+  }
+  res.addEventListener('click', function (e) { var a = e.target.closest && e.target.closest('a[data-i]'); if (a) { e.preventDefault(); go(a); } });
+  res.addEventListener('keydown', function (e) {
+    var links = $$('a[data-i]', res), i = links.indexOf(document.activeElement);
+    if (e.key === 'ArrowDown') { e.preventDefault(); if (links[i + 1]) links[i + 1].focus(); }
+    else if (e.key === 'ArrowUp') { e.preventDefault(); if (i > 0) links[i - 1].focus(); else input.focus(); }
+    else if (e.key === 'Escape') { input.focus(); }
+  });
+
+  var timer;
+  input.addEventListener('input', function () { clearTimeout(timer); timer = setTimeout(function () { search(input.value); }, 90); });
+  input.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') { var a = res.querySelector('a[data-i]'); if (a) { e.preventDefault(); go(a); } }
+    else if (e.key === 'ArrowDown') { var f = res.querySelector('a[data-i]'); if (f) { e.preventDefault(); f.focus(); } }
+    else if (e.key === 'Escape') { input.value = ''; search(''); }
+  });
+  clear.addEventListener('click', function () { input.value = ''; search(''); input.focus(); });
+  document.addEventListener('keydown', function (e) {
+    if (e.key !== '/' || e.ctrlKey || e.metaKey || e.altKey) return;
+    var t = e.target; if (t && (/^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName) || t.isContentEditable)) return;
+    e.preventDefault(); document.body.classList.add('navopen'); input.focus(); input.select();
+  });
 })();
 </script>
 </body>
