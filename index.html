@@ -51,26 +51,38 @@ a { color: inherit; text-underline-offset: 3px; }
 p { margin: 0 0 12px; }
 code { font-family: var(--mono); font-size: .88em; background: color-mix(in srgb, var(--ink) 9%, transparent); padding: .1em .35em; border-radius: 3px; }
 
-/* Abertura */
-.open { display: grid; grid-template-columns: 1.25fr 1fr; gap: 24px 56px; align-items: end; padding: 64px 0 36px; }
+/* Topo: faixa preta de largura total (título, tese e escala de severidade) */
 h1, .group-h h2, .nielsen h2, .f h3 { font-family: var(--display); }
-h1 { font-weight: 800; font-stretch: 75%; font-size: clamp(52px, 11vw, 124px); line-height: .88; letter-spacing: -0.01em; text-transform: uppercase; margin: 0; text-wrap: balance; }
 .group-h h2 { font-stretch: 75%; text-transform: uppercase; }
 .nielsen h2 { font-stretch: 75%; font-weight: 800; max-width: 22ch; }
-.thesis { font-size: 20px; line-height: 1.5; margin: 0; }
+.hero { background: #0b0b0b; color: #fff; padding: 40px 0 0; --h-yellow: #ffcb05; }
+.hero .wrap { max-width: 1180px; }
+.hero-bar { width: 96px; height: 14px; background: var(--h-yellow); margin: 0 0 28px; }
+.open { display: grid; grid-template-columns: auto 1fr; gap: 24px 0; align-items: center; padding: 0 0 40px; }
+h1 { font-weight: 800; font-stretch: 75%; font-size: clamp(48px, 8.6vw, 104px); line-height: .98; letter-spacing: -0.005em; text-transform: uppercase; margin: 0; padding-right: 44px; }
+h1 span { display: block; }
+h1 .hl { display: inline-block; background: var(--h-yellow); color: #0b0b0b; padding: 0 .16em; margin-top: .06em; line-height: 1.02; }
+.thesis { font-size: 18px; line-height: 1.5; margin: 0; padding-left: 44px; border-left: 1px solid #5c5c58; color: #f2f2ee; max-width: 52ch; }
 .thesis p:last-child { margin-bottom: 0; }
-
-/* Escala de severidade */
-.scale { display: grid; grid-template-columns: repeat(5, 1fr); border: 1px solid var(--ink); margin: 0 0 8px; }
-.scale div { padding: 10px 12px; border-right: 1px solid var(--ink); font-size: 14px; line-height: 1.3; }
-.scale div:last-child { border-right: 0; }
-.scale b { display: block; font-family: var(--mono); font-size: 22px; font-weight: 500; }
+.scale-h { display: flex; justify-content: space-between; align-items: baseline; gap: 8px 24px; flex-wrap: wrap; border-top: 1px solid #5c5c58; padding: 28px 0 14px; }
+.scale-h h2 { font-family: var(--display); font-weight: 800; font-size: 28px; margin: 0; line-height: 1.1; }
+.scale-h p { margin: 0; color: #a8a8a2; font-size: 15px; }
+.scale { display: grid; grid-template-columns: repeat(5, 1fr); margin: 0; }
+.scale .sc { display: grid; grid-template-columns: auto 1fr; gap: 2px 14px; align-items: center; padding: 18px 16px 20px; line-height: 1.3; color: #0b0b0b; min-width: 0; }
+.scale .sc b { grid-row: span 2; font-family: var(--display); font-weight: 800; font-size: 44px; line-height: 1; padding-right: 12px; border-right: 1px solid currentColor; align-self: stretch; display: flex; align-items: center; }
+.scale .sc strong { font-weight: 800; font-size: 17px; align-self: end; }
+.scale .sc span { font-size: 14px; align-self: start; }
+.sc0 { background: #bcbcbc; }
+.sc1 { background: #ffcb05; }
+.sc2 { background: #ff8c0a; }
+.sc3 { background: #ff5b4a; }
+.sc4 { background: #b41c1c; color: #fff !important; }
+.scale-note { font-size: 14px; color: var(--soft); margin: 14px 0 8px; max-width: 70ch; }
 .s0 { background: var(--sev0); color: var(--on-sev); }
 .s1 { background: var(--sev1); color: var(--sev1-ink); }
 .s2 { background: var(--sev2); color: var(--sev2-ink); }
 .s3 { background: var(--sev3); color: var(--on-sev); }
 .s4 { background: var(--sev4); color: var(--on-sev); }
-.scale-note { font-size: 14px; color: var(--soft); margin: 0 0 8px; max-width: 70ch; }
 
 /* Grupos */
 .group { margin-top: 56px; }
@@ -186,6 +198,84 @@ pre.snip { margin: 0; padding: 12px 14px; background: var(--code-bg); color: var
 .tip .tag { font-family: var(--mono); font-size: 12px; font-weight: 500; background: var(--ink); color: var(--paper); padding: 2px 8px; letter-spacing: .06em; margin-top: 3px; }
 .tip p { margin: 0; }
 .tip a { font-weight: 700; }
+/* Seção: treinar o olhar */
+.train { list-style: none; counter-reset: t; padding: 0; margin: 14px 0 0; display: grid; grid-template-columns: 1fr 1fr; gap: 0 48px; }
+.train li { counter-increment: t; display: grid; grid-template-columns: 38px 1fr; gap: 0 10px; border-top: 1px solid var(--rule); padding: 16px 0; }
+.train li::before { content: counter(t); font-family: var(--display); font-weight: 800; font-size: 30px; line-height: 1; grid-row: span 2; font-stretch: 75%; }
+.train b { font-size: 17px; }
+.train p { margin: 4px 0 0; color: var(--soft); }
+.rgrid { display: grid; grid-template-columns: 1fr 1fr; gap: 36px 48px; margin-top: 18px; }
+.rcat h3 { font-family: var(--display); font-stretch: 75%; text-transform: uppercase; font-weight: 800; font-size: 21px; line-height: 1.15; margin: 0 0 6px; padding-top: 10px; border-top: 3px solid var(--ink); }
+.rnote { color: var(--soft); font-size: 15px; margin: 0 0 6px; }
+.rlist { list-style: none; margin: 0; padding: 0; }
+.rlist li { padding: 12px 0; border-bottom: 1px solid var(--rule); }
+.rlist a { font-weight: 700; font-size: 16px; }
+.rlist .rtag { font: 500 11px var(--mono); text-transform: uppercase; letter-spacing: .04em; border: 1px solid var(--ink); padding: 1px 6px; margin-left: 8px; white-space: nowrap; }
+.rlist p { margin: 4px 0 0; font-size: 15px; color: var(--soft); }
+
+/* Menu lateral (estilo MkDocs), áudio e container do conteúdo */
+.shell { display: grid; grid-template-columns: 300px minmax(0, 1fr); }
+.content { container-type: inline-size; min-width: 0; }
+#side { position: sticky; top: 0; align-self: start; height: 100vh; overflow-y: auto; border-right: 1px solid var(--rule); background: var(--paper); padding: 18px 12px 48px 16px; font-size: 14px; line-height: 1.35; scrollbar-width: thin; }
+.side-title { display: block; color: var(--ink); font-family: var(--display); font-stretch: 75%; text-transform: uppercase; font-weight: 800; font-size: 22px; line-height: 1; text-decoration: none; margin: 4px 0 12px; }
+.side-title span { background: #ffcb05; color: #0b0b0b; padding: 0 .2em; }
+.side-play { width: 100%; margin: 0 0 14px; }
+#side ol, #side ul { list-style: none; margin: 0; padding: 0; }
+#side a { display: block; text-decoration: none; color: var(--soft); padding: 5px 8px; border-left: 3px solid transparent; }
+#side a:hover { color: var(--ink); background: color-mix(in srgb, var(--ink) 6%, transparent); }
+#side a.cur { color: var(--ink); font-weight: 700; border-left-color: var(--ink); }
+#side .grp > a { display: flex; gap: 8px; align-items: baseline; color: var(--ink); font-weight: 700; margin-top: 4px; }
+#side .grp > ul { display: none; margin: 2px 0 6px 12px; border-left: 1px solid var(--rule); }
+#side .grp.open > ul { display: block; }
+#side .grp ul a { font-size: 13px; padding: 4px 8px 4px 10px; }
+.chip { font: 500 12px var(--mono); padding: 0 6px; min-width: 22px; text-align: center; flex: none; }
+.chip.ia { background: var(--ink); color: var(--paper); }
+.side-sep { border-top: 1px solid var(--rule); margin: 10px 0; }
+.hero .scale-h, #escala, [id] { scroll-margin-top: 16px; }
+#navbtn { display: none; position: fixed; top: 10px; left: 10px; z-index: 60; font: 700 14px var(--font); background: #ffcb05; color: #0b0b0b; border: 2px solid #0b0b0b; padding: 8px 12px; cursor: pointer; }
+#scrim { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.5); z-index: 54; }
+.listen { font: 800 16px var(--font); background: #ffcb05; color: #0b0b0b; border: 2px solid #ffcb05; padding: 11px 18px; cursor: pointer; display: inline-flex; gap: 10px; align-items: center; }
+.listen:hover { background: transparent; color: #ffcb05; }
+.listen small { font-weight: 500; font-size: 13px; opacity: .85; }
+.listen-note { display: block; margin-top: 8px; font-size: 13px; color: #a8a8a2; }
+.listen-row { margin: 18px 0 0 !important; }
+.group-h .gplay { font: 500 12px var(--mono); background: transparent; color: var(--ink); border: 1px solid var(--ink); padding: 2px 8px; cursor: pointer; margin-left: 6px; }
+.group-h .gplay:hover { background: var(--ink); color: var(--paper); }
+button[hidden] { display: none !important; }
+.reading { background: color-mix(in srgb, #ffcb05 28%, transparent); box-shadow: -8px 0 0 #ffcb05; transition: background .2s; }
+#player { display: none; position: fixed; bottom: 0; left: 300px; right: 0; z-index: 50; background: #0b0b0b; color: #fff; border-top: 3px solid #ffcb05; padding: 10px 16px; gap: 10px 14px; align-items: center; flex-wrap: wrap; }
+body.playing #player { display: flex; }
+body.playing { padding-bottom: 84px; }
+#player button { font: 700 14px var(--font); background: #fff; color: #0b0b0b; border: 0; padding: 7px 12px; cursor: pointer; }
+#player button:hover { background: #ffcb05; }
+#player .now { flex: 1 1 220px; min-width: 0; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+#player .now b { color: #ffcb05; margin-right: 6px; }
+#player select, #player input[type=range] { font: 500 13px var(--mono); }
+#player select { background: #1c1c1a; color: #fff; border: 1px solid #555; padding: 6px; }
+#player input[type=range] { flex: 1 1 160px; accent-color: #ffcb05; }
+#player label { font-size: 13px; display: inline-flex; gap: 6px; align-items: center; }
+.hero h1 { font-size: clamp(44px, 11cqi, 96px); }
+.hero .open { grid-template-columns: 1fr; }
+.hero .thesis { padding-left: 0; border-left: 0; border-top: 1px solid #5c5c58; padding-top: 22px; max-width: 70ch; }
+.hero h1 { padding-right: 0; }
+@container (min-width: 1100px) {
+  .hero h1 { font-size: clamp(44px, 7.4cqi, 96px); padding-right: 44px; }
+  .hero .open { grid-template-columns: auto 1fr; }
+  .hero .thesis { padding-left: 44px; border-left: 1px solid #5c5c58; border-top: 0; padding-top: 0; }
+}
+@container (max-width: 920px) { .scale { grid-template-columns: 1fr; } .scale .sc b { font-size: 34px; } }
+@media (max-width: 1100px) {
+  .shell { display: block; }
+  #side { position: fixed; z-index: 58; left: 0; top: 0; bottom: 0; width: min(320px, 86vw); height: auto; transform: translateX(-102%); transition: transform .2s; box-shadow: 4px 0 24px rgba(0,0,0,.3); }
+  body.navopen #side { transform: none; }
+  body.navopen #scrim { display: block; }
+  #navbtn { display: inline-block; }
+  #side { padding-top: 58px; }
+  #player { left: 0; }
+  .hero { padding-top: 64px; }
+}
+@media (prefers-reduced-motion: reduce) { #side { transition: none; } }
+
 @media (max-width: 760px) { .tip { grid-template-columns: 1fr; } }
 .subh { font-family: var(--display); font-stretch: 75%; text-transform: uppercase; font-weight: 800; font-size: 24px; line-height: 1.1; border-top: 3px solid var(--ink); padding-top: 10px; margin: 56px 0 4px; letter-spacing: -0.005em; }
 .lines { display: grid; gap: 6px; font-size: 13px; }
@@ -227,11 +317,14 @@ footer { padding: 56px 0 72px; color: var(--soft); font-size: 14px; max-width: 7
 
 @media (max-width: 760px) {
   body { font-size: 16px; }
-  .open { grid-template-columns: 1fr; padding-top: 36px; }
+  .hero { padding-top: 28px; }
+  .open { grid-template-columns: 1fr; }
+  h1 { padding-right: 0; }
+  .thesis { padding-left: 0; border-left: 0; border-top: 1px solid #5c5c58; padding-top: 20px; }
   .scale { grid-template-columns: 1fr; }
-  .scale div { border-right: 0; border-bottom: 1px solid var(--ink); display: flex; gap: 12px; align-items: baseline; }
-  .scale div:last-child { border-bottom: 0; }
-  .scale b { display: inline; }
+  .scale-h { flex-direction: column; }
+  .train, .rgrid { grid-template-columns: 1fr; }
+  .rlist .rtag { display: inline-block; margin: 4px 8px 0 0; }
   .group-h { flex-wrap: wrap; }
   .group-h span.q { margin-left: 0; text-align: left; width: 100%; }
   .f { grid-template-columns: 1fr; gap: 6px; }
@@ -240,29 +333,44 @@ footer { padding: 56px 0 72px; color: var(--soft); font-size: 14px; max-width: 7
 </style>
 </head>
 <body>
+<button type="button" id="navbtn" aria-controls="side" aria-expanded="false">☰ Menu</button>
+<div id="scrim"></div>
+<div class="shell">
+<nav id="side" aria-label="Navegação da página"></nav>
+<div class="content" id="top">
+<section class="hero" aria-label="Abertura">
 <div class="wrap">
-
+<div class="hero-bar" aria-hidden="true"></div>
 <header class="open">
-  <h1>Como evitar AI SLOP</h1>
+  <h1><span>Como evitar</span><span class="hl">AI SLOP</span></h1>
   <div class="thesis">
     <p>Nem todos os problemas de interface têm o mesmo impacto. Um gradiente inadequado é uma questão estética. A ausência de estados de erro, mecanismos de desfazer ou indicadores de foco por teclado compromete a usabilidade.</p>
     <p>Esta página apresenta os principais problemas de interface, organizados por nível de severidade, com exemplos comparativos e recomendações de correção.</p>
+    <p class="listen-row" data-skip-read><button type="button" class="listen" data-listen hidden>▶ Ouça como um podcast <small data-dur></small></button><span class="listen-note" data-listen-note hidden>Voz sintética, lendo só o texto da página. O código dos exemplos fica de fora.</span></p>
   </div>
 </header>
-
-<div class="scale" role="list" aria-label="Escala de severidade de Nielsen">
-  <div class="s0" role="listitem"><b>0</b>Não é problema</div>
-  <div class="s1" role="listitem"><b>1</b>Cosmético</div>
-  <div class="s2" role="listitem"><b>2</b>Pequeno</div>
-  <div class="s3" role="listitem"><b>3</b>Grave</div>
-  <div class="s4" role="listitem"><b>4</b>Catástrofe de usabilidade</div>
+<div class="scale-h" id="escala"><h2>Escala de severidade</h2><p>Baseada nas heurísticas de Jakob Nielsen.</p></div>
 </div>
-<p class="scale-note">Escala de severidade de Jakob Nielsen. A classificação de cada erro abaixo é julgamento meu para um produto comum. Reavalie para o seu.</p>
+<div class="wrap" style="max-width:1180px;padding:0">
+<div class="scale" role="list" aria-label="Escala de severidade de Nielsen">
+  <div class="sc sc0" role="listitem"><b>0</b><strong>Não é problema</strong><span>Sem impacto real no uso.</span></div>
+  <div class="sc sc1" role="listitem"><b>1</b><strong>Cosmético</strong><span>Apenas visual. Não afeta a tarefa.</span></div>
+  <div class="sc sc2" role="listitem"><b>2</b><strong>Pequeno</strong><span>Atrapalha um pouco, mas tem contorno.</span></div>
+  <div class="sc sc3" role="listitem"><b>3</b><strong>Grave</strong><span>Prejudica a tarefa e gera fricção.</span></div>
+  <div class="sc sc4" role="listitem"><b>4</b><strong>Catastrófico</strong><span>Compromete a usabilidade e pode impedir o uso.</span></div>
+</div>
+</div>
+</section>
+
+<div class="wrap">
+
+<p class="scale-note">A classificação de cada erro abaixo é julgamento meu para um produto comum. Reavalie para o seu.</p>
 <div class="dl-row" id="dl-row" hidden>
   <span>Baixar para o repositório:</span>
   <button type="button" class="dlbtn" data-dl="nielsen" data-name="NIELSEN.md">NIELSEN.md</button>
   <button type="button" class="dlbtn" data-dl="antipadroes" data-name="ANTIPADROES.md">ANTIPADROES.md</button>
   <button type="button" class="dlbtn" data-dl="portugues" data-name="PORTUGUES.md">PORTUGUES.md</button>
+  <button type="button" class="dlbtn" data-dl="repertorio" data-name="REPERTORIO.md">REPERTORIO.md</button>
 </div>
 
 <main>
@@ -609,7 +717,7 @@ footer { padding: 56px 0 72px; color: var(--soft); font-size: 14px; max-width: 7
       <tbody>
         <tr><td>Léxico</td><td>Palavras inventadas, falsos cognatos, termos de Portugal, pares trocados, pleonasmos</td><td>VOLP, dicionário e glossário do produto</td></tr>
         <tr><td>Ortografia</td><td>Acentos, codificação, maiúsculas à moda inglesa</td><td>Leitura da tela e inspeção do arquivo</td></tr>
-        <tr><td>Pontuação</td><td>Vírgula entre sujeito e predicado, vírgula que muda o sentido, vírgula de série</td><td>Achar sujeito e verbo e ver se algo os separa</td></tr>
+        <tr><td>Pontuação</td><td>Vírgula entre sujeito e predicado, vírgula que muda o sentido, vírgula de série, ponto no lugar de vírgula</td><td>Achar sujeito e verbo e ver se algo os separa</td></tr>
         <tr><td>Concordância</td><td>Haver e fazer, "se" apassivador, "um dos que", crase, plural</td><td>Corretor gramatical e leitura do verbo contra o sujeito</td></tr>
         <tr><td>Estilo</td><td>Tratamento, gênero, gerundismo, texto burocrático, clichês</td><td>Leitura em voz alta</td></tr>
         <tr><td>Formatos</td><td>Moeda, data, hora, número</td><td>Funções de formatação do idioma</td></tr>
@@ -819,6 +927,19 @@ footer { padding: 56px 0 72px; color: var(--soft); font-size: 14px; max-width: 7
   <article class="f">
     <div class="badge s2">2</div>
     <div class="body wide">
+      <h3>Ponto no lugar da vírgula</h3>
+      <p>A IA corta a frase em pedaços, cada um com seu ponto final, e usa o ponto para listar itens que pedem vírgula. O efeito é de slogan repetido. As ideias perdem os conectivos que as ligam (porque, mas, então), e o leitor precisa montar sozinho a relação entre elas.</p>
+      <p class="fix"><b>Evite:</b> una orações curtas e relacionadas com vírgula, "e" ou conectivo, e separe os itens de uma enumeração com vírgula, com "e" antes do último. O fragmento isolado funciona como destaque quando é raro. Em série, vira tique. Para listar de verdade, use lista com marcadores.</p>
+      <div class="spec" aria-hidden="true">
+        <div class="pane"><div class="stage"><div class="lines"><div class="x">Nosso app é rápido. É seguro. É simples.</div><div class="x">Você recebe alertas. Relatórios. Lembretes.</div><div class="x">Sem taxas. Sem burocracia. Sem complicação.</div></div></div><div class="cap no">ponto no lugar de vírgula</div></div>
+        <div class="pane"><div class="stage"><div class="lines"><div>Nosso app é rápido, seguro e simples.</div><div>Você recebe alertas, relatórios e lembretes.</div><div>Sem taxas, sem burocracia e sem complicação.</div></div></div><div class="cap ok">vírgula e "e" na série</div></div>
+      </div>
+    </div>
+  </article>
+
+  <article class="f">
+    <div class="badge s2">2</div>
+    <div class="body wide">
       <h3>Gerundismo</h3>
       <p>"Vou estar enviando", "vamos estar verificando". A construção alonga a frase e soa a atendimento de telemarketing.</p>
       <p class="fix"><b>Evite:</b> use o verbo simples: "vou enviar", "vamos verificar".</p>
@@ -955,6 +1076,123 @@ footer { padding: 56px 0 72px; color: var(--soft); font-size: 14px; max-width: 7
   </article>
 </section>
 
+<section class="group" aria-labelledby="golho">
+  <div class="group-h"><span class="n ia">OLHO</span><h2 id="golho">Design é humano: como treinar o seu olhar</h2><span class="q">A IA executa. Quem julga é você</span></div>
+  <p class="img-note">A IA gera a média do que já viu. Olho de designer é o que enxerga o que ficou de fora da média, e isso se treina com volume, com atenção e com a pergunta certa. Esta seção mapeia onde olhar: prêmios, galerias, telas de produto, design systems abertos, tipografia, princípios e CSS para estudar. Os links foram levantados por busca, sem abrir um a um. Confira antes de depender de algum.</p>
+
+  <div class="tip">
+    <span class="tag">LEIA ISTO</span>
+    <p><b>Premiado não é o mesmo que usável.</b> Os prêmios avaliam criatividade e execução, e muitos sites vencedores dependem de animação pesada, cursor customizado e rolagem sequestrada. Use essas fontes para ampliar o teto do que você acha possível. Para decidir o que fazer no seu produto, volte à escala de severidade lá no topo.</p>
+  </div>
+
+  <h3 class="subh">Seis exercícios para treinar o olhar</h3>
+  <ol class="train"><li><b>Escreva antes de ler</b><p>Abra um site que você admira e anote três coisas que ele faz bem e uma que você faria diferente, antes de ler qualquer análise. Opinião formada sozinho é a que fica.</p></li><li><b>Recrie à mão</b><p>Reproduza uma seção, sem IA, olhando só para o resultado. Depois sobreponha ao original. O espaçamento, o tamanho da fonte e a entrelinha que você errou são o treino.</p></li><li><b>A prova do cinza e do desfoque</b><p>Tire um print, passe para escala de cinza e desfoque. Se a hierarquia sumiu, o design dependia de cor e detalhe, e não de estrutura.</p></li><li><b>Use o que foi premiado</b><p>Navegue um site premiado só com o teclado, com zoom de 200% e no celular. Prêmio mede criatividade e execução. Usabilidade você confere sozinho.</p></li><li><b>Mantenha um caderno de referências</b><p>Uma pasta com prints e uma frase por print: o que me chamou atenção e por quê. Daqui a seis meses, é o seu material de pesquisa, e serve de insumo para a IA.</p></li><li><b>Só depois, peça à IA</b><p>Entregue o seu repertório e a sua rubrica ao modelo, e deixe que ele execute. Quem julga continua sendo você, porque o olhar é a parte que a IA não treina por você.</p></li></ol>
+
+  <h3 class="subh">O mapa de referências</h3>
+  <div class="rgrid"><div class="rcat"><h3>Prêmios: o que a indústria aplaude</h3><p class="rnote">Bom para ver o teto da execução. Premiado por criatividade não quer dizer fácil de usar: abra o site com o teclado e no celular antes de copiar qualquer coisa.</p><ul class="rlist"><li><a href="https://www.awwwards.com" target="_blank" rel="noopener noreferrer">Awwwards</a><span class="rtag">grátis para ver</span><p>Site do Dia, do Mês e do Ano, com nota de júri em design, usabilidade, criatividade e conteúdo. Olhe a nota de usabilidade, não só a de design.</p></li><li><a href="https://www.cssdesignawards.com" target="_blank" rel="noopener noreferrer">CSS Design Awards</a><span class="rtag">grátis para ver</span><p>Premia também o acabamento do front-end. Bom para ver o que dá para fazer só com CSS e JS bem escritos.</p></li><li><a href="https://thefwa.com" target="_blank" rel="noopener noreferrer">The FWA</a><span class="rtag">grátis para ver</span><p>Um dos prêmios mais antigos da web, forte em experimentação, WebGL e movimento. Serve para ampliar o repertório, não como modelo de produto.</p></li><li><a href="https://www.webbyawards.com" target="_blank" rel="noopener noreferrer">Webby Awards</a><span class="rtag">grátis para ver</span><p>Cobre sites, apps, vídeo e social. Mais amplo e menos focado em interface do que os três acima.</p></li><li><a href="https://www.red-dot.org" target="_blank" rel="noopener noreferrer">Red Dot: Communication Design</a><span class="rtag">grátis para ver</span><p>Categoria de interface e experiência do usuário dentro de um prêmio de design tradicional, de origem alemã.</p></li><li><a href="https://developer.apple.com/design/awards/" target="_blank" rel="noopener noreferrer">Apple Design Awards</a><span class="rtag">grátis para ver</span><p>Apps premiados pela Apple em design, interação e inclusão. Boa fonte de apps móveis com cuidado de detalhe.</p></li></ul></div><div class="rcat"><h3>Galerias: ver muito, rápido</h3><p class="rnote">Treino de olhar é volume com atenção. Abra uma galeria, escolha três sites e diga em voz alta por que cada um funciona.</p><ul class="rlist"><li><a href="https://www.siteinspire.com" target="_blank" rel="noopener noreferrer">Siteinspire</a><span class="rtag">grátis</span><p>Seleção editorial de sites, filtrável por estilo, tipo e assunto.</p></li><li><a href="https://httpster.net" target="_blank" rel="noopener noreferrer">Httpster</a><span class="rtag">grátis</span><p>Curadoria de sites com tipografia forte e layout enxuto.</p></li><li><a href="https://land-book.com" target="_blank" rel="noopener noreferrer">Land-book</a><span class="rtag">grátis, com extras pagos</span><p>Landing pages reais, organizadas por categoria. Útil para comparar como produtos parecidos se apresentam.</p></li><li><a href="https://www.lapa.ninja" target="_blank" rel="noopener noreferrer">Lapa Ninja</a><span class="rtag">grátis</span><p>Galeria de landing pages com filtro por setor.</p></li><li><a href="https://godly.website" target="_blank" rel="noopener noreferrer">Godly (agora Recent)</a><span class="rtag">grátis</span><p>Layouts ousados e experimentais. Fontes consultadas indicam que ganhou o nome Recent. Se o endereço mudar, busque pelos dois nomes.</p></li><li><a href="https://brutalistwebsites.com" target="_blank" rel="noopener noreferrer">Brutalist Websites</a><span class="rtag">grátis</span><p>O oposto do polido: sites crus e diretos. Bom contraponto contra o visual médio de IA.</p></li></ul></div><div class="rcat"><h3>Telas de produto e fluxos</h3><p class="rnote">Landing page é vitrine. Quem treina o olhar para produto precisa ver tela de app, formulário, erro, vazio e carregamento.</p><ul class="rlist"><li><a href="https://mobbin.com" target="_blank" rel="noopener noreferrer">Mobbin</a><span class="rtag">grátis limitado, pago completo</span><p>Telas e fluxos de apps reais, móveis e web, pesquisáveis por padrão de interface.</p></li><li><a href="https://refero.design" target="_blank" rel="noopener noreferrer">Refero</a><span class="rtag">pago</span><p>Biblioteca grande de referências de interface web e iOS, com foco em pesquisa de design.</p></li><li><a href="https://pageflows.com" target="_blank" rel="noopener noreferrer">Page Flows</a><span class="rtag">pago</span><p>Gravações de fluxos de usuário, como cadastro e compra, passo a passo.</p></li><li><a href="https://collectui.com" target="_blank" rel="noopener noreferrer">Collect UI</a><span class="rtag">grátis</span><p>Referências organizadas por elemento: formulário, calendário, perfil, erro 404.</p></li><li><a href="https://component.gallery" target="_blank" rel="noopener noreferrer">Component Gallery</a><span class="rtag">grátis</span><p>O mesmo componente (acordeão, tabela, botão) implementado em vários design systems reais.</p></li></ul></div><div class="rcat"><h3>Design systems abertos: o padrão de quem pesquisa a sério</h3><p class="rnote">Aqui o design já passou por teste, acessibilidade e documentação. Leia as regras, não só o visual.</p><ul class="rlist"><li><a href="https://www.gov.br/ds" target="_blank" rel="noopener noreferrer">Padrão Digital de Governo (gov.br/ds)</a><span class="rtag">grátis</span><p>Design system do governo federal brasileiro, com componentes e diretrizes de acessibilidade. Referência para serviços públicos em português.</p></li><li><a href="https://design-system.service.gov.uk" target="_blank" rel="noopener noreferrer">GOV.UK Design System</a><span class="rtag">grátis</span><p>Referência mundial de formulários e conteúdo claro, com pesquisa de uso publicada por componente.</p></li><li><a href="https://designsystem.digital.gov" target="_blank" rel="noopener noreferrer">U.S. Web Design System (USWDS)</a><span class="rtag">grátis</span><p>Sistema do governo americano, com foco em acessibilidade e celular.</p></li><li><a href="https://m3.material.io" target="_blank" rel="noopener noreferrer">Material Design 3</a><span class="rtag">grátis</span><p>O sistema do Google, com diretrizes de movimento, cor e adaptação de tela.</p></li><li><a href="https://carbondesignsystem.com" target="_blank" rel="noopener noreferrer">Carbon (IBM)</a><span class="rtag">grátis</span><p>Sistema pensado para produtos densos, com muita tabela, filtro e painel.</p></li><li><a href="https://polaris.shopify.com" target="_blank" rel="noopener noreferrer">Polaris (Shopify)</a><span class="rtag">grátis</span><p>Sistema de produto de comércio, com boas diretrizes de conteúdo e tom de voz.</p></li></ul></div><div class="rcat"><h3>Tipografia e cor: onde o olho mais evolui</h3><p class="rnote">Hierarquia, entrelinha e contraste explicam mais do que qualquer efeito. Treine aqui primeiro.</p><ul class="rlist"><li><a href="https://www.typewolf.com" target="_blank" rel="noopener noreferrer">Typewolf</a><span class="rtag">grátis</span><p>Combinações de fontes em sites reais, com o que está em uso agora.</p></li><li><a href="https://fontsinuse.com" target="_blank" rel="noopener noreferrer">Fonts In Use</a><span class="rtag">grátis</span><p>Arquivo pesquisável de tipografia aplicada em produtos, livros, embalagens e telas.</p></li><li><a href="https://www.fontshare.com" target="_blank" rel="noopener noreferrer">Fontshare</a><span class="rtag">grátis</span><p>Fontes gratuitas de qualidade para uso comercial. Confira a licença de cada família.</p></li><li><a href="https://practicaltypography.com" target="_blank" rel="noopener noreferrer">Practical Typography</a><span class="rtag">grátis</span><p>Livro online de Matthew Butterick sobre tipografia para texto. Curto e prático.</p></li><li><a href="https://www.realtimecolors.com" target="_blank" rel="noopener noreferrer">Realtime Colors</a><span class="rtag">grátis</span><p>Testa cores e fontes numa página de exemplo em tempo real, antes de aplicar no seu projeto.</p></li><li><a href="https://coolors.co" target="_blank" rel="noopener noreferrer">Coolors</a><span class="rtag">grátis com extras pagos</span><p>Gerador de paletas. Use para explorar, depois valide o contraste.</p></li><li><a href="https://webaim.org/resources/contrastchecker/" target="_blank" rel="noopener noreferrer">WebAIM Contrast Checker</a><span class="rtag">grátis</span><p>Confere a razão de contraste entre duas cores segundo a WCAG.</p></li></ul></div><div class="rcat"><h3>Princípios e crítica: o porquê por trás do bonito</h3><p class="rnote">Galeria mostra o resultado. Estas fontes explicam o motivo, e é o motivo que se transfere para o próximo projeto.</p><ul class="rlist"><li><a href="https://lawsofux.com" target="_blank" rel="noopener noreferrer">Laws of UX</a><span class="rtag">grátis</span><p>Coletânea de leis e princípios de psicologia aplicados a interface, como a Lei de Hick e a de proximidade, com exemplos.</p></li><li><a href="https://www.nngroup.com/articles/" target="_blank" rel="noopener noreferrer">Nielsen Norman Group</a><span class="rtag">grátis, com extras pagos</span><p>Pesquisa e artigos de usabilidade da fonte das heurísticas usadas nesta página.</p></li><li><a href="https://www.deceptive.design" target="_blank" rel="noopener noreferrer">Deceptive Design</a><span class="rtag">grátis</span><p>Catálogo de padrões enganosos (dark patterns). Treina o olhar a reconhecer o que não imitar.</p></li><li><a href="https://www.refactoringui.com" target="_blank" rel="noopener noreferrer">Refactoring UI</a><span class="rtag">pago</span><p>Livro de Adam Wathan e Steve Schoger com táticas visuais para quem desenvolve e não é designer.</p></li></ul></div><div class="rcat"><h3>CSS bom para baixar, estudar e adaptar</h3><p class="rnote">Copiar código não é copiar identidade. Leia a licença, troque os tokens pelos seus e entenda cada propriedade antes de colar.</p><ul class="rlist"><li><a href="https://open-props.style" target="_blank" rel="noopener noreferrer">Open Props</a><span class="rtag">grátis, código aberto</span><p>Variáveis CSS prontas de cor, sombra, espaçamento e animação. Um bom ponto de partida para tokens.</p></li><li><a href="https://picocss.com" target="_blank" rel="noopener noreferrer">Pico CSS</a><span class="rtag">grátis, código aberto</span><p>Estilo elegante para as tags HTML nativas, com modo escuro. Funciona com poucas classes.</p></li><li><a href="https://every-layout.dev" target="_blank" rel="noopener noreferrer">Every Layout</a><span class="rtag">parte grátis, parte paga</span><p>Padrões de layout resilientes em CSS, explicados do jeito que o navegador pensa.</p></li><li><a href="https://utopia.fyi" target="_blank" rel="noopener noreferrer">Utopia</a><span class="rtag">grátis</span><p>Gera escalas fluidas de tipografia e espaçamento com clamp(). Entrega o bloco de CSS pronto.</p></li><li><a href="https://moderncss.dev" target="_blank" rel="noopener noreferrer">Modern CSS Solutions</a><span class="rtag">grátis</span><p>Soluções com CSS atual para problemas comuns, no lugar de gambiarra com JavaScript.</p></li><li><a href="https://developer.mozilla.org/pt-BR/docs/Web/CSS" target="_blank" rel="noopener noreferrer">MDN Web Docs</a><span class="rtag">grátis</span><p>A referência de CSS em português. Sempre confira aqui o suporte de uma propriedade nova.</p></li><li><a href="https://codepen.io" target="_blank" rel="noopener noreferrer">CodePen</a><span class="rtag">grátis com extras pagos</span><p>Milhões de experimentos. Ótimo para ver como se faz e bifurcar. Confira a licença de cada pen antes de usar em produto.</p></li><li><a href="https://uiverse.io" target="_blank" rel="noopener noreferrer">Uiverse</a><span class="rtag">grátis</span><p>Botões, cards, loaders e toggles da comunidade, em CSS ou Tailwind, para copiar e colar. Lembre que o excesso de efeito é também uma marca de slop.</p></li><li><a href="https://animista.net" target="_blank" rel="noopener noreferrer">Animista</a><span class="rtag">grátis</span><p>Animações CSS prontas, que você ajusta e baixa só as que usar.</p></li></ul></div></div>
+
+  <div class="codebox">
+    <div class="codebar"><span>REPERTORIO.md</span><span class="actions"><button type="button" data-copy="repertorio">Copiar</button><button type="button" data-dl="repertorio" data-name="REPERTORIO.md" hidden>Baixar .md</button></span></div>
+<pre id="repertorio-src"># Repertório de design: como treinar o olhar
+
+Use este arquivo como lista de referências ao criar ou revisar interface.
+Premiado por criatividade não quer dizer fácil de usar. Confira usabilidade e acessibilidade antes de copiar.
+Copiar código não é copiar identidade visual. Leia a licença e troque os tokens pelos do projeto.
+
+## Treino do olhar (para humanos)
+
+1. **Escreva antes de ler.** Abra um site que você admira e anote três coisas que ele faz bem e uma que você faria diferente, antes de ler qualquer análise. Opinião formada sozinho é a que fica.
+2. **Recrie à mão.** Reproduza uma seção, sem IA, olhando só para o resultado. Depois sobreponha ao original. O espaçamento, o tamanho da fonte e a entrelinha que você errou são o treino.
+3. **A prova do cinza e do desfoque.** Tire um print, passe para escala de cinza e desfoque. Se a hierarquia sumiu, o design dependia de cor e detalhe, e não de estrutura.
+4. **Use o que foi premiado.** Navegue um site premiado só com o teclado, com zoom de 200% e no celular. Prêmio mede criatividade e execução. Usabilidade você confere sozinho.
+5. **Mantenha um caderno de referências.** Uma pasta com prints e uma frase por print: o que me chamou atenção e por quê. Daqui a seis meses, é o seu material de pesquisa, e serve de insumo para a IA.
+6. **Só depois, peça à IA.** Entregue o seu repertório e a sua rubrica ao modelo, e deixe que ele execute. Quem julga continua sendo você, porque o olhar é a parte que a IA não treina por você.
+
+## Prêmios: o que a indústria aplaude
+
+Bom para ver o teto da execução. Premiado por criatividade não quer dizer fácil de usar: abra o site com o teclado e no celular antes de copiar qualquer coisa.
+
+- [Awwwards](https://www.awwwards.com) (grátis para ver): Site do Dia, do Mês e do Ano, com nota de júri em design, usabilidade, criatividade e conteúdo. Olhe a nota de usabilidade, não só a de design.
+- [CSS Design Awards](https://www.cssdesignawards.com) (grátis para ver): Premia também o acabamento do front-end. Bom para ver o que dá para fazer só com CSS e JS bem escritos.
+- [The FWA](https://thefwa.com) (grátis para ver): Um dos prêmios mais antigos da web, forte em experimentação, WebGL e movimento. Serve para ampliar o repertório, não como modelo de produto.
+- [Webby Awards](https://www.webbyawards.com) (grátis para ver): Cobre sites, apps, vídeo e social. Mais amplo e menos focado em interface do que os três acima.
+- [Red Dot: Communication Design](https://www.red-dot.org) (grátis para ver): Categoria de interface e experiência do usuário dentro de um prêmio de design tradicional, de origem alemã.
+- [Apple Design Awards](https://developer.apple.com/design/awards/) (grátis para ver): Apps premiados pela Apple em design, interação e inclusão. Boa fonte de apps móveis com cuidado de detalhe.
+
+## Galerias: ver muito, rápido
+
+Treino de olhar é volume com atenção. Abra uma galeria, escolha três sites e diga em voz alta por que cada um funciona.
+
+- [Siteinspire](https://www.siteinspire.com) (grátis): Seleção editorial de sites, filtrável por estilo, tipo e assunto.
+- [Httpster](https://httpster.net) (grátis): Curadoria de sites com tipografia forte e layout enxuto.
+- [Land-book](https://land-book.com) (grátis, com extras pagos): Landing pages reais, organizadas por categoria. Útil para comparar como produtos parecidos se apresentam.
+- [Lapa Ninja](https://www.lapa.ninja) (grátis): Galeria de landing pages com filtro por setor.
+- [Godly (agora Recent)](https://godly.website) (grátis): Layouts ousados e experimentais. Fontes consultadas indicam que ganhou o nome Recent. Se o endereço mudar, busque pelos dois nomes.
+- [Brutalist Websites](https://brutalistwebsites.com) (grátis): O oposto do polido: sites crus e diretos. Bom contraponto contra o visual médio de IA.
+
+## Telas de produto e fluxos
+
+Landing page é vitrine. Quem treina o olhar para produto precisa ver tela de app, formulário, erro, vazio e carregamento.
+
+- [Mobbin](https://mobbin.com) (grátis limitado, pago completo): Telas e fluxos de apps reais, móveis e web, pesquisáveis por padrão de interface.
+- [Refero](https://refero.design) (pago): Biblioteca grande de referências de interface web e iOS, com foco em pesquisa de design.
+- [Page Flows](https://pageflows.com) (pago): Gravações de fluxos de usuário, como cadastro e compra, passo a passo.
+- [Collect UI](https://collectui.com) (grátis): Referências organizadas por elemento: formulário, calendário, perfil, erro 404.
+- [Component Gallery](https://component.gallery) (grátis): O mesmo componente (acordeão, tabela, botão) implementado em vários design systems reais.
+
+## Design systems abertos: o padrão de quem pesquisa a sério
+
+Aqui o design já passou por teste, acessibilidade e documentação. Leia as regras, não só o visual.
+
+- [Padrão Digital de Governo (gov.br/ds)](https://www.gov.br/ds) (grátis): Design system do governo federal brasileiro, com componentes e diretrizes de acessibilidade. Referência para serviços públicos em português.
+- [GOV.UK Design System](https://design-system.service.gov.uk) (grátis): Referência mundial de formulários e conteúdo claro, com pesquisa de uso publicada por componente.
+- [U.S. Web Design System (USWDS)](https://designsystem.digital.gov) (grátis): Sistema do governo americano, com foco em acessibilidade e celular.
+- [Material Design 3](https://m3.material.io) (grátis): O sistema do Google, com diretrizes de movimento, cor e adaptação de tela.
+- [Carbon (IBM)](https://carbondesignsystem.com) (grátis): Sistema pensado para produtos densos, com muita tabela, filtro e painel.
+- [Polaris (Shopify)](https://polaris.shopify.com) (grátis): Sistema de produto de comércio, com boas diretrizes de conteúdo e tom de voz.
+
+## Tipografia e cor: onde o olho mais evolui
+
+Hierarquia, entrelinha e contraste explicam mais do que qualquer efeito. Treine aqui primeiro.
+
+- [Typewolf](https://www.typewolf.com) (grátis): Combinações de fontes em sites reais, com o que está em uso agora.
+- [Fonts In Use](https://fontsinuse.com) (grátis): Arquivo pesquisável de tipografia aplicada em produtos, livros, embalagens e telas.
+- [Fontshare](https://www.fontshare.com) (grátis): Fontes gratuitas de qualidade para uso comercial. Confira a licença de cada família.
+- [Practical Typography](https://practicaltypography.com) (grátis): Livro online de Matthew Butterick sobre tipografia para texto. Curto e prático.
+- [Realtime Colors](https://www.realtimecolors.com) (grátis): Testa cores e fontes numa página de exemplo em tempo real, antes de aplicar no seu projeto.
+- [Coolors](https://coolors.co) (grátis com extras pagos): Gerador de paletas. Use para explorar, depois valide o contraste.
+- [WebAIM Contrast Checker](https://webaim.org/resources/contrastchecker/) (grátis): Confere a razão de contraste entre duas cores segundo a WCAG.
+
+## Princípios e crítica: o porquê por trás do bonito
+
+Galeria mostra o resultado. Estas fontes explicam o motivo, e é o motivo que se transfere para o próximo projeto.
+
+- [Laws of UX](https://lawsofux.com) (grátis): Coletânea de leis e princípios de psicologia aplicados a interface, como a Lei de Hick e a de proximidade, com exemplos.
+- [Nielsen Norman Group](https://www.nngroup.com/articles/) (grátis, com extras pagos): Pesquisa e artigos de usabilidade da fonte das heurísticas usadas nesta página.
+- [Deceptive Design](https://www.deceptive.design) (grátis): Catálogo de padrões enganosos (dark patterns). Treina o olhar a reconhecer o que não imitar.
+- [Refactoring UI](https://www.refactoringui.com) (pago): Livro de Adam Wathan e Steve Schoger com táticas visuais para quem desenvolve e não é designer.
+
+## CSS bom para baixar, estudar e adaptar
+
+Copiar código não é copiar identidade. Leia a licença, troque os tokens pelos seus e entenda cada propriedade antes de colar.
+
+- [Open Props](https://open-props.style) (grátis, código aberto): Variáveis CSS prontas de cor, sombra, espaçamento e animação. Um bom ponto de partida para tokens.
+- [Pico CSS](https://picocss.com) (grátis, código aberto): Estilo elegante para as tags HTML nativas, com modo escuro. Funciona com poucas classes.
+- [Every Layout](https://every-layout.dev) (parte grátis, parte paga): Padrões de layout resilientes em CSS, explicados do jeito que o navegador pensa.
+- [Utopia](https://utopia.fyi) (grátis): Gera escalas fluidas de tipografia e espaçamento com clamp(). Entrega o bloco de CSS pronto.
+- [Modern CSS Solutions](https://moderncss.dev) (grátis): Soluções com CSS atual para problemas comuns, no lugar de gambiarra com JavaScript.
+- [MDN Web Docs](https://developer.mozilla.org/pt-BR/docs/Web/CSS) (grátis): A referência de CSS em português. Sempre confira aqui o suporte de uma propriedade nova.
+- [CodePen](https://codepen.io) (grátis com extras pagos): Milhões de experimentos. Ótimo para ver como se faz e bifurcar. Confira a licença de cada pen antes de usar em produto.
+- [Uiverse](https://uiverse.io) (grátis): Botões, cards, loaders e toggles da comunidade, em CSS ou Tailwind, para copiar e colar. Lembre que o excesso de efeito é também uma marca de slop.
+- [Animista](https://animista.net) (grátis): Animações CSS prontas, que você ajusta e baixa só as que usar.
+
+## Aviso
+
+Links conferidos por busca em novembro de 2026, sem abrir um a um. Sites mudam de nome e de endereço. Confirme antes de depender de um deles.
+</pre>
+  </div>
+</section>
+
 </main>
 
 <section class="nielsen" aria-labelledby="nielsen-h">
@@ -1029,7 +1267,7 @@ padrão, vazio, carregando, erro, sucesso, desabilitado, foco.
 Liste as heurísticas que a tela viola, com o trecho afetado e a correção.</pre>
   </div>
 
-  <p class="lead">O segundo arquivo reúne os 48 erros desta página em formato curto, sem exemplos de código ruim, para o modelo ter regras e nada para imitar.</p>
+  <p class="lead">O segundo arquivo reúne os 49 erros desta página em formato curto, sem exemplos de código ruim, para o modelo ter regras e nada para imitar.</p>
   <div class="codebox">
     <div class="codebar"><span>ANTIPADROES.md</span><span class="actions"><button type="button" data-copy="antipadroes">Copiar</button><button type="button" data-dl="antipadroes" data-name="ANTIPADROES.md" hidden>Baixar .md</button></span></div>
 <pre id="antipadroes-src"># Antipadrões de interface gerada por IA
@@ -1054,7 +1292,7 @@ Ao terminar uma tela ou uma imagem, percorra a lista, corrija o que se aplicar e
 - Regra: entregue os estados padrão, vazio, carregando, erro, sucesso, desabilitado e foco em todo componente.
 
 ### 4. Mensagem de erro genérica
-- Sinal: texto como "algo deu errado", sem causa e sem caminho de correção.
+- Sinal: texto como &quot;algo deu errado&quot;, sem causa e sem caminho de correção.
 - Regra: a mensagem diz o que aconteceu, por quê e o que fazer agora, na linguagem de quem usa.
 
 ### 5. Formulário sem rótulo de verdade
@@ -1140,7 +1378,7 @@ Ao terminar uma tela ou uma imagem, percorra a lista, corrija o que se aplicar e
 - Regra: liste as três perguntas mais comuns de quem chega e ordene a página por elas. A resposta mais procurada vem primeiro.
 
 ### 24. Sem orientação de localização (severidade 3)
-- Sinal: menu sem item ativo, sem trilha de navegação, títulos genéricos como "Detalhes".
+- Sinal: menu sem item ativo, sem trilha de navegação, títulos genéricos como &quot;Detalhes&quot;.
 - Regra: marque o item ativo, use trilha de navegação a partir do terceiro nível e dê a cada página um título que diga o assunto.
 
 ### 25. Títulos fora de hierarquia (severidade 3)
@@ -1156,7 +1394,7 @@ Ao terminar uma tela ou uma imagem, percorra a lista, corrija o que se aplicar e
 - Regra: use um glossário, com um nome por conceito, e proíba sinônimos na interface.
 
 ### 28. Links que não dizem para onde levam (severidade 2)
-- Sinal: vários links como "Saiba mais", "Clique aqui" ou "Ver mais" na mesma tela.
+- Sinal: vários links como &quot;Saiba mais&quot;, &quot;Clique aqui&quot; ou &quot;Ver mais&quot; na mesma tela.
 - Regra: o texto do link diz o destino ou a ação e se entende fora de contexto.
 
 ### 29. Campos na ordem do banco de dados (severidade 2)
@@ -1166,39 +1404,39 @@ Ao terminar uma tela ou uma imagem, percorra a lista, corrija o que se aplicar e
 ## Português
 
 ### 30. Acentos perdidos e codificação quebrada (severidade 3)
-- Sinal: textos de interface sem acento ("nao", "voce") ou com caracteres trocados ("NÃ£o").
+- Sinal: textos de interface sem acento (&quot;nao&quot;, &quot;voce&quot;) ou com caracteres trocados (&quot;NÃ£o&quot;).
 - Regra: arquivos em UTF-8 com o charset declarado. Revise a acentuação de todas as strings de interface antes de entregar.
 
 ### 31. Palavras inventadas (severidade 3)
-- Sinal: palavras que soam plausíveis e não estão nos dicionários, como "emplacação" (o substantivo registrado é "emplacamento"), "atendimentar" e "otimizacional". Substantivos derivados por analogia com outro verbo são o caso mais comum.
+- Sinal: palavras que soam plausíveis e não estão nos dicionários, como &quot;emplacação&quot; (o substantivo registrado é &quot;emplacamento&quot;), &quot;atendimentar&quot; e &quot;otimizacional&quot;. Substantivos derivados por analogia com outro verbo são o caso mais comum.
 - Regra: use só palavras dicionarizadas. Liste as palavras em que tiver dúvida e confira no VOLP ou em um dicionário. Neologismo só como decisão explícita de marca.
 
 ### 32. Formatos à moda americana (severidade 3)
-- Sinal: "R$ 1,299.90", data com o mês na frente ("11/25/2026"), hora com AM e PM.
+- Sinal: &quot;R$ 1,299.90&quot;, data com o mês na frente (&quot;11/25/2026&quot;), hora com AM e PM.
 - Regra: use R$ 1.299,90, 25/11/2026 e 14h30. Formate datas e valores com as funções do idioma (por exemplo, Intl), sem montar o texto à mão.
 
 ### 33. Vírgula entre sujeito e predicado (severidade 2)
-- Sinal: vírgula única entre sujeito e verbo ("Nossa plataforma, permite...") ou entre verbo e complemento ("Você precisa, confirmar...").
+- Sinal: vírgula única entre sujeito e verbo (&quot;Nossa plataforma, permite...&quot;) ou entre verbo e complemento (&quot;Você precisa, confirmar...&quot;).
 - Regra: sem vírgula única entre sujeito e verbo, nem entre verbo e complemento. Intercalação leva duas vírgulas. Passe um corretor gramatical antes de entregar.
 
 ### 34. Vírgula que muda o sentido (severidade 2)
-- Sinal: oração com "que" com ou sem vírgulas sem que o sentido tenha sido escolhido.
+- Sinal: oração com &quot;que&quot; com ou sem vírgulas sem que o sentido tenha sido escolhido.
 - Regra: oração adjetiva restritiva não leva vírgula e a explicativa leva. Use a que o sentido pedir e, se não souber qual é, pergunte.
 
 ### 35. Vírgula de série à moda inglesa (severidade 2)
-- Sinal: vírgula antes do "e" que fecha uma enumeração ("consultas, exames, e retornos").
-- Regra: sem vírgula antes do "e" que fecha uma enumeração.
+- Sinal: vírgula antes do &quot;e&quot; que fecha uma enumeração (&quot;consultas, exames, e retornos&quot;).
+- Regra: sem vírgula antes do &quot;e&quot; que fecha uma enumeração.
 
 ### 36. Crase, regência e concordância (severidade 2)
-- Sinal: "à partir de", "haviam dez vagas", "fazem dois anos".
-- Regra: "a partir de" não leva crase. Haver e fazer no sentido de existir ou de tempo decorrido ficam no singular. Passe um corretor gramatical antes de entregar.
+- Sinal: &quot;à partir de&quot;, &quot;haviam dez vagas&quot;, &quot;fazem dois anos&quot;.
+- Regra: &quot;a partir de&quot; não leva crase. Haver e fazer no sentido de existir ou de tempo decorrido ficam no singular. Passe um corretor gramatical antes de entregar.
 
-### 37. Concordância com "se" e com "um dos que" (severidade 2)
-- Sinal: "Aceita-se cartões", "um dos erros que mais ocorre".
-- Regra: com o "se" apassivador, o verbo concorda com o sujeito ("Aceitam-se cartões"). Depois de "um dos que", o verbo vai para o plural na norma-padrão.
+### 37. Concordância com &quot;se&quot; e com &quot;um dos que&quot; (severidade 2)
+- Sinal: &quot;Aceita-se cartões&quot;, &quot;um dos erros que mais ocorre&quot;.
+- Regra: com o &quot;se&quot; apassivador, o verbo concorda com o sujeito (&quot;Aceitam-se cartões&quot;). Depois de &quot;um dos que&quot;, o verbo vai para o plural na norma-padrão.
 
 ### 38. Pares que se confundem (severidade 2)
-- Sinal: "Porque o código não chegou?", "Aonde fica a clínica?", "preenchido mau".
+- Sinal: &quot;Porque o código não chegou?&quot;, &quot;Aonde fica a clínica?&quot;, &quot;preenchido mau&quot;.
 - Regra: por que, porque, por quê e porquê; onde e aonde; mal e mau; há e a. Confira cada ocorrência contra o contexto.
 
 ### 39. Maiúsculas à moda inglesa (severidade 2)
@@ -1206,43 +1444,48 @@ Ao terminar uma tela ou uma imagem, percorra a lista, corrija o que se aplicar e
 - Regra: maiúscula só no início de frase e em nomes próprios. Dias da semana e meses em minúscula.
 
 ### 40. Português de Portugal em produto brasileiro (severidade 2)
-- Sinal: termos como utilizador, ecrã, guardar, telemóvel e a construção "estar a" + infinitivo.
-- Regra: use pt-BR e o glossário do produto (usuário, tela, salvar, celular). Use gerúndio, como em "carregando".
+- Sinal: termos como utilizador, ecrã, guardar, telemóvel e a construção &quot;estar a&quot; + infinitivo.
+- Regra: use pt-BR e o glossário do produto (usuário, tela, salvar, celular). Use gerúndio, como em &quot;carregando&quot;.
 
 ### 41. Tradução literal e falsos cognatos (severidade 2)
-- Sinal: "realizar" no sentido de perceber, "eventualmente" no sentido de por fim, "pretender" no sentido de fingir.
+- Sinal: &quot;realizar&quot; no sentido de perceber, &quot;eventualmente&quot; no sentido de por fim, &quot;pretender&quot; no sentido de fingir.
 - Regra: escreva em português, sem traduzir do inglês. Revise falsos cognatos e use os nomes de botão da convenção do domínio.
 
 ### 42. Plural montado por template (severidade 2)
-- Sinal: frases como "1 consultas" ou "0 notificações novas".
+- Sinal: frases como &quot;1 consultas&quot; ou &quot;0 notificações novas&quot;.
 - Regra: use regras de plural (Intl.PluralRules ou biblioteca de i18n), teste com 0, 1 e 2 e escreva uma frase própria para o zero.
 
 ### 43. Tratamento e verbos inconsistentes (severidade 2)
-- Sinal: "você", "tu" e "o senhor" na mesma tela, ou infinitivo e imperativo misturados nos botões.
+- Sinal: &quot;você&quot;, &quot;tu&quot; e &quot;o senhor&quot; na mesma tela, ou infinitivo e imperativo misturados nos botões.
 - Regra: um tratamento (você) e um modo verbal para botões, definidos em DESIGN.md e usados em todo o produto.
 
 ### 44. Marca de gênero com parênteses (severidade 2)
-- Sinal: "Bem-vindo(a)", "Prezado(a) cliente", "todos(as)".
+- Sinal: &quot;Bem-vindo(a)&quot;, &quot;Prezado(a) cliente&quot;, &quot;todos(as)&quot;.
 - Regra: use fórmulas sem marca de gênero (Olá), o nome da pessoa ou um substantivo coletivo.
 
 ### 45. Gerundismo (severidade 2)
-- Sinal: "vou estar enviando", "vamos estar verificando".
-- Regra: use o verbo simples: "vou enviar", "vamos verificar".
+- Sinal: &quot;vou estar enviando&quot;, &quot;vamos estar verificando&quot;.
+- Regra: use o verbo simples: &quot;vou enviar&quot;, &quot;vamos verificar&quot;.
 
 ### 46. Texto burocrático (severidade 2)
-- Sinal: voz passiva e nominalização em excesso: "A realização da confirmação deve ser efetuada pelo usuário".
-- Regra: prefira voz ativa e verbos. Escreva "Confirme seu agendamento".
+- Sinal: voz passiva e nominalização em excesso: &quot;A realização da confirmação deve ser efetuada pelo usuário&quot;.
+- Regra: prefira voz ativa e verbos. Escreva &quot;Confirme seu agendamento&quot;.
 
 ### 47. Clichês de texto gerado (severidade 2)
-- Sinal: "no cenário atual", "é importante ressaltar", "revolucione", "mergulhe", "desbloqueie o potencial", travessão em excesso.
+- Sinal: &quot;no cenário atual&quot;, &quot;é importante ressaltar&quot;, &quot;revolucione&quot;, &quot;mergulhe&quot;, &quot;desbloqueie o potencial&quot;, travessão em excesso.
 - Regra: não use essas expressões. Escreva frases curtas, com sujeito e verbo, sobre o que o produto faz de fato.
 
 ### 48. Pleonasmos (severidade 1)
-- Sinal: "há dois anos atrás", "subir para cima", "elo de ligação".
+- Sinal: &quot;há dois anos atrás&quot;, &quot;subir para cima&quot;, &quot;elo de ligação&quot;.
 - Regra: escreva sem repetir o que a palavra anterior já diz.
 
+### 49. Frases picotadas e enumeração com ponto (severidade 2)
+- Sinal: ponto final no lugar da vírgula: &quot;Nosso app é rápido. É seguro. É simples.&quot; e &quot;Você recebe alertas. Relatórios. Lembretes.&quot; Cada pedaço vira uma frase, e os conectivos (porque, mas, então) somem.
+- Regra: una orações curtas e relacionadas com vírgula, &quot;e&quot; ou conectivo. Separe itens de enumeração com vírgula, com &quot;e&quot; antes do último. Use fragmento isolado só como destaque raro, no máximo um por tela. Para listar de verdade, use lista com marcadores.
+
 ## Ao terminar
-Liste cada item acima que a tela ou a imagem viola, com o trecho afetado e a correção aplicada.</pre>
+Liste cada item acima que a tela ou a imagem viola, com o trecho afetado e a correção aplicada.
+</pre>
   </div>
 
   <p class="lead">O terceiro arquivo trata só de português. Fica na raiz, ao lado dos outros, e entra no <code>CLAUDE.md</code> pela mesma importação.</p>
@@ -1257,12 +1500,12 @@ Escreva em português do Brasil. Ao terminar, aplique o checklist da última se�
 - Escreva em português, sem traduzir do inglês. Frases curtas, com sujeito e verbo.
 - Use só palavras dicionarizadas. Se tiver dúvida sobre uma palavra, não a use e liste a dúvida ao final, para uma pessoa conferir no VOLP (academia.org.br/nossa-lingua/busca-no-vocabulario).
 - Não invente termo, sigla ou nome de funcionalidade que não tenha sido dado.
-- Cuidado com substantivos derivados por analogia. De "emplacar", o substantivo registrado é "emplacamento", e não "emplacação". Ao derivar um substantivo de um verbo, confira se ele existe.
+- Cuidado com substantivos derivados por analogia. De &quot;emplacar&quot;, o substantivo registrado é &quot;emplacamento&quot;, e não &quot;emplacação&quot;. Ao derivar um substantivo de um verbo, confira se ele existe.
 - Quando nenhuma regra abaixo resolver o caso, escolha a construção mais simples que esteja correta e sinalize a dúvida.
 
 ## Variante e tratamento
-- Use pt-BR: usuário, tela, salvar, celular, arquivo. Não use termos de Portugal, como utilizador, ecrã, guardar e telemóvel, nem a construção "estar a" + infinitivo.
-- Trate o leitor por "você" e "seu" em todo o texto. Não misture com "tu", "teu" nem "o senhor".
+- Use pt-BR: usuário, tela, salvar, celular, arquivo. Não use termos de Portugal, como utilizador, ecrã, guardar e telemóvel, nem a construção &quot;estar a&quot; + infinitivo.
+- Trate o leitor por &quot;você&quot; e &quot;seu&quot; em todo o texto. Não misture com &quot;tu&quot;, &quot;teu&quot; nem &quot;o senhor&quot;.
 - Nos botões, use um só modo verbal em todo o produto. O padrão é o infinitivo: Salvar, Cancelar, Enviar.
 - Sem marca de gênero entre parênteses ou com barra. Use fórmulas neutras (Olá), o nome da pessoa ou um substantivo coletivo.
 
@@ -1274,29 +1517,31 @@ Escreva em português do Brasil. Ao terminar, aplique o checklist da última se�
 ## Pontuação
 - Sem vírgula única entre sujeito e verbo, nem entre verbo e complemento.
 - Intercalações (aposto, vocativo, oração explicativa) ficam entre duas vírgulas.
-- Oração adjetiva restritiva não leva vírgula: "Os pacientes que chegaram cedo foram atendidos". A explicativa leva: "Os pacientes, que chegaram cedo, foram atendidos". Use a que o sentido pedir.
-- Sem vírgula antes do "e" que fecha uma enumeração: "consultas, exames e retornos".
-- Oração subordinada ou adjunto adverbial longo antes da principal pede vírgula: "Quando o código chegar, digite-o aqui."
+- Oração adjetiva restritiva não leva vírgula: &quot;Os pacientes que chegaram cedo foram atendidos&quot;. A explicativa leva: &quot;Os pacientes, que chegaram cedo, foram atendidos&quot;. Use a que o sentido pedir.
+- Sem vírgula antes do &quot;e&quot; que fecha uma enumeração: &quot;consultas, exames e retornos&quot;.
+- Oração subordinada ou adjunto adverbial longo antes da principal pede vírgula: &quot;Quando o código chegar, digite-o aqui.&quot;
 - Use travessão com parcimônia. Prefira vírgula, ponto ou parênteses.
+- Não use ponto no lugar de vírgula. Enumeração se separa com vírgula, e o &quot;e&quot; fecha a série: &quot;alertas, relatórios e lembretes&quot;, e não &quot;alertas. Relatórios. Lembretes.&quot;
+- Não pique o raciocínio em frases de uma ou duas palavras. Una orações relacionadas com vírgula, &quot;e&quot; ou conectivo: &quot;O app é rápido, seguro e simples&quot;. Fragmento isolado só como destaque raro.
 
 ## Concordância, regência e crase
-- Haver no sentido de existir e fazer indicando tempo decorrido ficam no singular: "Havia dez vagas", "Faz dois anos".
-- Com o "se" apassivador, o verbo concorda com o sujeito: "Aceitam-se cartões", "Alugam-se salas".
-- Depois de "um dos que", use o verbo no plural, como pede a norma-padrão: "um dos erros que mais ocorrem".
-- "A partir de" não leva crase. Use crase só quando houver a preposição "a" e o artigo "a" juntos.
+- Haver no sentido de existir e fazer indicando tempo decorrido ficam no singular: &quot;Havia dez vagas&quot;, &quot;Faz dois anos&quot;.
+- Com o &quot;se&quot; apassivador, o verbo concorda com o sujeito: &quot;Aceitam-se cartões&quot;, &quot;Alugam-se salas&quot;.
+- Depois de &quot;um dos que&quot;, use o verbo no plural, como pede a norma-padrão: &quot;um dos erros que mais ocorrem&quot;.
+- &quot;A partir de&quot; não leva crase. Use crase só quando houver a preposição &quot;a&quot; e o artigo &quot;a&quot; juntos.
 - Pares que se confundem:
   - por que (pergunta), porque (explicação), por quê (fim de frase), porquê (substantivo);
   - onde (lugar em que se está), aonde (lugar para onde se vai);
   - mal (oposto de bem), mau (oposto de bom);
   - há (tempo decorrido), a (tempo futuro ou distância).
-- Plural: use a regra de plural da biblioteca de i18n. Escreva uma frase própria para o zero: "Você não tem notificações".
+- Plural: use a regra de plural da biblioteca de i18n. Escreva uma frase própria para o zero: &quot;Você não tem notificações&quot;.
 
 ## Estilo
-- Não use "estar" + gerúndio para o futuro ("vou estar enviando"). Use o verbo simples: "vou enviar".
-- Prefira voz ativa e verbos a nominalizações: "Confirme o agendamento", e não "A realização da confirmação deve ser efetuada".
-- Sem pleonasmo: "há dois anos", e não "há dois anos atrás".
-- Não use clichês: "no cenário atual", "é importante ressaltar", "vale destacar", "revolucione", "mergulhe", "desbloqueie o potencial".
-- Conectivos como "além disso" e "portanto" só quando ligarem ideias de fato, no máximo um por parágrafo.
+- Não use &quot;estar&quot; + gerúndio para o futuro (&quot;vou estar enviando&quot;). Use o verbo simples: &quot;vou enviar&quot;.
+- Prefira voz ativa e verbos a nominalizações: &quot;Confirme o agendamento&quot;, e não &quot;A realização da confirmação deve ser efetuada&quot;.
+- Sem pleonasmo: &quot;há dois anos&quot;, e não &quot;há dois anos atrás&quot;.
+- Não use clichês: &quot;no cenário atual&quot;, &quot;é importante ressaltar&quot;, &quot;vale destacar&quot;, &quot;revolucione&quot;, &quot;mergulhe&quot;, &quot;desbloqueie o potencial&quot;.
+- Conectivos como &quot;além disso&quot; e &quot;portanto&quot; só quando ligarem ideias de fato, no máximo um por parágrafo.
 
 ## Formatos
 - Moeda: R$ 1.299,90 (ponto nos milhares, vírgula nos centavos).
@@ -1308,14 +1553,16 @@ Escreva em português do Brasil. Ao terminar, aplique o checklist da última se�
 ## Checklist ao terminar
 1. Todas as palavras existem no dicionário? As dúvidas foram listadas para conferência no VOLP?
 2. Alguma vírgula separa sujeito de verbo ou verbo de complemento?
-3. Os verbos concordam com os sujeitos (haver, fazer, "se" apassivador, "um dos que")?
+3. Os verbos concordam com os sujeitos (haver, fazer, &quot;se&quot; apassivador, &quot;um dos que&quot;)?
 4. Acentos, crase e maiúsculas conferidos? Arquivos em UTF-8?
 5. Valores, datas e horas estão no formato brasileiro?
 6. Há um só tratamento (você) e um só modo verbal nos botões?
 7. Há clichê, gerundismo, pleonasmo ou frase burocrática?
 8. Lida em voz alta, alguma frase exige fôlego extra?
+9. Há ponto final onde caberia vírgula? Alguma enumeração está em fragmentos soltos?
 
-Ao final, liste qualquer dúvida de norma que você não resolveu.</pre>
+Ao final, liste qualquer dúvida de norma que você não resolveu.
+</pre>
   </div>
 
   <div class="how">
@@ -1351,6 +1598,18 @@ siga @PORTUGUES.md.</pre>
 <footer>
   As dez heurísticas e a escala de severidade são de Jakob Nielsen, com Rolf Molich nas heurísticas, publicadas pelo Nielsen Norman Group. O texto do arquivo acima é paráfrase para uso em projeto. Razões de contraste calculadas pela fórmula da WCAG 2.2.
 </footer>
+</div>
+</div>
+</div>
+
+<div id="player" role="region" aria-label="Player de áudio">
+  <button type="button" id="pl-toggle" aria-label="Pausar">⏸ Pausar</button>
+  <button type="button" id="pl-stop" aria-label="Parar">⏹</button>
+  <button type="button" id="pl-next" aria-label="Próxima seção">⏭ Próxima seção</button>
+  <input type="range" id="pl-seek" min="0" max="100" value="0" aria-label="Posição" hidden>
+  <span class="now" id="pl-now" aria-live="off"></span>
+  <label>Velocidade <select id="pl-rate" aria-label="Velocidade"><option value="0.85">0,85×</option><option value="1" selected>1×</option><option value="1.15">1,15×</option><option value="1.3">1,3×</option><option value="1.5">1,5×</option></select></label>
+  <label><input type="checkbox" id="pl-follow" checked> Acompanhar</label>
 </div>
 
 <script>
@@ -1410,6 +1669,223 @@ siga @PORTUGUES.md.</pre>
       catch (e) { fallback(); }
     });
   });
+})();
+
+// ===== Menu lateral, leitura em áudio e player =====
+(function () {
+  var $ = function (q, r) { return (r || document).querySelector(q); };
+  var $$ = function (q, r) { return Array.prototype.slice.call((r || document).querySelectorAll(q)); };
+  var clean = function (t) { return (t || '').replace(/\s+/g, ' ').trim(); };
+
+  // ---------- Menu ----------
+  var side = $('#side');
+  var targets = [];
+  function mk(tag, cls, txt) { var e = document.createElement(tag); if (cls) e.className = cls; if (txt) e.textContent = txt; return e; }
+  function anchor(id, label) { var a = mk('a', '', label); a.href = '#' + id; return a; }
+  var title = mk('a', 'side-title'); title.href = '#top'; title.innerHTML = 'Como evitar<br><span>AI SLOP</span>';
+  side.appendChild(title);
+  var sidePlay = mk('button', 'listen side-play', '▶ Ouça como um podcast'); sidePlay.type = 'button'; sidePlay.hidden = true; sidePlay.setAttribute('data-listen', '');
+  side.appendChild(sidePlay);
+  var ol = mk('ol'); side.appendChild(ol);
+  function top(id, label) { var li = mk('li'); var a = anchor(id, label); li.appendChild(a); ol.appendChild(li); targets.push({ el: document.getElementById(id), a: a, grp: null }); }
+  top('top', 'Abertura');
+  top('escala', 'Escala de severidade');
+  $$('section.group').forEach(function (sec, gi) {
+    var h2 = $('.group-h h2', sec), n = $('.group-h .n', sec);
+    var li = mk('li', 'grp'); var a = anchor(h2.id, '');
+    var chip = mk('span', 'chip ' + n.className.replace(/\bn\b/, '').trim(), n.textContent);
+    a.appendChild(chip); a.appendChild(mk('span', '', clean(h2.textContent)));
+    li.appendChild(a);
+    var ul = mk('ul');
+    $$('.f h3, .subh', sec).forEach(function (h, k) {
+      if (!h.id) h.id = 'i' + gi + '-' + k;
+      var ia = anchor(h.id, clean(h.textContent)); var l2 = mk('li'); l2.appendChild(ia); ul.appendChild(l2);
+      targets.push({ el: h, a: ia, grp: li });
+    });
+    li.appendChild(ul); ol.appendChild(li);
+    targets.push({ el: h2, a: a, grp: li });
+  });
+  side.appendChild(mk('div', 'side-sep'));
+  var ol2 = mk('ol'); side.appendChild(ol2);
+  var nh = $('#nielsen-h'); if (nh) { var l = mk('li'); var a = anchor('nielsen-h', 'Arquivos .md para o projeto'); l.appendChild(a); ol2.appendChild(l); targets.push({ el: nh, a: a, grp: null }); }
+  // ordem do documento
+  targets.sort(function (x, y) { return (x.el.compareDocumentPosition(y.el) & 4) ? -1 : 1; });
+
+  var curT = null, ticking = false;
+  function spy() {
+    ticking = false;
+    var cur = targets[0];
+    for (var i = 0; i < targets.length; i++) { if (targets[i].el.getBoundingClientRect().top <= 140) cur = targets[i]; else break; }
+    if (cur === curT) return; curT = cur;
+    $$('#side a.cur').forEach(function (e) { e.classList.remove('cur'); });
+    $$('#side .grp.open').forEach(function (e) { if (e !== cur.grp && !(cur.a.parentNode === e)) e.classList.remove('open'); });
+    cur.a.classList.add('cur');
+    var g = cur.grp || (cur.a.parentNode.classList.contains('grp') ? cur.a.parentNode : null);
+    if (g) { g.classList.add('open'); var ga = g.firstChild; if (cur.a !== ga) ga.classList.add('cur'); }
+    var r = cur.a.getBoundingClientRect(), sr = side.getBoundingClientRect();
+    if (r.top < sr.top + 60 || r.bottom > sr.bottom - 20) side.scrollTop += r.top - sr.top - sr.height / 2;
+  }
+  window.addEventListener('scroll', function () { if (!ticking) { ticking = true; requestAnimationFrame(spy); } }, { passive: true });
+  window.addEventListener('resize', spy);
+  spy();
+  // grupos: clique na seção expande/recolhe sem perder o salto
+  $$('#side .grp > a').forEach(function (a) { a.addEventListener('click', function () { a.parentNode.classList.add('open'); closeNav(); }); });
+  $$('#side ul a, #side ol > li > a, .side-title').forEach(function (a) { a.addEventListener('click', closeNav); });
+  var btn = $('#navbtn');
+  function closeNav() { document.body.classList.remove('navopen'); btn.setAttribute('aria-expanded', 'false'); }
+  btn.addEventListener('click', function () { var o = document.body.classList.toggle('navopen'); btn.setAttribute('aria-expanded', o ? 'true' : 'false'); });
+  $('#scrim').addEventListener('click', closeNav);
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeNav(); });
+
+  // ---------- Roteiro de leitura (fonte única do áudio ao vivo e do mp3) ----------
+  var SEL = ['.thesis p:not([data-skip-read])', '.scale .sc', 'section.group .group-h', 'section.group > .img-note', 'section.group .tip p',
+    'section.group .f .body > h3', 'section.group .f .body > p', 'section.group .subh', 'section.group .how > div', '.train li', '.rcat',
+    '.nielsen > h2', '.nielsen > .lead', '.nielsen .how > div:not(.codebox)'].join(',');
+  function norm(t) { return clean(t).replace(/→/g, ' para ').replace(/(\S)\/(\S)/g, '$1 $2').replace(/\bAI SLOP\b/g, 'AI slop'); }
+  function buildLines() {
+    var L = [], sec = -1, sections = [];
+    function add(type, text, voice, el, label) {
+      text = norm(text); if (!text) return;
+      var o = { id: L.length, type: type, text: text, voice: voice || 'A', sec: sec, el: el || null };
+      L.push(o); if (type === 'section') { sections.push({ id: o.id, title: label || text, el: el }); }
+    }
+    sec = 0;
+    add('section', 'Você está ouvindo: Como evitar AI slop. Um guia sobre os erros de design que a inteligência artificial mais comete, organizados por gravidade, com o que fazer para evitar cada um.', 'B', $('.hero'), 'Abertura');
+    $$(SEL).forEach(function (el) {
+      if (el.closest('[aria-hidden="true"], pre, table, .codebox, [data-skip-read]')) return;
+      if (el.matches('.scale .sc')) { add('item', 'Nível ' + $('b', el).textContent + ', ' + $('strong', el).textContent + '. ' + $('span', el).textContent, 'A', el); return; }
+      if (el.matches('.group-h')) {
+        sec++; var n = $('.n', el), h = $('h2', el), q = $('.q', el), num = /^\d$/.test(clean(n.textContent));
+        add('section', 'Seção. ' + (num ? 'Gravidade ' + clean(n.textContent) + '. ' : '') + clean(h.textContent) + '. ' + (q ? clean(q.textContent) + '.' : ''), 'B', h, clean(h.textContent)); return;
+      }
+      if (el.matches('.f .body > h3')) { var b = $('.badge', el.closest('.f')); var g = b && /^\d$/.test(clean(b.textContent)) ? 'Gravidade ' + clean(b.textContent) + '. ' : ''; add('item', g + el.textContent, 'A', el.closest('.f')); return; }
+      if (el.matches('.f .body > p')) { add('item', el.textContent, el.classList.contains('fix') ? 'B' : 'A', el); return; }
+      if (el.matches('.rcat')) {
+        var names = $$('.rlist a', el).slice(0, 5).map(function (a) { return clean(a.textContent); }).join(', ');
+        add('item', clean($('h3', el).textContent) + '. ' + clean($('.rnote', el).textContent) + (names ? ' Alguns exemplos: ' + names + '.' : ''), 'A', el); return;
+      }
+      if (el.matches('.train li')) { add('item', $('b', el).textContent + '. ' + $('p', el).textContent, 'A', el); return; }
+      if (el.matches('.how > div')) { add('item', el.textContent, 'A', el); return; }
+      add('item', el.textContent, 'A', el);
+    });
+    sec = sections.length;
+    add('section', 'Esse foi o guia. Os arquivos Nielsen, Antipadrões, Português e Repertório estão logo abaixo, prontos para baixar e colocar na raiz do seu projeto. Obrigado por ouvir.', 'B', $('#nielsen-h'), 'Encerramento');
+    // quebra linhas acima de 1800 caracteres
+    var out = [];
+    L.forEach(function (l) {
+      if (l.text.length <= 1800) { out.push(l); return; }
+      var parts = l.text.match(/[^.!?]+[.!?]*\s*/g) || [l.text], cur = '';
+      parts.forEach(function (p) { if ((cur + p).length > 1800) { out.push(Object.assign({}, l, { text: cur.trim() })); cur = ''; } cur += p; });
+      if (cur.trim()) out.push(Object.assign({}, l, { text: cur.trim() }));
+    });
+    out.forEach(function (l, i) { l.id = i; });
+    return { lines: out, sections: sections };
+  }
+  var R = buildLines();
+  window.__roteiro = R.lines.map(function (l) { return { id: l.id, type: l.type, voice: l.voice, text: l.text }; });
+  var lines = R.lines;
+  function fnv(str) { var b = new TextEncoder().encode(str), h = 0x811c9dc5; for (var i = 0; i < b.length; i++) { h ^= b[i]; h = Math.imul(h, 0x01000193) >>> 0; } return h.toString(16); }
+  var HASH = fnv(lines.map(function (l) { return l.voice + '|' + l.text; }).join('\n'));
+  window.__roteiroHash = HASH;
+  function secStart(i) { for (var k = 0; k < lines.length; k++) if (lines[k].type === 'section' && lines[k].sec === i) return lines[k].id; return 0; }
+  function words() { return lines.reduce(function (a, l) { return a + l.text.split(' ').length; }, 0); }
+
+  // ---------- Player ----------
+  var body = document.body, now = $('#pl-now'), tog = $('#pl-toggle'), seek = $('#pl-seek'), rate = $('#pl-rate'), follow = $('#pl-follow');
+  var engine = null, curLine = -1, state = 'idle', hi = null;
+  function setNow(id) {
+    var l = lines[id]; if (!l) return; curLine = id;
+    var s = R.sections[l.sec] ? R.sections[l.sec].title : '';
+    now.innerHTML = ''; var b = mk('b', '', s); now.appendChild(b); now.appendChild(document.createTextNode(l.type === 'section' ? '' : l.text.slice(0, 90)));
+    if (hi) hi.classList.remove('reading');
+    if (l.el) { hi = l.el; hi.classList.add('reading'); if (follow.checked) { var r = hi.getBoundingClientRect(); if (r.top < 80 || r.bottom > innerHeight - 120) hi.scrollIntoView({ block: 'center', behavior: 'smooth' }); } }
+  }
+  function ui(st) {
+    state = st; body.classList.toggle('playing', st !== 'idle');
+    tog.textContent = st === 'paused' ? '▶ Continuar' : '⏸ Pausar';
+    if (st === 'idle') { if (hi) hi.classList.remove('reading'); hi = null; }
+  }
+  function ready(e) {
+    engine = e; $$('[data-listen]').forEach(function (b) { b.hidden = false; });
+    var n = $('[data-listen-note]'); if (n) n.hidden = false;
+    var mins = e.duration ? Math.round(e.duration / 60) : Math.round(words() / 150);
+    $$('[data-dur]').forEach(function (d) { d.textContent = '· cerca de ' + mins + ' min'; });
+    if (e.kind === 'audio') { seek.hidden = false; }
+    $$('section.group .group-h').forEach(function (h, i) {
+      var b = mk('button', 'gplay', '▶ ouvir'); b.type = 'button'; b.title = 'Ouvir a partir desta seção'; b.setAttribute('aria-label', 'Ouvir a partir da seção ' + clean($('h2', h).textContent));
+      b.addEventListener('click', function () { start(secStart(i + 1)); }); h.appendChild(b);
+    });
+  }
+  function start(from) { if (!engine) return; engine.play(from || 0); }
+  $$('[data-listen]').forEach(function (b) { b.addEventListener('click', function () { start(0); }); });
+  tog.addEventListener('click', function () { if (!engine) return; if (state === 'paused') engine.resume(); else engine.pause(); });
+  $('#pl-stop').addEventListener('click', function () { if (engine) engine.stop(); });
+  $('#pl-next').addEventListener('click', function () { if (!engine || curLine < 0) return; var s = lines[curLine].sec + 1; if (s <= R.sections.length) start(secStart(s)); else engine.stop(); });
+  rate.addEventListener('change', function () { if (engine) engine.setRate(parseFloat(rate.value)); });
+  seek.addEventListener('input', function () { if (engine && engine.seekPct) engine.seekPct(seek.value / 1000); });
+  seek.max = 1000;
+
+  // Motor 1: mp3 pronto (Edge TTS) servido junto da página
+  function audioEngine(meta) {
+    var a = new Audio(); a.preload = 'metadata'; a.src = meta.src; var starts = meta.starts, speed = 1;
+    function lineAt(t) { var lo = 0; for (var i = 0; i < starts.length; i++) { if (starts[i] <= t) lo = i; else break; } return lo; }
+    a.addEventListener('timeupdate', function () { var i = lineAt(a.currentTime); if (i !== curLine) setNow(i); if (a.duration) seek.value = Math.round(a.currentTime / a.duration * 1000); });
+    a.addEventListener('ended', function () { ui('idle'); });
+    a.addEventListener('pause', function () { if (!a.ended && state !== 'idle') ui('paused'); });
+    a.addEventListener('play', function () { ui('playing'); });
+    return { kind: 'audio', duration: meta.duration,
+      play: function (from) { a.currentTime = starts[from] || 0; a.playbackRate = speed; setNow(from); a.play().catch(function () {}); },
+      pause: function () { a.pause(); }, resume: function () { a.play(); },
+      stop: function () { a.pause(); a.currentTime = 0; ui('idle'); },
+      setRate: function (r) { speed = r; a.playbackRate = r; },
+      seekPct: function (p) { if (a.duration) a.currentTime = p * a.duration; } };
+  }
+  // Motor 2: voz da plataforma (tts)
+  function ttsEngine(t) {
+    var token = 0;
+    t.onState && t.onState(function (e) { if (e.state === 'speaking') ui('playing'); else if (e.state === 'paused') ui('paused'); else if (e.state === 'idle') ui('idle'); });
+    t.onLine && t.onLine(function (e) { if (e && e.id != null) setNow(e.id); });
+    return { kind: 'tts',
+      play: function (from) {
+        var my = ++token, speed = parseFloat(rate.value) || 1;
+        var arr = lines.slice(from).map(function (l) { return { text: l.text, voice: l.voice === 'B' ? 'rounded' : 'buttery', language: 'pt-BR', id: l.id, rate: speed }; });
+        setNow(from); ui('playing');
+        t.speak(arr).then(function () { if (my === token) ui('idle'); }, function () { if (my === token) ui('idle'); });
+      },
+      pause: function () { t.pause(); }, resume: function () { t.resume(); },
+      stop: function () { token++; t.stop(); ui('idle'); }, setRate: function (r) { t.setRate && t.setRate(r); } };
+  }
+  // Motor 3: voz do navegador
+  function webEngine() {
+    var ss = window.speechSynthesis, token = 0, speed = 1, voice = null;
+    function pick() { var v = ss.getVoices().filter(function (x) { return /^pt/i.test(x.lang); }); voice = v.filter(function (x) { return /BR/i.test(x.lang); })[0] || v[0] || null; }
+    pick(); if (ss.onvoiceschanged !== undefined) ss.onvoiceschanged = pick;
+    function speak(i, my) {
+      if (my !== token || i >= lines.length) { if (my === token) ui('idle'); return; }
+      var u = new SpeechSynthesisUtterance(lines[i].text); u.lang = 'pt-BR'; if (voice) u.voice = voice; u.rate = speed; u.pitch = lines[i].voice === 'B' ? 0.9 : 1;
+      u.onstart = function () { if (my === token) setNow(i); };
+      u.onend = function () { speak(i + 1, my); }; u.onerror = function () { if (my === token) ui('idle'); };
+      ss.speak(u);
+    }
+    return { kind: 'web',
+      play: function (from) { token++; ss.cancel(); var my = token; ui('playing'); setNow(from); speak(from, my); },
+      pause: function () { ss.pause(); ui('paused'); }, resume: function () { ss.resume(); ui('playing'); },
+      stop: function () { token++; ss.cancel(); ui('idle'); }, setRate: function (r) { speed = r; } };
+  }
+
+  function boot() {
+    fetch('podcast/linhas.json', { cache: 'no-cache' }).then(function (r) { if (!r.ok) throw 0; return r.json(); }).then(function (m) {
+      if (!m || !m.starts || m.starts.length !== lines.length || (m.hash && m.hash !== HASH)) throw 0;   // mp3 de uma versão antiga do texto: ignora
+      m.src = 'podcast/podcast.mp3'; ready(audioEngine(m));
+    }).catch(function () {
+      var done = false;
+      function webFallback() { if (done) return; done = true; if ('speechSynthesis' in window && typeof SpeechSynthesisUtterance !== 'undefined') ready(webEngine()); }
+      if (window.claude && window.claude.use) {
+        window.claude.use('tts').then(function (t) { if (t) { done = true; ready(ttsEngine(t)); } else webFallback(); }, webFallback);
+      } else webFallback();
+    });
+  }
+  boot();
 })();
 </script>
 </body>
