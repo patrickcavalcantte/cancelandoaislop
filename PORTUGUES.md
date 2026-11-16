@@ -28,6 +28,8 @@ Escreva em português do Brasil. Ao terminar, aplique o checklist da última se�
 - Sem vírgula antes do "e" que fecha uma enumeração: "consultas, exames e retornos".
 - Oração subordinada ou adjunto adverbial longo antes da principal pede vírgula: "Quando o código chegar, digite-o aqui."
 - Use travessão com parcimônia. Prefira vírgula, ponto ou parênteses.
+- Não use ponto no lugar de vírgula. Enumeração se separa com vírgula, e o "e" fecha a série: "alertas, relatórios e lembretes", e não "alertas. Relatórios. Lembretes."
+- Não pique o raciocínio em frases de uma ou duas palavras. Una orações relacionadas com vírgula, "e" ou conectivo: "O app é rápido, seguro e simples". Fragmento isolado só como destaque raro.
 
 ## Concordância, regência e crase
 - Haver no sentido de existir e fazer indicando tempo decorrido ficam no singular: "Havia dez vagas", "Faz dois anos".
@@ -64,5 +66,6 @@ Escreva em português do Brasil. Ao terminar, aplique o checklist da última se�
 6. Há um só tratamento (você) e um só modo verbal nos botões?
 7. Há clichê, gerundismo, pleonasmo ou frase burocrática?
 8. Lida em voz alta, alguma frase exige fôlego extra?
+9. Há ponto final onde caberia vírgula? Alguma enumeração está em fragmentos soltos?
 
 Ao final, liste qualquer dúvida de norma que você não resolveu.

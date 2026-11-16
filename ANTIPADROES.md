@@ -207,5 +207,9 @@ Ao terminar uma tela ou uma imagem, percorra a lista, corrija o que se aplicar e
 - Sinal: "há dois anos atrás", "subir para cima", "elo de ligação".
 - Regra: escreva sem repetir o que a palavra anterior já diz.
 
+### 49. Frases picotadas e enumeração com ponto (severidade 2)
+- Sinal: ponto final no lugar da vírgula: "Nosso app é rápido. É seguro. É simples." e "Você recebe alertas. Relatórios. Lembretes." Cada pedaço vira uma frase, e os conectivos (porque, mas, então) somem.
+- Regra: una orações curtas e relacionadas com vírgula, "e" ou conectivo. Separe itens de enumeração com vírgula, com "e" antes do último. Use fragmento isolado só como destaque raro, no máximo um por tela. Para listar de verdade, use lista com marcadores.
+
 ## Ao terminar
 Liste cada item acima que a tela ou a imagem viola, com o trecho afetado e a correção aplicada.
