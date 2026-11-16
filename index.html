@@ -277,7 +277,7 @@ body.playing { padding-bottom: 84px; }
 @media (prefers-reduced-motion: reduce) { #side { transition: none; } }
 
 /* Quem escreveu */
-.author { margin-top: 72px; border-top: 3px solid var(--ink); padding-top: 12px; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); gap: 16px 48px; }
+.author { margin: 36px 0 8px; border-top: 3px solid var(--ink); padding-top: 12px; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); gap: 16px 48px; }
 .author h2 { font-family: var(--display); font-stretch: 75%; text-transform: uppercase; font-weight: 800; font-size: clamp(28px, 4.5vw, 44px); line-height: 1.05; letter-spacing: -0.02em; margin: 0; }
 .author-body { max-width: 62ch; }
 .author-body p { margin: 0 0 14px; }
@@ -374,6 +374,18 @@ footer { padding: 56px 0 72px; color: var(--soft); font-size: 14px; max-width: 7
 <div class="wrap">
 
 <p class="scale-note">A classificação de cada erro abaixo é julgamento meu para um produto comum. Reavalie para o seu.</p>
+<section class="author" aria-labelledby="autor">
+  <h2 id="autor">Quem escreveu</h2>
+  <div class="author-body">
+    <p class="who"><b>Patrick Cavalcante</b>Designer de produtos digitais, curioso profissional e sobrevivente da internet desde quando tudo era mato.</p>
+    <p>Minha história com o design começou em 2005, ainda na época em que o Photoshop era instalado por CD e publicar um site exigia uma dose considerável de coragem.</p>
+    <p>Sou técnico em Computação Gráfica pela FAETEC, bacharel em Letras e especialista em Literatura Brasileira pela UERJ, além de especialista em UX/UI pela PUC.</p>
+    <p>Hoje, trabalho como Designer de Produtos Digitais no SERPRO, unindo design, tecnologia, pesquisa e experiência do usuário na construção de produtos digitais.</p>
+    <p>Minha trajetória passa pela comunicação visual, pela literatura e pelo design de interfaces. Talvez por isso eu acredite tanto que uma boa interface precisa de duas coisas: funcionar bem e fazer sentido para quem usa.</p>
+    <p>Este projeto nasce desse encontro entre experiência prática, olhar crítico e uma certa impaciência com interfaces bonitas que não funcionam.</p>
+  </div>
+</section>
+
 <div class="dl-row" id="dl-row" hidden>
   <span>Baixar para o repositório:</span>
   <button type="button" class="dlbtn" data-dl="nielsen" data-name="NIELSEN.md">NIELSEN.md</button>
@@ -1604,18 +1616,6 @@ siga @PORTUGUES.md.</pre>
   </div>
 </section>
 
-<section class="author" aria-labelledby="autor">
-  <h2 id="autor">Quem escreveu</h2>
-  <div class="author-body">
-    <p class="who"><b>Patrick Cavalcante</b>Designer de produtos digitais, curioso profissional e sobrevivente da internet desde quando tudo era mato.</p>
-    <p>Minha história com o design começou em 2005, ainda na época em que o Photoshop era instalado por CD e publicar um site exigia uma dose considerável de coragem.</p>
-    <p>Sou técnico em Computação Gráfica pela FAETEC, bacharel em Letras e especialista em Literatura Brasileira pela UERJ, além de especialista em UX/UI pela PUC.</p>
-    <p>Hoje, trabalho como Designer de Produtos Digitais no SERPRO, unindo design, tecnologia, pesquisa e experiência do usuário na construção de produtos digitais.</p>
-    <p>Minha trajetória passa pela comunicação visual, pela literatura e pelo design de interfaces. Talvez por isso eu acredite tanto que uma boa interface precisa de duas coisas: funcionar bem e fazer sentido para quem usa.</p>
-    <p>Este projeto nasce desse encontro entre experiência prática, olhar crítico e uma certa impaciência com interfaces bonitas que não funcionam.</p>
-  </div>
-</section>
-
 <footer>
   As dez heurísticas e a escala de severidade são de Jakob Nielsen, com Rolf Molich nas heurísticas, publicadas pelo Nielsen Norman Group. O texto do arquivo acima é paráfrase para uso em projeto. Razões de contraste calculadas pela fórmula da WCAG 2.2.
 </footer>
@@ -1711,6 +1711,7 @@ siga @PORTUGUES.md.</pre>
   function top(id, label) { var li = mk('li'); var a = anchor(id, label); li.appendChild(a); ol.appendChild(li); targets.push({ el: document.getElementById(id), a: a, grp: null }); }
   top('top', 'Abertura');
   top('escala', 'Escala de severidade');
+  if ($('#autor')) top('autor', 'Quem escreveu');
   $$('section.group').forEach(function (sec, gi) {
     var h2 = $('.group-h h2', sec), n = $('.group-h .n', sec);
     var li = mk('li', 'grp'); var a = anchor(h2.id, '');
@@ -1729,7 +1730,6 @@ siga @PORTUGUES.md.</pre>
   side.appendChild(mk('div', 'side-sep'));
   var ol2 = mk('ol'); side.appendChild(ol2);
   var nh = $('#nielsen-h'); if (nh) { var l = mk('li'); var a = anchor('nielsen-h', 'Arquivos .md para o projeto'); l.appendChild(a); ol2.appendChild(l); targets.push({ el: nh, a: a, grp: null }); }
-  var au = $('#autor'); if (au) { var l3 = mk('li'); var a3 = anchor('autor', 'Quem escreveu'); l3.appendChild(a3); ol2.appendChild(l3); targets.push({ el: au, a: a3, grp: null }); }
   // ordem do documento
   targets.sort(function (x, y) { return (x.el.compareDocumentPosition(y.el) & 4) ? -1 : 1; });
 
