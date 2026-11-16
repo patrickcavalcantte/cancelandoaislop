@@ -1940,14 +1940,14 @@ siga @PORTUGUES.md.</pre>
 
   // Motor 1: mp3 pronto (Edge TTS) servido junto da página
   function audioEngine(meta) {
-    var a = new Audio(); a.preload = 'metadata'; a.src = meta.src; var starts = meta.starts, speed = 1;
+    var a = new Audio(); a.preload = 'metadata'; a.src = meta.src; var starts = meta.starts, speed = parseFloat(rate.value) || 1;
     function lineAt(t) { var lo = 0; for (var i = 0; i < starts.length; i++) { if (starts[i] <= t) lo = i; else break; } return lo; }
     a.addEventListener('timeupdate', function () { var i = lineAt(a.currentTime); if (i !== curLine) setNow(i); if (a.duration) seek.value = Math.round(a.currentTime / a.duration * 1000); });
     a.addEventListener('ended', function () { ui('idle'); });
     a.addEventListener('pause', function () { if (!a.ended && state !== 'idle') ui('paused'); });
     a.addEventListener('play', function () { ui('playing'); });
     return { kind: 'audio', duration: meta.duration,
-      play: function (from) { a.currentTime = starts[from] || 0; a.playbackRate = speed; setNow(from); a.play().catch(function () {}); },
+      play: function (from) { speed = parseFloat(rate.value) || 1; a.currentTime = starts[from] || 0; a.playbackRate = speed; setNow(from); a.play().catch(function () {}); },
       pause: function () { a.pause(); }, resume: function () { a.play(); },
       stop: function () { a.pause(); a.currentTime = 0; ui('idle'); },
       setRate: function (r) { speed = r; a.playbackRate = r; },
@@ -1966,12 +1966,20 @@ siga @PORTUGUES.md.</pre>
         t.speak(arr).then(function () { if (my === token) ui('idle'); }, function () { if (my === token) ui('idle'); });
       },
       pause: function () { t.pause(); }, resume: function () { t.resume(); },
-      stop: function () { token++; t.stop(); ui('idle'); }, setRate: function (r) { t.setRate && t.setRate(r); } };
+      stop: function () { token++; t.stop(); ui('idle'); },
+      setRate: function (r) { if (t.setRate) t.setRate(r); else if (state === 'playing' && curLine >= 0) this.play(curLine); } };
   }
   // Motor 3: voz do navegador
   function webEngine() {
-    var ss = window.speechSynthesis, token = 0, speed = 1, voice = null;
-    function pick() { var v = ss.getVoices().filter(function (x) { return /^pt/i.test(x.lang); }); voice = v.filter(function (x) { return /BR/i.test(x.lang); })[0] || v[0] || null; }
+    var ss = window.speechSynthesis, token = 0, speed = parseFloat(rate.value) || 1, voice = null;
+    function pick() {
+      var v = ss.getVoices().filter(function (x) { return /^pt/i.test(x.lang); });
+      var br = v.filter(function (x) { return /BR/i.test(x.lang); }); if (br.length) v = br;
+      // vozes "Google" de rede costumam ignorar a velocidade: ficam por último
+      var score = function (x) { return (/google/i.test(x.name) ? 0 : 4) + (/natural|online/i.test(x.name) ? 2 : 0) + (x.localService ? 1 : 0); };
+      v.sort(function (a, b) { return score(b) - score(a); });
+      voice = v[0] || null;
+    }
     pick(); if (ss.onvoiceschanged !== undefined) ss.onvoiceschanged = pick;
     function speak(i, my) {
       if (my !== token || i >= lines.length) { if (my === token) ui('idle'); return; }
@@ -1981,9 +1989,16 @@ siga @PORTUGUES.md.</pre>
       ss.speak(u);
     }
     return { kind: 'web',
-      play: function (from) { token++; ss.cancel(); var my = token; ui('playing'); setNow(from); speak(from, my); },
+      play: function (from) { speed = parseFloat(rate.value) || 1; token++; ss.cancel(); var my = token; ui('playing'); setNow(from); speak(from, my); },
       pause: function () { ss.pause(); ui('paused'); }, resume: function () { ss.resume(); ui('playing'); },
-      stop: function () { token++; ss.cancel(); ui('idle'); }, setRate: function (r) { speed = r; } };
+      stop: function () { token++; ss.cancel(); ui('idle'); },
+      setRate: function (r) {
+        speed = r;
+        if (state === 'idle' || curLine < 0) return;
+        var wasPaused = state === 'paused';
+        token++; ss.cancel(); var my = token; ui('playing'); speak(curLine, my);
+        if (wasPaused) { ss.pause(); ui('paused'); }
+      } };
   }
 
   function boot() {
