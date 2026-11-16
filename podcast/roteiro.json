@@ -1,5 +1,5 @@
 {
- "hash": "97e9d9da",
+ "hash": "d89ed012",
  "linhas": [
   {
    "id": 0,
@@ -1199,7 +1199,49 @@
    "id": 199,
    "type": "section",
    "voice": "B",
-   "text": "Esse foi o guia. Os arquivos Nielsen, Antipadrões, Português e Repertório estão logo abaixo, prontos para baixar e colocar na raiz do seu projeto. Obrigado por ouvir."
+   "text": "Quem escreveu."
+  },
+  {
+   "id": 200,
+   "type": "item",
+   "voice": "A",
+   "text": "Patrick CavalcanteDesigner de produtos digitais, curioso profissional e sobrevivente da internet desde quando tudo era mato."
+  },
+  {
+   "id": 201,
+   "type": "item",
+   "voice": "A",
+   "text": "Minha história com o design começou em 2005, ainda na época em que o Photoshop era instalado por CD e publicar um site exigia uma dose considerável de coragem."
+  },
+  {
+   "id": 202,
+   "type": "item",
+   "voice": "A",
+   "text": "Sou técnico em Computação Gráfica pela FAETEC, bacharel em Letras e especialista em Literatura Brasileira pela UERJ, além de especialista em UX UI pela PUC."
+  },
+  {
+   "id": 203,
+   "type": "item",
+   "voice": "A",
+   "text": "Hoje, trabalho como Designer de Produtos Digitais no SERPRO, unindo design, tecnologia, pesquisa e experiência do usuário na construção de produtos digitais."
+  },
+  {
+   "id": 204,
+   "type": "item",
+   "voice": "A",
+   "text": "Minha trajetória passa pela comunicação visual, pela literatura e pelo design de interfaces. Talvez por isso eu acredite tanto que uma boa interface precisa de duas coisas: funcionar bem e fazer sentido para quem usa."
+  },
+  {
+   "id": 205,
+   "type": "item",
+   "voice": "A",
+   "text": "Este projeto nasce desse encontro entre experiência prática, olhar crítico e uma certa impaciência com interfaces bonitas que não funcionam."
+  },
+  {
+   "id": 206,
+   "type": "section",
+   "voice": "B",
+   "text": "Esse foi o guia. Os arquivos Nielsen, Antipadrões, Português e Repertório estão na página, prontos para baixar e colocar na raiz do seu projeto. Obrigado por ouvir."
   }
  ]
 }
