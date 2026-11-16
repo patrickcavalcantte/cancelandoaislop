@@ -276,14 +276,27 @@ body.playing { padding-bottom: 84px; }
 }
 @media (prefers-reduced-motion: reduce) { #side { transition: none; } }
 
+.byline { margin: 18px 0 0 !important; font-size: 15px; line-height: 1.45; color: #cfcfc8; }
+.byline a { color: inherit; text-decoration: none; }
+.byline b { color: #ffcb05; font-weight: 700; }
+.byline u { text-underline-offset: 3px; white-space: nowrap; }
+.byline a:hover u, .byline a:focus-visible u { color: #fff; }
+.hero :focus-visible { outline-color: #ffcb05; }
 /* Quem escreveu */
-.author { margin: 36px 0 8px; border-top: 3px solid var(--ink); padding-top: 12px; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); gap: 16px 48px; }
-.author h2 { font-family: var(--display); font-stretch: 75%; text-transform: uppercase; font-weight: 800; font-size: clamp(28px, 4.5vw, 44px); line-height: 1.05; letter-spacing: -0.02em; margin: 0; }
-.author-body { max-width: 62ch; }
-.author-body p { margin: 0 0 14px; }
-.author-body .who { font-size: 20px; line-height: 1.4; }
-.author-body .who b { display: block; font-size: 24px; font-weight: 800; }
-@container (max-width: 760px) { .author { grid-template-columns: 1fr; } }
+.author { margin: 28px 0 4px; border-top: 3px solid var(--ink); padding-top: 12px; max-width: 70ch; }
+.author h2 { font-family: var(--display); font-stretch: 75%; text-transform: uppercase; font-weight: 800; font-size: 22px; line-height: 1.1; letter-spacing: -0.015em; margin: 0 0 8px; }
+.author .who { margin: 0 0 12px; font-size: 17px; line-height: 1.4; }
+.author .who b { display: block; font-size: 19px; font-weight: 800; }
+.author-more summary { list-style: none; display: inline-block; cursor: pointer; font: 500 13px var(--mono); border: 2px solid var(--ink); padding: 6px 12px; }
+.author-more summary::-webkit-details-marker { display: none; }
+.author-more summary:hover { background: var(--ink); color: var(--paper); }
+.author-more summary::before { content: "+ "; }
+.author-more[open] summary::before { content: "− "; }
+.author-more .s-close { display: none; }
+.author-more[open] .s-open { display: none; }
+.author-more[open] .s-close { display: inline; }
+.author-body { margin-top: 14px; max-width: 62ch; }
+.author-body p { margin: 0 0 12px; }
 
 @media (max-width: 760px) { .tip { grid-template-columns: 1fr; } }
 .subh { font-family: var(--display); font-stretch: 75%; text-transform: uppercase; font-weight: 800; font-size: 24px; line-height: 1.1; border-top: 3px solid var(--ink); padding-top: 10px; margin: 56px 0 4px; letter-spacing: -0.005em; }
@@ -355,6 +368,7 @@ footer { padding: 56px 0 72px; color: var(--soft); font-size: 14px; max-width: 7
   <div class="thesis">
     <p>Nem todos os problemas de interface têm o mesmo impacto. Um gradiente inadequado é uma questão estética. A ausência de estados de erro, mecanismos de desfazer ou indicadores de foco por teclado compromete a usabilidade.</p>
     <p>Esta página apresenta os principais problemas de interface, organizados por nível de severidade, com exemplos comparativos e recomendações de correção.</p>
+    <p class="byline" data-skip-read><a href="#autor"><b>Por Patrick Cavalcante</b> · designer de produtos digitais e sobrevivente da internet desde quando tudo era mato. <u>Ler a apresentação ↓</u></a></p>
     <p class="listen-row" data-skip-read><button type="button" class="listen" data-listen hidden>▶ Ouça como um podcast <small data-dur></small></button><span class="listen-note" data-listen-note hidden>Voz sintética, lendo só o texto da página. O código dos exemplos fica de fora.</span></p>
   </div>
 </header>
@@ -376,14 +390,17 @@ footer { padding: 56px 0 72px; color: var(--soft); font-size: 14px; max-width: 7
 <p class="scale-note">A classificação de cada erro abaixo é julgamento meu para um produto comum. Reavalie para o seu.</p>
 <section class="author" aria-labelledby="autor">
   <h2 id="autor">Quem escreveu</h2>
-  <div class="author-body">
-    <p class="who"><b>Patrick Cavalcante</b>Designer de produtos digitais, curioso profissional e sobrevivente da internet desde quando tudo era mato.</p>
-    <p>Minha história com o design começou em 2005, ainda na época em que o Photoshop era instalado por CD e publicar um site exigia uma dose considerável de coragem.</p>
-    <p>Sou técnico em Computação Gráfica pela FAETEC, bacharel em Letras e especialista em Literatura Brasileira pela UERJ, além de especialista em UX/UI pela PUC.</p>
-    <p>Hoje, trabalho como Designer de Produtos Digitais no SERPRO, unindo design, tecnologia, pesquisa e experiência do usuário na construção de produtos digitais.</p>
-    <p>Minha trajetória passa pela comunicação visual, pela literatura e pelo design de interfaces. Talvez por isso eu acredite tanto que uma boa interface precisa de duas coisas: funcionar bem e fazer sentido para quem usa.</p>
-    <p>Este projeto nasce desse encontro entre experiência prática, olhar crítico e uma certa impaciência com interfaces bonitas que não funcionam.</p>
-  </div>
+  <p class="who"><b>Patrick Cavalcante</b>Designer de produtos digitais, curioso profissional e sobrevivente da internet desde quando tudo era mato.</p>
+  <details class="author-more">
+    <summary><span class="s-open">Ler a apresentação completa</span><span class="s-close">Recolher</span></summary>
+    <div class="author-body">
+      <p>Minha história com o design começou em 2005, ainda na época em que o Photoshop era instalado por CD e publicar um site exigia uma dose considerável de coragem.</p>
+      <p>Sou técnico em Computação Gráfica pela FAETEC, bacharel em Letras e especialista em Literatura Brasileira pela UERJ, além de especialista em UX/UI pela PUC.</p>
+      <p>Hoje, trabalho como Designer de Produtos Digitais no SERPRO, unindo design, tecnologia, pesquisa e experiência do usuário na construção de produtos digitais.</p>
+      <p>Minha trajetória passa pela comunicação visual, pela literatura e pelo design de interfaces. Talvez por isso eu acredite tanto que uma boa interface precisa de duas coisas: funcionar bem e fazer sentido para quem usa.</p>
+      <p>Este projeto nasce desse encontro entre experiência prática, olhar crítico e uma certa impaciência com interfaces bonitas que não funcionam.</p>
+    </div>
+  </details>
 </section>
 
 <div class="dl-row" id="dl-row" hidden>
@@ -1754,6 +1771,8 @@ siga @PORTUGUES.md.</pre>
   // grupos: clique na seção expande/recolhe sem perder o salto
   $$('#side .grp > a').forEach(function (a) { a.addEventListener('click', function () { a.parentNode.classList.add('open'); closeNav(); }); });
   $$('#side ul a, #side ol > li > a, .side-title').forEach(function (a) { a.addEventListener('click', closeNav); });
+  function openAuthor() { var d = $('.author-more'); if (d) d.open = true; }
+  document.addEventListener('click', function (e) { var a = e.target.closest && e.target.closest('a[href="#autor"]'); if (a) openAuthor(); });
   var btn = $('#navbtn');
   function closeNav() { document.body.classList.remove('navopen'); btn.setAttribute('aria-expanded', 'false'); }
   btn.addEventListener('click', function () { var o = document.body.classList.toggle('navopen'); btn.setAttribute('aria-expanded', o ? 'true' : 'false'); });
@@ -1763,7 +1782,7 @@ siga @PORTUGUES.md.</pre>
   // ---------- Roteiro de leitura (fonte única do áudio ao vivo e do mp3) ----------
   var SEL = ['.thesis p:not([data-skip-read])', '.scale .sc', 'section.group .group-h', 'section.group > .img-note', 'section.group .tip p',
     'section.group .f .body > h3', 'section.group .f .body > p', 'section.group .subh', 'section.group .how > div', '.train li', '.rcat',
-    '.nielsen > h2', '.nielsen > .lead', '.author > h2', '.author-body p', '.nielsen .how > div:not(.codebox)'].join(',');
+    '.nielsen > h2', '.nielsen > .lead', '.author > h2', '.author .who', '.author-body p', '.nielsen .how > div:not(.codebox)'].join(',');
   function norm(t) { return clean(t).replace(/→/g, ' para ').replace(/(\S)\/(\S)/g, '$1 $2').replace(/\bAI SLOP\b/g, 'AI slop'); }
   function buildLines() {
     var L = [], sec = -1, sections = [];
@@ -1788,7 +1807,7 @@ siga @PORTUGUES.md.</pre>
         add('item', clean($('h3', el).textContent) + '. ' + clean($('.rnote', el).textContent) + (names ? ' Alguns exemplos: ' + names + '.' : ''), 'A', el); return;
       }
       if (el.matches('.train li')) { add('item', $('b', el).textContent + '. ' + $('p', el).textContent, 'A', el); return; }
-      if (el.matches('.author-body .who')) { var nm = $('b', el); add('item', nm.textContent + '. ' + el.textContent.slice(nm.textContent.length), 'A', el); return; }
+      if (el.matches('.author .who')) { var nm = $('b', el); add('item', nm.textContent + '. ' + el.textContent.slice(nm.textContent.length), 'A', el); return; }
       if (el.matches('.author > h2')) { sec++; add('section', 'Quem escreveu.', 'B', el, 'Quem escreveu'); return; }
       if (el.matches('.how > div')) { add('item', el.textContent, 'A', el); return; }
       add('item', el.textContent, 'A', el);
@@ -1823,7 +1842,7 @@ siga @PORTUGUES.md.</pre>
     var s = R.sections[l.sec] ? R.sections[l.sec].title : '';
     now.innerHTML = ''; var b = mk('b', '', s); now.appendChild(b); now.appendChild(document.createTextNode(l.type === 'section' ? '' : l.text.slice(0, 90)));
     if (hi) hi.classList.remove('reading');
-    if (l.el) { hi = l.el; hi.classList.add('reading'); if (follow.checked) { var r = hi.getBoundingClientRect(); if (r.top < 80 || r.bottom > innerHeight - 120) hi.scrollIntoView({ block: 'center', behavior: 'smooth' }); } }
+    if (l.el) { var dd = l.el.closest && l.el.closest('details'); if (dd && !dd.open) dd.open = true; hi = l.el; hi.classList.add('reading'); if (follow.checked) { var r = hi.getBoundingClientRect(); if (r.top < 80 || r.bottom > innerHeight - 120) hi.scrollIntoView({ block: 'center', behavior: 'smooth' }); } }
   }
   function ui(st) {
     state = st; body.classList.toggle('playing', st !== 'idle');
